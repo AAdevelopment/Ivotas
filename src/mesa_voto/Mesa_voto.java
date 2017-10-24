@@ -179,10 +179,10 @@ class Connection extends Thread {
                 System.out.println(data[i]);
                 i++;
             }
-            if(data[0]!="type"){
+            if(!"type".equals(data[0])){
                 outToClient.println("[ERROR]Primeiro campo obrigatorio \"type\" nao encontrado");
                 outToClient.println("Evite colocar espacos entre campos!");
-                outToClient.println("Exemplo: Type|valor1;chave2|valor2;chave3|valor3");
+                outToClient.println("Exemplo: Type|valor1;chave2|valor2;chave3|valor3" );
                 outToClient.flush();
                 bad_input=true;
             }
@@ -193,37 +193,29 @@ class Connection extends Thread {
     }
     public String select_elections() throws IOException{
         String resp;
-         ArrayList<String> Elections;
+        ArrayList<String> Elections;
         Elections=Rmi_server.get_Eleicoes();
         resp="type|item_list;item_count|"+ Elections.size()+';';
+        outToClient.print(resp);
         for(int i=0;i<Elections.size();i++)
             outToClient.print("item_"+i+'|'+Elections.get(i)+';');
         outToClient.flush();
         
-        //input esperado "type|item_list;option|num"
+        //input esperado "type|item_list;option|nome"
         String[] message=le_consola();
-        if(message[1]=="item_list"){
-            String option=message[3];
-            if(Integer.parseInt(option)<Elections.size() && Integer.parseInt(option)>=0)
-                return option;
+        String option=null;
+        if("item_list".equals(message[1]) && Elections.contains(message[3])){
+            option=message[3];
         }
         else{
-            while(message[1]!="item_list"){
-                outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|num\"");
+            do{
+                outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\" escolhendo um nome da lista apresentada");
                 outToClient.flush();
                 message=le_consola();
-                String option=message[3];
-                if(Integer.parseInt(option)<Elections.size() && Integer.parseInt(option)>=0)
-                    return option;
-                else{
-                    outToClient.println("[Error] O valor de num deve ser 0-"+Elections.size());
-                    outToClient.flush();
-                    continue;
-                }
-            }
-            
+            } while(!"item_list".equals(message[1]) && Elections.contains(message[3]) );
+            option=message[3];
         }
-        return null;
+        return option;
         
     }
     
@@ -252,11 +244,11 @@ class Connection extends Thread {
 
             //input esperado "type|item_list;option|num"
             String[] message=le_consola();
-            if(message[1]=="item_list"){
+            if("item_list".equals(message[1])){
                 String option=message[3];
             }
             else{
-                while(message[1]!="item_list"){
+                while(!"item_list".equals(message[1])){
                     outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
                     outToClient.flush();
                     message=le_consola();
@@ -268,10 +260,8 @@ class Connection extends Thread {
                     else{
                         outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
                         outToClient.flush();
-                        continue;
                     }
                 }
-
             }
         }catch(IOException E){
             System.out.println("Erro na leitura das listas de candidatos");
@@ -291,51 +281,14 @@ class Connection extends Thread {
                 logon=login();              //autentica o cliente na mesa de voto (desbloqueia a mesa)
             }
             if(logon && validated){
-              String eleicao=select_elections();
-                if(eleicao==null)
-                      System.out.println("[ERRO A SELECIONAR A ELEICAO]");
-                else{
-                    select_lista(eleicao);
+                String eleicao=select_elections();  //escolhe  eleicao pretendida 
+                select_lista(eleicao);              //vota na lista pretendida
                 }
             }
         }
             
     }
-        
-        
-        
-        
-        
-           
        
-
-   
-
-
-        
-    
-        
-
-    
-    
-    
-    public void item_list(String[] message){
-        System.out.println("chamar o metodo que devolve as listas de candidatos");
-    }
-    public void vote(String[] message){
-        System.out.println("chamar o metodo que valida o voto");
-    }
-    public void look_for(String[] message){
-        System.out.println("chamar metodo que procura utilizador na base de dados");
-    }
-    
-    public void respond_item_list(){
-        System.out.println("chamar o metodo que devolve as listas de candidatos");
-    }
-    public void respond_vote(){
-        System.out.println("chamar o metodo que valida o voto");
-    }
-}
 
 
 
