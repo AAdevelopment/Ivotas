@@ -120,11 +120,15 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             }
         }
     }
-    
+    /*
+    *
+    * A FUNCAO VOTE TEM DE RETORNAR TRUE SE O VOTO FOI BEM SUCEDIDO 
+    *
+    */
     
     
     @Override
-    public Integer vote(String list)throws RemoteException{
+    public boolean vote(String list)throws RemoteException{
       
         Integer qtd=null;
         try {
@@ -149,7 +153,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
         
         
-        return qtd;
+        return true;
     }
     
     public synchronized HashMap listaEleicao(String nrtitulo){
@@ -336,8 +340,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
          try{
             InputStreamReader input = new InputStreamReader(System.in);
             BufferedReader reader = new BufferedReader(input);
-            System.getProperties().put("java.security.policy", "/home/gustavo/NetBeansProjects/Ivotas/src/Server_RMI/policy.all");
-            System.setSecurityManager(new RMISecurityManager());
+            /*System.getProperties().put("java.security.policy", "/home/gustavo/NetBeansProjects/Ivotas/src/Server_RMI/policy.all");
+            System.setSecurityManager(new RMISecurityManager());*/
             
             Server_RMI server = new Server_RMI();
             Registry r = LocateRegistry.createRegistry(6500);

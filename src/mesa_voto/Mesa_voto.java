@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 public class Mesa_voto {
     
     private String ID;
+    public static Comunication_server Rmi_server;
 
     public static void main(String args[]){
         int numero=0;
@@ -35,7 +36,7 @@ public class Mesa_voto {
             //System.setSecurityManager(new RMISecurityManager());
 
             
-            String serverIP="10.16.0.186";
+            String serverIP="localhost";
             String url="rmi://" + serverIP  + ":6500/connection_RMI";
             //String serverIP="localhost";
                          System.out.println(url);
@@ -71,9 +72,7 @@ public class Mesa_voto {
             Logger.getLogger(Mesa_voto.class.getName()).log(Level.SEVERE, null, ex);
         }*/
     }
-    /*public Comunication_server getRmiServer(){
-        return Rmi_server;
-    }*/
+    
     
     
 }
@@ -151,7 +150,7 @@ class Connection extends Thread {
         // desbloquear o terminal de voto
         //Type|login;username|valor;password|valor
         if(Rmi_server.autenticate(message[3],message[5])){
-            resp="type|login; logged:on; msg: Welcome to Ivotas";
+            resp="type|login; status|logged:on; msg: Welcome to Ivotas";
             outToClient.println(resp);
             outToClient.println("[INFO] Terminal de voto desbloqueado");
             outToClient.flush();
@@ -228,7 +227,7 @@ class Connection extends Thread {
         
     }
     
-    /*public ArrayList<ListaCandidatos> get_listas(String eleicao) throws IOException{
+    public void show_listas(String eleicao) throws IOException{
         
         
         ArrayList<ListaCandidatos> listas=Rmi_server.get_Listas(eleicao);
@@ -237,36 +236,37 @@ class Connection extends Thread {
         
         for(int i=0;i<listas.size();i++){
             ListaCandidatos lista=listas.get(i);
-            for(int j=0;j<lista.listaCandidato;j++){
-                output=output.concat("item_"+i+'|'+aux.get(i)+';');
+            ArrayList<String> aux=lista.listaCandidato;
+            for(int j=0 ; j < aux.size() ; j++){
+                output=output.concat("item_" + i +'|' + aux.get(i) + ';');
                 outToClient.println(output);
                 outToClient.flush();      
             }
         }
      
     }
-    public int select_lista(String eleicao){
+    public void select_lista(String eleicao){
         
         try{
-             ArrayList<ListaCandidatos> listas=get_listas(eleicao);
+             show_listas(eleicao);
 
             //input esperado "type|item_list;option|num"
             String[] message=le_consola();
             if(message[1]=="item_list"){
-                int option=Integer.parseInt(message[3]);
-                if(option<listas.size() && option>=0)
-                    return option;
+                String option=message[3];
             }
             else{
                 while(message[1]!="item_list"){
-                    outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|num\"");
+                    outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
                     outToClient.flush();
                     message=le_consola();
                     int option=Integer.parseInt(message[3]);
-                    if(option<listas.size() && option>=0)
-                        return option;
+                    if(Rmi_server.vote(message[3])){
+                        outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
+                        outToClient.flush();
+                    }
                     else{
-                        outToClient.println("[Error] O valor de num deve ser 0-"+listas.size());
+                        outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
                         outToClient.flush();
                         continue;
                     }
@@ -276,7 +276,6 @@ class Connection extends Thread {
         }catch(IOException E){
             System.out.println("Erro na leitura das listas de candidatos");
         }
-        return -1;
 
     }
     public void vote() throws IOException{
@@ -293,17 +292,15 @@ class Connection extends Thread {
             }
             if(logon && validated){
               String eleicao=select_elections();
-              int lista;
                 if(eleicao==null)
                       System.out.println("[ERRO A SELECIONAR A ELEICAO]");
                 else{
-                    lista=select_lista(eleicao);
-                    Rmi_server.vote();
+                    select_lista(eleicao);
                 }
             }
         }
             
-    }*/
+    }
         
         
         
