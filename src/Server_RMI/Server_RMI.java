@@ -9,6 +9,7 @@ package Server_RMI;
 
 import Server_RMI.Comunication_server;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -43,7 +44,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     static Comunication_client c;
     String vetCand[]={"paulo","pedro","eduardo","tiago","felipe","joao"}; 
     String vetCand2[]={"pedrino","Janio"};
-
+    ArrayList <ListaCandidatos> ListasCandidatas;
+    
     public Server_RMI() throws RemoteException{
         super();
     }
@@ -59,18 +61,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         this.c = c;
     }
     
-    @Override
-    public ArrayList<String> returnList(Integer type)throws RemoteException{
-       String lista="";
-       ArrayList<String> ListasCandidato1 = new ArrayList();
-       
-      /*  if (type == 1){
-           ListasCandidatos listc = new ListasCandidatos(vetCand);
-           ListasCandidato1 = listc.Getlista(vetCand);
-        
-        }*/
-        return ListasCandidato1;
-    }
     
     @Override
     public void CriarLista(){
@@ -104,10 +94,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
   
     @Override
     public void CriarFaculdade_Dpto() throws RemoteException{
-        String nome="";
+        String nome=null;
         nome=JOptionPane.showInputDialog("Digite o nome da faculdade:");
         Faculdade f = new Faculdade(nome);
-        String saida="";
+        String saida=null;
         boolean verifica =true;
         while(verifica==true){
             saida=JOptionPane.showInputDialog("digite o nome do Departamento, clique em cancel para sair:");
@@ -156,12 +146,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         return true;
     }
     
-    public synchronized HashMap listaEleicao(String nrtitulo){
-        HashMap h = new HashMap();
-        h.put(1, vetCand);
-        h.put(2,vetCand);
-        return h;
-    }
+    
     
     /*
     *
@@ -169,17 +154,60 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     *
     */
     
+    public void saveListasCandidatos(Eleicao eleicao){
+        ArrayList<ListaCandidatos> listas=new ArrayList();
+        try {
+                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao.titulo+".txt";
+                FileWriter file = new FileWriter(path);
+                BufferedWriter out = new BufferedWriter(file);
+                String s="";
+                int i=0;
+                int j=0;
+                for(i=0; i<listas.size();i++){
+                    for(j=0;j<listas.get(i).Lista.size()-1;j++){
+                        out.write(listas.get(i).Lista.get(j)+"|");
+                    }
+                    out.write(listas.get(i).Lista.get(j)+"\n");
+                }
+              
+        } catch (FileNotFoundException ex) {
+            ex.getMessage();
+        } catch (IOException ex) { 
+            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    
+    public void loadListasCandidatos(){
+        ArrayList<ListaCandidatos> listas=new ArrayList();
+        try {
+               
+                FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\ListasCandidatos.txt");
+                BufferedReader in = new BufferedReader(read);
+                String s="";
+                while((s=in.readLine())!=null){
+                    String[] a;
+                    a=s.split("|");
+                    in.close();
+                }
+              
+        } catch (FileNotFoundException ex) {
+            ex.getMessage();
+        } catch (IOException ex) { 
+            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     @Override
     public ArrayList<ListaCandidatos> get_Listas(String eleicao){
-        ArrayList<ListaCandidatos> listas=new ArrayList();
-        /*
-        *
-        *
-        *    FALTA LER LISTAS DOS FICHEIROS
-        *
-        */
+        ArrayList<ListaCandidatos> Listas=new ArrayList();
+        for(int i=0; i<Listas.size();i++){
+            if(ListasCandidatas.get(i).eleicao.titulo.equals(eleicao))
+                Listas.add(ListasCandidatas.get(i));
+        }
         
-        return listas;
+        return Listas;
     }
     
    @Override
@@ -312,20 +340,20 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         FileReader read;
         ArrayList<String> cenas=new ArrayList();
         try {
-            read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Mesa_voto\\src\\AdminConsole\\Pessoas.txt");
+            read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicao.txt");
         
                 BufferedReader in = new BufferedReader(read);
                 String s="";
                 String[] a=null;
                 s=in.readLine();
-                a=s.split(";");
-                
+                a=s.split("|");
                 
                 while((s=in.readLine())!=null){
-                    a=s.split(";");
-                    
-                    
+                    a=s.split("|");
+                    cenas.add(a[0]);
+              
                 }
+                
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

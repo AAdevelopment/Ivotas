@@ -20,23 +20,23 @@ import java.io.Serializable;
  * @author gustavo
  */
 public class ListaCandidatos implements Serializable{
-    public ArrayList<String> listaCandidato;
+    public ArrayList<String> Lista;
     String nome;
-    Eleicao e;
+    Eleicao eleicao;
     
     public ListaCandidatos(String nome){
       //  super();
         this.nome = nome;
-        this.listaCandidato = new ArrayList();
+        this.Lista = new ArrayList();
         
     }
     
    public void setList(String nomecandidato){
-       this.listaCandidato.add(nomecandidato);
+       this.Lista.add(nomecandidato);
    }
   
     public String toString(){
-     return this.nome+ this.listaCandidato.toString();
+     return this.nome+ this.Lista.toString();
     }
     
      /* public ArrayList<String> Getlista(String[] v){

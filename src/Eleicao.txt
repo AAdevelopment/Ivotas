@@ -1,0 +1,2 @@
+titulo|tipo|descricao|departamento|data
+eleicao|nucleo|uma eleicao|dei|20/01/17

@@ -108,5 +108,14 @@ public class Eleicao implements Runnable,Serializable {
     public String toString(){
         return this.tipo+this.titulo+this.data.toGMTString();
     }
+    //
+    /*
+    *
+    *Author Andre Santos
+    */
+    public void saveEleicao(){
+        //funcao que salva as eleicoes no final das mesmas
+        
+    }
 
 }

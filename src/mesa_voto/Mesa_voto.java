@@ -48,9 +48,7 @@ public class Mesa_voto {
           String reply=Rmi_server.Test_connection();
            System.out.println(reply);
            System.out.flush();
-           /*Integer i=1;
-           System.out.println(Rmi_server.returnList(i).toString());
-        
+         
            int serverPort = 6003;
            System.out.println("A Escuta no Porto 6000");
            ServerSocket listenSocket = new ServerSocket(serverPort);
@@ -60,17 +58,12 @@ public class Mesa_voto {
                System.out.println("CLIENT_SOCKET (created at accept()) = "+ clientSocket);
                numero ++;
                new Connection(clientSocket, numero, Rmi_server);
-           }*/
+           }
        }catch(IOException e){
            System.out.println("Listen:" + e.getMessage());
        }catch (NotBoundException ex) {
             Logger.getLogger(Mesa_voto.class.getName()).log(Level.SEVERE, null, ex);
         }
-        /* catch (RemoteException ex) {
-        Logger.getLogger(Mesa_voto.class.getName()).log(Level.SEVERE, null, ex);
-        }*/ /* catch (RemoteException ex) {
-            Logger.getLogger(Mesa_voto.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
     }
     
     
@@ -84,7 +77,7 @@ class Connection extends Thread {
     Comunication_server Rmi_server;
     int thread_number;
     
-    public Connection (Socket aClientSocket, int numero, Comunication_server Rmi_server) {
+    public Connection (Socket aClientSocket, int numero, Comunication_server Rmi_server) throws IOException {
         thread_number = numero;
         try{
             clientSocket = aClientSocket;
@@ -96,32 +89,23 @@ class Connection extends Thread {
         }catch(IOException e){System.out.println("Connection:" + e.getMessage());}
         
 
-        /*try{
-        
-            //=============================
-          // create a thread for reading from the keyboard and writing to the server
-          new Thread() {
+        //=============================
+        // create a thread for reading from the keyboard and writing to the server
+        new Thread() {
             public void run() {
-              Scanner keyboardScanner = new Scanner(System.in);
-              while(!clientSocket.isClosed()) {
-                String readKeyboard = keyboardScanner.nextLine();
-                outToClient.println(readKeyboard);
-                outToClient.flush();
-              }
+                Scanner keyboardScanner = new Scanner(System.in);
+                while(!clientSocket.isClosed()) {
+                    String readKeyboard = keyboardScanner.nextLine();
+                    outToClient.println(readKeyboard);
+                    outToClient.flush();
+                }
             }
-          }.start();
-
-          // the main thread loops reading from the client and answering back
-          
-            //vote();
-          
-        } catch (IOException e) {
-          if(inFromClient == null)
-            System.out.println("\nErro no reader!");
-          System.out.println(e.getMessage());
-        } finally {
-          try { inFromClient.close(); } catch (Exception e) {}
-        }*/
+        }.start();
+        // the main thread loops reading from the client and answering back
+        
+        System.out.println("A eleicao:"+ this.select_elections());
+        
+        try { inFromClient.close(); } catch (Exception e) {}
     }
     
 
@@ -228,7 +212,7 @@ class Connection extends Thread {
         
         for(int i=0;i<listas.size();i++){
             ListaCandidatos lista=listas.get(i);
-            ArrayList<String> aux=lista.listaCandidato;
+            ArrayList<String> aux=lista.Lista;
             for(int j=0 ; j < aux.size() ; j++){
                 output=output.concat("item_" + i +'|' + aux.get(i) + ';');
                 outToClient.println(output);
