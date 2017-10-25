@@ -163,6 +163,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 String s="";
                 int i=0;
                 int j=0;
+                
+                out.write(eleicao.titulo+"|"+eleicao.tipo+"|"+eleicao.descricao+"|"+eleicao.data+"|"+eleicao.f+"\n");
+                
                 for(i=0; i<listas.size();i++){
                     for(j=0;j<listas.get(i).Lista.size()-1;j++){
                         out.write(listas.get(i).Lista.get(j)+"|");
