@@ -28,4 +28,5 @@ public interface Comunication_server extends Remote {
     public void CriarLista()throws RemoteException;
     public ArrayList<ListaCandidatos> get_Listas(String eleicao)throws RemoteException;
     public void CriarFaculdade_Dpto()throws RemoteException;
+    public void alterar_eleicao();
 }

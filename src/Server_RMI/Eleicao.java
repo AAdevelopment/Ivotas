@@ -40,6 +40,8 @@ public class Eleicao implements Runnable,Serializable {
     ArrayList<String> dptos;
     Thread t;
     Date data;
+    Date horafim;
+    Date horaini;
     SimpleDateFormat dt;
     
     public Eleicao(String tipo,String titulo,String data, ArrayList<String> deptos) throws ParseException{
@@ -49,6 +51,7 @@ public class Eleicao implements Runnable,Serializable {
         this.data = new Date();
         dt = new SimpleDateFormat("dd-mm-yyyy"); 
         this.data =dt.parse(data);
+        
         t = new Thread(this,titulo);
         t.start();
     }

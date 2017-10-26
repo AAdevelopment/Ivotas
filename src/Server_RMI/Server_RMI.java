@@ -10,6 +10,7 @@ package Server_RMI;
 import Server_RMI.Comunication_server;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -264,6 +265,36 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         } catch (ParseException ex) {
           ex.getMessage();
         }
+    }
+    
+     public void alterar_eleicao(){//falta terminar
+        String nome="";
+        
+        nome=JOptionPane.showInputDialog("Digite o nome da eleicao que dejesa alterar:");
+        FileReader read;
+        boolean exists = (new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome)).exists();
+        if (exists) {
+            try {
+                read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
+                BufferedReader in = new BufferedReader(read);
+                String s="";
+                String a[] = null;
+                while((s=in.readLine())!=null){
+                    a=s.split(";");
+                }
+                JOptionPane.showInputDialog(null,"Deseja alterar o tipo de eleicao ?",a[0]);
+                System.out.println(s);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+        }   catch (IOException ex) {
+                Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+        else{
+            JOptionPane.showMessageDialog(null,"O arquivo especificado nao existe !","Atencao",1);
+        }
+        
     }
     
     @Override
