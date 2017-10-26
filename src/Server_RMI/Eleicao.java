@@ -59,7 +59,6 @@ public class Eleicao implements Runnable,Serializable {
         dt = new SimpleDateFormat("dd-mm-yyyy"); 
         this.data =dt.parse(data);
         t = new Thread(this,titulo);
-        t.start();
     }
     
     @Override
@@ -107,6 +106,11 @@ public class Eleicao implements Runnable,Serializable {
                 }
             
             }
+    }
+    
+    public void StartEleicao(){
+        t = new Thread(this,titulo);
+        t.start();
     }
     
     public void setDescricao(String descricao){
