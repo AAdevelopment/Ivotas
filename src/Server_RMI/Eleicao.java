@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
@@ -36,11 +37,21 @@ public class Eleicao implements Runnable,Serializable {
     String tipo;
     String titulo;
     String descricao;
-    Faculdade f;
+    ArrayList<String> dptos;
     Thread t;
     Date data;
     SimpleDateFormat dt;
     
+    public Eleicao(String tipo,String titulo,String data, ArrayList<String> deptos) throws ParseException{
+        this.tipo = tipo;
+        this.titulo=titulo;
+        this.dptos=deptos;
+        this.data = new Date();
+        dt = new SimpleDateFormat("dd-mm-yyyy"); 
+        this.data =dt.parse(data);
+        t = new Thread(this,titulo);
+        t.start();
+    }
     public Eleicao(String tipo,String titulo,String data) throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
