@@ -44,10 +44,11 @@ public class Eleicao implements Runnable,Serializable {
     Date horaini;
     SimpleDateFormat dt;
     
-    public Eleicao(String tipo,String titulo,String data, ArrayList<String> deptos) throws ParseException{
+    public Eleicao(String tipo,String titulo,String descricao, String data, ArrayList<String> deptos) throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
         this.dptos=deptos;
+        this.descricao=descricao;
         this.data = new Date();
         dt = new SimpleDateFormat("dd-mm-yyyy"); 
         this.data =dt.parse(data);
@@ -62,6 +63,41 @@ public class Eleicao implements Runnable,Serializable {
         dt = new SimpleDateFormat("dd-mm-yyyy"); 
         this.data =dt.parse(data);
         t = new Thread(this,titulo);
+        System.out.println("");
+    }
+    
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public ArrayList<String> getDptos() {
+        return dptos;
+    }
+
+    public void setDptos(ArrayList<String> dptos) {
+        this.dptos = dptos;
+    }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(String data) throws ParseException {
+        this.data = new Date();
+        this.data =dt.parse(data);
+
     }
     
     @Override

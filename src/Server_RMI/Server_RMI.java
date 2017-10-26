@@ -199,12 +199,11 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     
     
-    public ArrayList<ListaCandidatos> loadListasCandidatos(){
-        ArrayList<ListaCandidatos> listas=new ArrayList();
+    public ArrayList<ListaCandidatos> loadEleicao(Eleicao eleicao, ArrayList<ListaCandidatos> listas, String eleicao_titulo){
         ArrayList<String> dptos;
         try {
-               
-                FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\ListasCandidatos.txt");
+                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao_titulo+".txt";
+                FileReader read = new FileReader(path);
                 BufferedReader in = new BufferedReader(read);
                 String s="";
                 String array[];
@@ -217,7 +216,11 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 array=s.split("|");
                 deps=array[4].split(",");   // guarda os departamentos
                 dptos=new ArrayList<>(Arrays.asList(deps));
-                Eleicao eleicao=new Eleicao(array[1],array[0],array[3],dptos);
+                eleicao.setData(array[3]);
+                eleicao.setDescricao(array[2]);
+                eleicao.setTipo(array[1]);
+                eleicao.setTitulo(array[0]);
+                eleicao.setDptos(dptos);
                 
                 in.readLine(); //ignora cabecalho da informacao das listas
                 while((s=in.readLine())!=null){
@@ -444,6 +447,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public static void main(String args[])throws RemoteException, MalformedURLException {
         
          try{
+             String input=args[0];
             InputStreamReader input = new InputStreamReader(System.in);
             BufferedReader reader = new BufferedReader(input);
             /*System.getProperties().put("java.security.policy", "/home/gustavo/NetBeansProjects/Ivotas/src/Server_RMI/policy.all");
