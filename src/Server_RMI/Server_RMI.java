@@ -128,7 +128,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     
     @Override
-    public synchronized boolean vote(String list, String eleicao)throws RemoteException{
+    public synchronized boolean vote(String list, String eleicao, int id_mesa, String depto, Date data)throws RemoteException{
       
         Integer qtd=null;
         try {
@@ -447,7 +447,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public static void main(String args[])throws RemoteException, MalformedURLException {
         
          try{
-             String input=args[0];
+           
             InputStreamReader input = new InputStreamReader(System.in);
             BufferedReader reader = new BufferedReader(input);
             /*System.getProperties().put("java.security.policy", "/home/gustavo/NetBeansProjects/Ivotas/src/Server_RMI/policy.all");

@@ -24,9 +24,10 @@ import java.util.logging.Logger;
  */
 public class Mesa_voto {
     
-    private String ID;
     public static Comunication_server Rmi_server;
-
+    public static String departamento;
+    
+    
     public static void main(String args[]){
         int numero=0;
 
@@ -48,7 +49,9 @@ public class Mesa_voto {
           String reply=Rmi_server.Test_connection();
            System.out.println(reply);
            System.out.flush();
-         
+           
+         //TCP server
+           departamento="DEI";
            int serverPort = 6003;
            System.out.println("A Escuta no Porto 6000");
            ServerSocket listenSocket = new ServerSocket(serverPort);
@@ -57,7 +60,7 @@ public class Mesa_voto {
                Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
                System.out.println("CLIENT_SOCKET (created at accept()) = "+ clientSocket);
                numero ++;
-               new Connection(clientSocket, numero, Rmi_server);
+               new Connection(clientSocket, numero, Rmi_server, departamento);
            }
        }catch(IOException e){
            System.out.println("Listen:" + e.getMessage());
@@ -75,15 +78,17 @@ class Connection extends Thread {
     BufferedReader inFromClient = null;
     Socket clientSocket;
     Comunication_server Rmi_server;
-    int thread_number;
+    String departamento;
+    int ID_Mesa;
     
-    public Connection (Socket aClientSocket, int numero, Comunication_server Rmi_server) throws IOException {
-        thread_number = numero;
+    public Connection (Socket aClientSocket, int ID, Comunication_server Rmi_server, String departamento) throws IOException {
+        ID_Mesa = ID;
         try{
             clientSocket = aClientSocket;
              // create streams for writing to and reading from the socket
             inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             outToClient = new PrintWriter(clientSocket.getOutputStream());
+            this.departamento=departamento;
             this.Rmi_server=Rmi_server;
             this.start();
         }catch(IOException e){System.out.println("Connection:" + e.getMessage());}
@@ -229,15 +234,34 @@ class Connection extends Thread {
             //input esperado "type|item_list;option|num"
             String[] message=le_consola();
             if("item_list".equals(message[1])){
-                String option=message[3];
+                if(Rmi_server.vote(message[3], eleicao, this.ID_Mesa, this.departamento, new Date())){
+                        outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
+                        outToClient.flush();
+                    }
+                    else{
+                        outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
+                        outToClient.flush();
+                        while(!"item_list".equals(message[1])){
+                            outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
+                            outToClient.flush();
+                            message=le_consola();
+                            if(Rmi_server.vote(message[3], eleicao, this.ID_Mesa, this.departamento, new Date())){
+                                outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
+                                outToClient.flush();
+                            }
+                            else{
+                                outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
+                                outToClient.flush();
+                            }
+                        }
+                    }
             }
             else{
                 while(!"item_list".equals(message[1])){
                     outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
                     outToClient.flush();
                     message=le_consola();
-                    int option=Integer.parseInt(message[3]);
-                    if(Rmi_server.vote(message[3], eleicao)){
+                    if(Rmi_server.vote(message[3], eleicao, this.ID_Mesa, this.departamento, new Date())){
                         outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
                         outToClient.flush();
                     }
