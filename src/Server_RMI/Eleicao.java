@@ -38,6 +38,7 @@ public class Eleicao implements Runnable,Serializable {
     String titulo;
     String descricao;
     ArrayList<String> dptos;
+    ArrayList<ListaCandidatos> listas;
     Thread t;
     Date data;
     Date horafim;
@@ -45,7 +46,9 @@ public class Eleicao implements Runnable,Serializable {
     SimpleDateFormat dt;
     
     public Eleicao(){
-        
+        listas=new ArrayList();
+        dptos=new ArrayList();
+
     }
     
     public Eleicao(String tipo,String titulo,String descricao, String data, ArrayList<String> deptos) throws ParseException{
@@ -56,7 +59,7 @@ public class Eleicao implements Runnable,Serializable {
         this.data = new Date();
         dt = new SimpleDateFormat("dd-mm-yyyy"); 
         this.data =dt.parse(data);
-        
+         listas=new ArrayList();
         t = new Thread(this,titulo);
         t.start();
     }
@@ -64,9 +67,11 @@ public class Eleicao implements Runnable,Serializable {
         this.tipo = tipo;
         this.titulo=titulo;
         this.data = new Date();
+        dptos=new ArrayList();
         dt = new SimpleDateFormat("dd-mm-yyyy"); 
         this.data =dt.parse(data);
         t = new Thread(this,titulo);
+        ArrayList<ListaCandidatos> listas=new ArrayList();
         System.out.println("");
     }
     
@@ -124,22 +129,22 @@ public class Eleicao implements Runnable,Serializable {
         //long inicio=System.currentTimeMillis();
         //long duracao=28800000;
         
-        System.out.println(System.currentTimeMillis()+" date: "+dt.format(now.getTime())
-        +"  "+dt.format(horaini.getTime())+" "+dt.format(horafim.getTime()));
+        /*System.out.println(System.currentTimeMillis()+" date: "+dt.format(now.getTime())
+        +"  "+dt.format(horaini.getTime())+" "+dt.format(horafim.getTime()));*/
         if(now.after(horaini)){
            // System.out.println("passou no primeiro");
             boolean verifica=true;
             Integer verify;
             while(verifica==true){ 
                 now=new Date(System.currentTimeMillis()); 
-                System.out.println(System.currentTimeMillis()+" date: "+dt.format(now));
+                //System.out.println(System.currentTimeMillis()+" date: "+dt.format(now));
                 verify=horafim.compareTo(now);
                 if(verify==0){
                     System.out.println("deu boa");
                     break;
                 }
                 else{
-                    System.out.println("Mostra valor: "+verify);
+                    //System.out.println("Mostra valor: "+verify);
                 }
                 try {
                     Thread.sleep(1000);

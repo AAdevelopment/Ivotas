@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 
 public class Server_RMI  extends UnicastRemoteObject implements Comunication_server {
     static Comunication_client c;
-    ArrayList <ListaCandidatos> ListasCandidatas;
+    ArrayList <Eleicao> ArrayEleicoes;
     
     public Server_RMI() throws RemoteException{
         super();
@@ -166,8 +166,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     */
     
     //salva a lista de candidatos de uma eleicao
-    public void saveListasCandidatos ( ListaCandidatos lista){
-            Eleicao eleicao= lista.eleicao;
+    public void saveEleicao (Eleicao eleicao){
+        
         try {
                 String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao.titulo+".txt";
                 FileWriter file = new FileWriter(path);
@@ -175,18 +175,25 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 String s="";
                 int i=0;
                 int j=0;
-                
+                out.write("titulo|tipo|descricao|data|departamentos");
+                out.newLine();
                 out.write(eleicao.titulo+"|"+eleicao.tipo+"|"+eleicao.descricao+"|"+eleicao.data+"|");
+                for(i=0; i<eleicao.dptos.size()-1;i++)
+                    out.write(eleicao.dptos.get(i)+",");
+                 out.write(eleicao.dptos.get(i));
+                 out.newLine();
                 
-                for(i=0; i<lista.eleicao.dptos.size()-1;i++)
-                    out.write(lista.eleicao.dptos.get(i)+",");
-                 out.write(lista.eleicao.dptos.get(i)+"\n");
+                out.write("NomeLista|Nome1|Nome2|Nome3|NomeN...");
+                out.newLine();
                 
-                for(i=0; i<lista.Lista.size();i++)
-                    out.write(lista.Lista.get(i)+"|");
-                    
-                out.write(lista.Lista.get(i)+"\n");
-                
+                for(i=0; i<eleicao.listas.size();i++){
+                    out.write(eleicao.listas.get(i).nome+"|");
+                    for(j=0;j<eleicao.listas.get(i).Lista.size()-1;j++){
+                        out.write(eleicao.listas.get(i).Lista.get(j)+"|");
+                    }
+                    out.write(eleicao.listas.get(i).Lista.get(j));
+                    out.newLine();
+                }
                 
                 out.close();
               
@@ -197,13 +204,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
     }
     
-    //
-    //ESTE METODO PRECISA DE UMA FORMA DE RETORNAR AS LISTAS DE CANDIDATOS
-    //
+    
     public Eleicao loadEleicao(String eleicao_titulo){
         ArrayList<String> dptos=null;
         Eleicao eleicao=null;
-        ArrayList<ListaCandidatos> listas=new ArrayList();
         try {
                 String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao_titulo+".txt";
                 FileReader read = new FileReader(path);
@@ -216,23 +220,24 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 
                 in.readLine();  //ignora a primeira linha
                 s=in.readLine();    //le eleicao
-                array=s.split("|");
+                array=s.split("\\|");
+                System.out.println(Arrays.toString(array));
                 deps=array[4].split(",");   // guarda os departamentos
+                System.out.println(Arrays.toString(deps));
                 dptos=new ArrayList<>(Arrays.asList(deps));
-                eleicao=new Eleicao(array[1],array[1],array[2], array[3], dptos);
-                
+                eleicao=new Eleicao(array[1],array[0],array[2], array[3],dptos);
                 
                 in.readLine(); //ignora cabecalho da informacao das listas
                 while((s=in.readLine())!=null){
-                    array=s.split("|");
+                    array=s.split("\\|");
+                    System.out.println(Arrays.toString(array));
                     ListaCandidatos aux=new ListaCandidatos(array[0]);
-                    for(int k=1;k<array.length;k++){
-                        aux.setList(array[k]);
+                    for(i=1;i<array.length;i++){
+                        aux.Lista.add(array[i]);
                     }
-                    listas.add(aux);
+                    eleicao.listas.add(aux);
                 } 
-                                       
-                              
+                  
         } catch (FileNotFoundException ex) {
             ex.getMessage();
         } catch (IOException ex) { 
@@ -240,15 +245,16 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         } catch (ParseException ex) {
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         return eleicao;
     }
     
     @Override
     public ArrayList<ListaCandidatos> get_Listas(String eleicao){
         ArrayList<ListaCandidatos> Listas=new ArrayList();
-        for(int i=0; i<Listas.size();i++){
-            if(ListasCandidatas.get(i).eleicao.titulo.equals(eleicao))
-                Listas.add(ListasCandidatas.get(i));
+        for(int i=0; i<ArrayEleicoes.size();i++){
+            if(ArrayEleicoes.get(i).titulo.equals(eleicao))
+                Listas=ArrayEleicoes.get(i).listas;
         }
         
         return Listas;
@@ -426,10 +432,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 String s="";
                 String[] a=null;
                 s=in.readLine();
-                a=s.split("|");
+                a=s.split("\\|");
                 
                 while((s=in.readLine())!=null){
-                    a=s.split("|");
+                    a=s.split("\\|");
                     cenas.add(a[0]);
                     System.out.println(a[0]);
               
@@ -463,8 +469,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                c.reply_on_client(a);
             } */   
             Eleicao ivotas;
-            ArrayList<ListaCandidatos> ListasEleicao= new ArrayList();
             ivotas=server.loadEleicao("Eleicao");
+            ivotas.setDescricao("alterei a descricao");
+            server.saveEleicao(ivotas);
              System.out.println(ivotas.descricao);
         }catch(RemoteException re){
             System.out.println(re.getMessage());
