@@ -92,10 +92,9 @@ public class Eleicao implements Runnable,Serializable {
             Integer verify;
             while(verifica==true){ 
                 now=new Date(System.currentTimeMillis()); 
-                System.out.println(System.currentTimeMillis()+" date: "+dt.format(now));
+                System.out.println(this.titulo+" date: "+dt.format(now));
                 verify=horafim.compareTo(now);
                 if(verify==0){
-                    System.out.println("deu boa");
                     break;
                 }
                 else{

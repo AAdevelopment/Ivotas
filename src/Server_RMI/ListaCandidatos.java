@@ -23,10 +23,12 @@ public class ListaCandidatos implements Serializable{
     public ArrayList<String> Lista;
     String nome;
     Eleicao eleicao;
+    String tipo;
     
-    public ListaCandidatos(String nome){
+    public ListaCandidatos(String nome,String tipo){
       //  super();
         this.nome = nome;
+        this.tipo =tipo;
         this.Lista = new ArrayList();
         
     }
@@ -36,7 +38,7 @@ public class ListaCandidatos implements Serializable{
    }
   
     public String toString(){
-     return this.nome+ this.Lista.toString();
+     return this.tipo+this.nome+ this.Lista.toString();
     }
     
      /* public ArrayList<String> Getlista(String[] v){

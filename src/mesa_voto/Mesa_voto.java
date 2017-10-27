@@ -37,7 +37,7 @@ public class Mesa_voto {
 
             
             String serverIP="localhost";
-            String url="rmi://" + serverIP  + ":6500/connection_RMI";
+            String url="rmi://" + serverIP  + ":"+args[0]+"/connection_RMI";
             //String serverIP="localhost";
                          System.out.println(url);
 
@@ -237,14 +237,14 @@ class Connection extends Thread {
                     outToClient.flush();
                     message=le_consola();
                     int option=Integer.parseInt(message[3]);
-                    if(Rmi_server.vote(message[3])){
+                 //   if(Rmi_server.vote(message[3])){
                         outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
                         outToClient.flush();
-                    }
-                    else{
+                    //}
+                   // else{
                         outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
                         outToClient.flush();
-                    }
+                    //}
                 }
             }
         }catch(IOException E){
