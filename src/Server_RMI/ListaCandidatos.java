@@ -22,11 +22,18 @@ import java.io.Serializable;
 public class ListaCandidatos implements Serializable{
     public ArrayList<String> Lista;
     public String nome;
-    
+    public String tipo;
     public ListaCandidatos(){
         Lista=new ArrayList();
     }
+    
     public ListaCandidatos(String nome){
+      //  super();
+        this.nome = nome;
+        this.Lista = new ArrayList();
+        
+    }
+    public ListaCandidatos(String nome, String tipo){
       //  super();
         this.nome = nome;
         this.tipo =tipo;

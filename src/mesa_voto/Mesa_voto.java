@@ -283,7 +283,7 @@ class Connection extends Thread {
                         }
                     }
             }
-            else{
+            /*else{
                 while(!"item_list".equals(message[1])){
                     outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
                     outToClient.flush();
@@ -301,8 +301,10 @@ class Connection extends Thread {
                         outToClient.flush();
                     //}
                 }
+                    }
+                    }*/
             }
-            }
+            
         }catch(IOException E){
             System.out.println("Erro na leitura das listas de candidatos");
         }

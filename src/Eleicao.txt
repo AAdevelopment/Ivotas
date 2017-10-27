@@ -1,5 +1,5 @@
 titulo|tipo|descricao|data|departamentos
-eleicao|nucleo|alterei a descricao|Fri Jan 20 00:01:00 GMT 2017|dei,deec,dec
+eleicao|nucleo|alterei a descricao|05-10-1998|dei,deec,dec
 NomeLista|Nome1|Nome2|Nome3|NomeN...
 Galao|Andre|Gustavo|Cara1|Cara2
 Galao|Andre|Gustavo|Cara1|Cara2

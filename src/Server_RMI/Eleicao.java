@@ -48,6 +48,7 @@ public class Eleicao implements Runnable,Serializable {
     public Eleicao(){
         listas=new ArrayList();
         dptos=new ArrayList();
+        dt = new SimpleDateFormat("dd-mm-yyyy"); 
 
     }
     

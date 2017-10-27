@@ -180,12 +180,13 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao.titulo+".txt";
                 FileWriter file = new FileWriter(path);
                 BufferedWriter out = new BufferedWriter(file);
+                DateFormat formatter = new SimpleDateFormat("dd-mm-yyyy");
                 String s="";
                 int i=0;
                 int j=0;
                 out.write("titulo|tipo|descricao|data|departamentos");
                 out.newLine();
-                out.write(eleicao.titulo+"|"+eleicao.tipo+"|"+eleicao.descricao+"|"+eleicao.data+"|");
+                out.write(eleicao.titulo+"|"+eleicao.tipo+"|"+eleicao.descricao+"|"+formatter.format(eleicao.data)+"|");
                 for(i=0; i<eleicao.dptos.size()-1;i++)
                     out.write(eleicao.dptos.get(i)+",");
                  out.write(eleicao.dptos.get(i));
@@ -481,7 +482,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             ivotas=server.loadEleicao("Eleicao");
             ivotas.setDescricao("alterei a descricao");
             server.saveEleicao(ivotas);
-             System.out.println(ivotas.descricao);
+             System.out.println(ivotas.data);
         }catch(RemoteException re){
             System.out.println(re.getMessage());
         
