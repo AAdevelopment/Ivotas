@@ -12,7 +12,8 @@ package Server_RMI;
 
 import java.rmi.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
+
 
 
 public interface Comunication_server extends Remote {
@@ -20,7 +21,7 @@ public interface Comunication_server extends Remote {
     public String Test_connection() throws RemoteException;
     public void subscribe(String name, Comunication_client c) throws RemoteException;
     public void criarEleicao()throws RemoteException;
-    public boolean vote(String list, String eleicao)throws RemoteException;
+    public boolean vote(String list, String eleica, int id_mesa, String depto, Date data)throws RemoteException;
     public void CadastrarPessoa()throws RemoteException;
     public  boolean autenticate(String campo, String dados) throws RemoteException;
     public  boolean unlock_terminal(String cartao, String pass)throws RemoteException;

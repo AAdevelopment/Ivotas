@@ -130,7 +130,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     
     @Override
-    public synchronized boolean vote(String list, String eleicao)throws RemoteException{
+    public synchronized boolean vote(String list, String eleicao, int id_mesa, String depto, Date data)throws RemoteException{
         Integer qtd=null;
         try {
                 String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao+".txt";
@@ -205,17 +205,20 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
     }
     
-    
-    
-    public ArrayList<ListaCandidatos> loadListasCandidatos(){
+    //
+    //ESTE METODO PRECISA DE UMA FORMA DE RETORNAR AS LISTAS DE CANDIDATOS
+    //
+    public Eleicao loadEleicao(String eleicao_titulo){
+        ArrayList<String> dptos=null;
+        Eleicao eleicao=null;
         ArrayList<ListaCandidatos> listas=new ArrayList();
-        ArrayList<String> dptos;
+
         /*adicionei um novo parametro no obejto do tipo lista para saber se eh uma lista de docente aluno ou funcionario
         precisa tratar isso agora */
         String tipo="";
         try {
-               
-                FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\ListasCandidatos.txt");
+                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao_titulo+".txt";
+                FileReader read = new FileReader(path);
                 BufferedReader in = new BufferedReader(read);
                 String s="";
                 String array[];
@@ -228,7 +231,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 array=s.split("|");
                 deps=array[4].split(",");   // guarda os departamentos
                 dptos=new ArrayList<>(Arrays.asList(deps));
-                Eleicao eleicao=new Eleicao(array[1],array[0],array[3],dptos);
+                eleicao=new Eleicao(array[1],array[1],array[2], array[3], dptos);
+                
                 
                 in.readLine(); //ignora cabecalho da informacao das listas
                 while((s=in.readLine())!=null){
@@ -249,7 +253,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         } catch (ParseException ex) {
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return listas;
+        return eleicao;
     }
     
     @Override
@@ -456,6 +460,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public static void main(String args[])throws RemoteException, MalformedURLException {
         
          try{
+           
             InputStreamReader input = new InputStreamReader(System.in);
             BufferedReader reader = new BufferedReader(input);
           // System.getProperties().put("java.security.policy","/home/gustavo/NetBeansProjects/ivotas/Ivotas/src/Server_RMI/policy.all");
@@ -471,6 +476,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                a=reader.readLine();
                c.reply_on_client(a);
             } */   
+            Eleicao ivotas;
+            ArrayList<ListaCandidatos> ListasEleicao= new ArrayList();
+            ivotas=server.loadEleicao("Eleicao");
+             System.out.println(ivotas.descricao);
         }catch(RemoteException re){
             System.out.println(re.getMessage());
         
