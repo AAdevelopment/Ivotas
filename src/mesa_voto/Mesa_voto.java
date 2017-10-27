@@ -32,11 +32,11 @@ public class Mesa_voto {
 
          try{
             
-            //System.getProperties().put("java.security.policy","C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Mesa_voto\\src\\mesa_voto\\policy.all");
-            //System.setSecurityManager(new RMISecurityManager());
+           /* System.getProperties().put("java.security.policy","C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Mesa_voto\\src\\mesa_voto\\policy.all");
+            System.setSecurityManager(new RMISecurityManager());*/
 
             
-            String serverIP="localhost";
+            String serverIP="192.168.43.53";
             String url="rmi://" + serverIP  + ":6500/connection_RMI";
             //String serverIP="localhost";
                          System.out.println(url);
@@ -237,7 +237,7 @@ class Connection extends Thread {
                     outToClient.flush();
                     message=le_consola();
                     int option=Integer.parseInt(message[3]);
-                    if(Rmi_server.vote(message[3])){
+                    if(Rmi_server.vote(message[3], eleicao)){
                         outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
                         outToClient.flush();
                     }
