@@ -197,10 +197,13 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
     }
     
-    
-    
-    public ArrayList<ListaCandidatos> loadEleicao(Eleicao eleicao, ArrayList<ListaCandidatos> listas, String eleicao_titulo){
-        ArrayList<String> dptos;
+    //
+    //ESTE METODO PRECISA DE UMA FORMA DE RETORNAR AS LISTAS DE CANDIDATOS
+    //
+    public Eleicao loadEleicao(String eleicao_titulo){
+        ArrayList<String> dptos=null;
+        Eleicao eleicao=null;
+        ArrayList<ListaCandidatos> listas=new ArrayList();
         try {
                 String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao_titulo+".txt";
                 FileReader read = new FileReader(path);
@@ -216,11 +219,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 array=s.split("|");
                 deps=array[4].split(",");   // guarda os departamentos
                 dptos=new ArrayList<>(Arrays.asList(deps));
-                eleicao.setData(array[3]);
-                eleicao.setDescricao(array[2]);
-                eleicao.setTipo(array[1]);
-                eleicao.setTitulo(array[0]);
-                eleicao.setDptos(dptos);
+                eleicao=new Eleicao(array[1],array[1],array[2], array[3], dptos);
+                
                 
                 in.readLine(); //ignora cabecalho da informacao das listas
                 while((s=in.readLine())!=null){
@@ -240,7 +240,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         } catch (ParseException ex) {
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return listas;
+        return eleicao;
     }
     
     @Override
@@ -462,6 +462,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                a=reader.readLine();
                c.reply_on_client(a);
             } */   
+            Eleicao ivotas;
+            ArrayList<ListaCandidatos> ListasEleicao= new ArrayList();
+            ivotas=server.loadEleicao("Eleicao");
+             System.out.println(ivotas.descricao);
         }catch(RemoteException re){
             System.out.println(re.getMessage());
         

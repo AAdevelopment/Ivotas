@@ -44,6 +44,10 @@ public class Eleicao implements Runnable,Serializable {
     Date horaini;
     SimpleDateFormat dt;
     
+    public Eleicao(){
+        
+    }
+    
     public Eleicao(String tipo,String titulo,String descricao, String data, ArrayList<String> deptos) throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
