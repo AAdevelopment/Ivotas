@@ -140,7 +140,6 @@ public class Eleicao implements Runnable,Serializable {
                 //System.out.println(System.currentTimeMillis()+" date: "+dt.format(now));
                 verify=horafim.compareTo(now);
                 if(verify==0){
-                    System.out.println("deu boa");
                     break;
                 }
                 else{

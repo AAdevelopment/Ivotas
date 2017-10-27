@@ -63,10 +63,12 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     
     @Override
-    public void CriarLista(){
+    public   void CriarLista(){
         String nome="";
-        nome=JOptionPane.showInputDialog("Digite o nome da lista");
-        ListaCandidatos l = new ListaCandidatos(nome);
+        String tipo="";
+        nome=JOptionPane.showInputDialog("Digite o nome da lista:");
+        tipo=JOptionPane.showInputDialog("Digite o tipo da lista:");
+        ListaCandidatos l = new ListaCandidatos(nome,tipo);
         try {
             FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/listas",true);
             int n=0;
@@ -93,7 +95,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     }
   
    @Override
-    public void CriarFaculdade_Dpto() throws RemoteException{
+    public synchronized void CriarFaculdade_Dpto() throws RemoteException{
         String nome="";
         nome=JOptionPane.showInputDialog("Digite o nome da faculdade:");
         Faculdade f = new Faculdade(nome);
@@ -129,7 +131,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     @Override
     public synchronized boolean vote(String list, String eleicao, int id_mesa, String depto, Date data)throws RemoteException{
-      
         Integer qtd=null;
         try {
                 String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao+".txt";
@@ -157,7 +158,14 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         return true;
     }
     
-    
+    public synchronized void Add_ELectionlocal(String local,Pessoa p){
+        try {
+            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/pessoas",true);
+            
+        } catch (IOException ex) {
+            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
     /*
     *
@@ -261,7 +269,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     }
     
    @Override
-    public void criarEleicao(){
+    public synchronized  void criarEleicao(){
        try {
            String v[]={"Defina o tipo de eleicao","nome da eleicao","Data ex:yyyy-mm-dd"};
            String saida[]= new String [v.length];
@@ -276,7 +284,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
     }
     
-     public void alterar_eleicao(){//falta terminar
+     public synchronized  void alterar_eleicao(){//falta terminar
         String nome="";
         
         nome=JOptionPane.showInputDialog("Digite o nome da eleicao que dejesa alterar:");
@@ -307,7 +315,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     }
     
     @Override
-     public  void CadastrarPessoa(){
+     public synchronized   void CadastrarPessoa(){
         String tipo_pessoa=""; 
         String name ="";
         Long cartao = null;
@@ -456,11 +464,12 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            
             InputStreamReader input = new InputStreamReader(System.in);
             BufferedReader reader = new BufferedReader(input);
-            /*System.getProperties().put("java.security.policy", "/home/gustavo/NetBeansProjects/Ivotas/src/Server_RMI/policy.all");
-            System.setSecurityManager(new RMISecurityManager());*/
+          // System.getProperties().put("java.security.policy","/home/gustavo/NetBeansProjects/ivotas/Ivotas/src/Server_RMI/policy.all");
+           //System.setSecurityManager(new RMISecurityManager());
             
             Server_RMI server = new Server_RMI();
             Registry r = LocateRegistry.createRegistry(6500);
+            //Registry r = LocateRegistry.createRegistry(Integer.parseInt(args[0]));
             r.rebind("connection_RMI",server);
             String a="";
             System.out.println("Server RMI ready...");
@@ -476,8 +485,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }catch(RemoteException re){
             System.out.println(re.getMessage());
         
-        } catch (IOException ex) {
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+     
         }
     } 
 

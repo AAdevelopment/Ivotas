@@ -36,9 +36,9 @@ public class Mesa_voto {
            /* System.getProperties().put("java.security.policy","C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Mesa_voto\\src\\mesa_voto\\policy.all");
             System.setSecurityManager(new RMISecurityManager());*/
 
-            
             String serverIP="192.168.43.53";
             String url="rmi://" + serverIP  + ":6500/connection_RMI";
+
             //String serverIP="localhost";
                          System.out.println(url);
 
@@ -226,12 +226,12 @@ class Connection extends Thread {
         }
      
     }
-    public void select_lista(String eleicao){
+    public void select_lista(String eleicao) throws IOException{
         
         try{
              show_listas(eleicao);
 
-            //input esperado "type|item_list;option|num"
+          //  input esperado "type|item_list;option|num"
             String[] message=le_consola();
             if("item_list".equals(message[1])){
                 if(Rmi_server.vote(message[3], eleicao, this.ID_Mesa, this.departamento, new Date())){
@@ -268,8 +268,40 @@ class Connection extends Thread {
                     else{
                         outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
                         outToClient.flush();
+                        while(!"item_list".equals(message[1])){
+                            outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
+                            outToClient.flush();
+                            message=le_consola();
+                            if(Rmi_server.vote(message[3], eleicao, this.ID_Mesa, this.departamento, new Date())){
+                                outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
+                                outToClient.flush();
+                            }
+                            else{
+                                outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
+                                outToClient.flush();
+                            }
+                        }
                     }
+            }
+            else{
+                while(!"item_list".equals(message[1])){
+                    outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
+                    outToClient.flush();
+                    message=le_consola();
+
+                    int option=Integer.parseInt(message[3]);
+                 //   if(Rmi_server.vote(message[3])){
+
+                    if(Rmi_server.vote(message[3], eleicao, this.ID_Mesa, this.departamento, new Date())){
+                        outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
+                        outToClient.flush();
+                    //}
+                   // else{
+                        outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
+                        outToClient.flush();
+                    //}
                 }
+            }
             }
         }catch(IOException E){
             System.out.println("Erro na leitura das listas de candidatos");

@@ -45,7 +45,11 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         
         try{
 
-           System.getProperties().put("java.security.policy", "C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\AdminConsole\\policy.all");
+
+            //System.getProperties().put("java.security.policy", "/home/gustavo/NetBeansProjects/Ivotas/src/Server_RMI/policy.all");
+            //System.setSecurityManager(new RMISecurityManager());
+            
+            System.getProperties().put("java.security.policy", "C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\AdminConsole\\policy.all");
             System.setSecurityManager(new RMISecurityManager());
             Comunication_server h = (Comunication_server) LocateRegistry.getRegistry("192.168.43.53",6500).lookup("connection_RMI");
 
@@ -64,13 +68,14 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         +"\n"+"9- sair do menu"));
                 switch(opcao){
                     case 1:
-                    System.out.println(reply=h.Test_connection());
+                        System.out.println(reply=h.Test_connection());
+                    break;
                     case 2:
                         h.criarEleicao();
                     break; 
                     case 3:
                         h.CriarLista();
-                    break;
+                        break;
                     case 4:
                         h.CadastrarPessoa();
                         break;
