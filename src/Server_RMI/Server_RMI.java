@@ -213,9 +213,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         Eleicao eleicao=null;
         ArrayList<ListaCandidatos> listas=new ArrayList();
 
-        /*adicionei um novo parametro no obejto do tipo lista para saber se eh uma lista de docente aluno ou funcionario
-        precisa tratar isso agora */
-        String tipo="";
         try {
                 String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao_titulo+".txt";
                 FileReader read = new FileReader(path);

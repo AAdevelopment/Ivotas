@@ -261,6 +261,33 @@ class Connection extends Thread {
                     outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
                     outToClient.flush();
                     message=le_consola();
+                    if(Rmi_server.vote(message[3], eleicao, this.ID_Mesa, this.departamento, new Date())){
+                        outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
+                        outToClient.flush();
+                    }
+                    else{
+                        outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
+                        outToClient.flush();
+                        while(!"item_list".equals(message[1])){
+                            outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
+                            outToClient.flush();
+                            message=le_consola();
+                            if(Rmi_server.vote(message[3], eleicao, this.ID_Mesa, this.departamento, new Date())){
+                                outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
+                                outToClient.flush();
+                            }
+                            else{
+                                outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
+                                outToClient.flush();
+                            }
+                        }
+                    }
+            }
+            else{
+                while(!"item_list".equals(message[1])){
+                    outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
+                    outToClient.flush();
+                    message=le_consola();
 
                     int option=Integer.parseInt(message[3]);
                  //   if(Rmi_server.vote(message[3])){
