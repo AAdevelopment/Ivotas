@@ -47,24 +47,20 @@ import mesa_voto.Mesa_voto;
 public class Server_RMI  extends UnicastRemoteObject implements Comunication_server {
     static Comunication_client c;
     //ArrayList <ListaCandidatos> ListasCandidatas;
-    ArrayList <Eleicao> ArrayEleicoes; 
-    ArrayList <Pessoa> bufferPessoas;
+    ArrayList <Eleicao> ArrayEleicoes;
     Thread t;
     static DatagramSocket  aSocket;
     static Server_RMI server;
     
     /*BUFFERS DE DADOS PARA ARMAZENAR NOS DOIS SERVIDORES*/
-    ArrayList <ListaCandidatos> buffercandidatos;
-    ArrayList<Eleicao> bufferEleicao;
-    ArrayList<Faculdade> bufferFaculdade;
-    ArrayList<Mesa_voto> buffermesa;
+    ArrayList <ListaCandidatos> buffercandidatos= new ArrayList();
+    ArrayList <Pessoa> bufferPessoas= new ArrayList();
+    ArrayList<Eleicao> bufferEleicao= new ArrayList();
+    ArrayList<Faculdade> bufferFaculdade= new ArrayList();
+    ArrayList<Mesa_voto> buffermesa= new ArrayList();
     
     public Server_RMI() throws RemoteException{
         super();
-        buffercandidatos = new ArrayList();
-        bufferPessoas = new ArrayList();
-        bufferEleicao = new ArrayList();
-        bufferFaculdade = new ArrayList();
     }
     
     //interface methods;
@@ -192,23 +188,24 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     }
     
    @Override
-    public synchronized  void criarEleicao(){
+    public synchronized  void criarEleicao() throws RemoteException{
          
            int id;
            String departamento;
            String v1[]={"Digite o id da mesa:","digite o departamento:"};
            String saida1[]= new String [v1.length]; 
-           String v[]={"Defina o tipo de eleicao","nome da eleicao","Data ex:yyyy-mm-dd"};
+           String v[]={"Defina o tipo de eleicao","nome da eleicao","Data ex:dd/MM/yyyy","Horainicial ex:hh:mm:ss","HoraFim ex:hh:mm:ss"};
            String saida[]= new String [v.length];
            for(int i=0;i<v.length;i++){
                saida[i]=JOptionPane.showInputDialog(v[i]);
            }
             Eleicao  el;
             try {
-                    el = new Eleicao(saida[0],saida[1],saida[2]);
+                    el = new Eleicao(saida[0],saida[1],saida[2],saida[3],saida[4]);
                     el.StartEleicao();
                     this.bufferEleicao.add(el);
-                    System.out.println(el); 
+                    System.out.println(el);
+                    c.replyElection(el);
                   } catch (ParseException ex) {
                       Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
                   }
@@ -218,10 +215,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             
         
            
-     public synchronized  void alterar_eleicao(Eleicao e){//falta terminar
+     public synchronized  void alterar_eleicao(){//falta terminar
         String nome="";
-        e.t.isAlive();
-        if(e.t.isAlive()==false){
             nome=JOptionPane.showInputDialog("Digite o nome da eleicao que dejesa alterar:");
             FileReader read;
             boolean exists = (new File("/home/gustavo/NetBeansProjects/ivotas/Ivotas/"+nome)).exists();
@@ -261,7 +256,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         else{
             JOptionPane.showMessageDialog(null,"O arquivo especificado nao existe !","Atencao",1);
         }
-        }
+        
     }
     
     @Override
@@ -300,7 +295,39 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-    }  
+    }
+     
+    @Override
+    public void Add_VoteTable(String titulo) throws RemoteException{
+      Integer id;
+      String dep;
+      ArrayList <String> dpto= new ArrayList();
+      id=Integer.parseInt(JOptionPane.showInputDialog("Digite o ID da mesa:"));
+      Mesa_voto mesa=null;
+      boolean verifica=true;
+      while(verifica==true){
+          dep=JOptionPane.showInputDialog("Digite o departamento da mesa:");
+          if(dep==null){
+              break;
+          }
+          else{
+              mesa = new Mesa_voto(id,dep);
+                
+            }
+      }
+       for (int i = 0; i <this.bufferEleicao.size(); i++) {
+            if(this.bufferEleicao.get(i).titulo.equals(titulo)){
+                System.out.println("passou:");
+                this.bufferEleicao.get(i).mesas.add(mesa);
+                System.out.println(this.bufferEleicao.get(i).toString());
+            }
+        }
+        System.out.println(mesa.toSring());
+       
+      //JOptionPane.showInputDialog("Digite o Titulo da eleicao:"); 
+     
+        
+    } 
     
      
      /************************************************************************************************************************
@@ -506,8 +533,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     //servers methods
     
     //server runnig;
-   public  void CarregaPessoas() throws FileNotFoundException, IOException, ParseException{
-        FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt");
+    public  void CarregaPessoas() throws FileNotFoundException, IOException, ParseException{
+        boolean exists = (new File("/home/gustavo/NetBeansProjects/ivotas/Ivotas/pessoas")).exists();
+        if (exists) {
+        FileReader read = new FileReader("/home/gustavo/NetBeansProjects/ivotas/Ivotas/pessoas");
         BufferedReader in = new BufferedReader(read);
         String s="";
         String[] a=null;
@@ -519,6 +548,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
           //System.out.println(p.toString());
         }
         in.close();
+        }
     }
     public static void main(String args[])throws RemoteException, MalformedURLException, SocketException, IOException, FileNotFoundException,ParseException {
         
@@ -530,9 +560,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            //System.setSecurityManager(new RMISecurityManager());
             
             Server_RMI server = new Server_RMI();
-           
-            //Registry r = LocateRegistry.createRegistry(6500);
-            Registry r = LocateRegistry.createRegistry(Integer.parseInt(args[0]));
+            Server_RMI server2 = new Server_RMI();
+            Registry r = LocateRegistry.createRegistry(6500);
+            //Registry r = LocateRegistry.createRegistry(Integer.parseInt(args[0]));
             r.rebind("connection_RMI",server);
             String a="";
             System.out.println("Server RMI ready...");
@@ -551,8 +581,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             System.out.println(re.getMessage());
         
      
-        } catch (SocketException ex) {
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         }
     } 
     

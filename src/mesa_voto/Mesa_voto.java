@@ -30,11 +30,16 @@ public class Mesa_voto {
     public String departamento;
     public int ID;
     
-    public Mesa_voto(int ID,String departamento){
-        this.ID=ID=0;
-        this.departamento=departamento;
-        
+    public Mesa_voto(int ID, String departamento){
+        this.ID=ID;
+       this.departamento=departamento;
     }
+ 
+    public String toSring(){
+        return this.ID+";"+this.departamento.toString();
+    }
+        
+   
     public static void main(String args[]) throws NotBoundException{
         int numero=0;
 
@@ -67,9 +72,7 @@ public class Mesa_voto {
            System.out.println("Listen:" + e.getMessage());
        }
     }
-    
-    
-    
+   
 }
 //= Thread para tratar de cada canal de comunicação com um cliente
 class Terminal_voto extends Thread {

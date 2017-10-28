@@ -41,9 +41,9 @@ public class Eleicao implements Runnable,Serializable {
     ArrayList<String> dptos;
     ArrayList<ListaCandidatos> listas;
     Thread t;
-    Date data;
-    Date horafim;
-    Date horaini;
+    String data;
+    String horafim;
+    String horaini;
     ArrayList<Mesa_voto> mesas;
     SimpleDateFormat dt;
     
@@ -60,24 +60,23 @@ public class Eleicao implements Runnable,Serializable {
         this.titulo=titulo;
         this.dptos=deptos;
         this.descricao=descricao;
-        this.data = new Date();
+        
         dt = new SimpleDateFormat("dd-mm-yyyy"); 
-        this.data =dt.parse(data);
+        
         this.listas=listas;
-
         t = new Thread(this,titulo);
         t.start();
     }
-    public Eleicao(String tipo,String titulo,String data) throws ParseException{
+    public Eleicao(String tipo,String titulo,String data,String horaini,String horafim) throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
-        this.data = new Date();
+        this.data = data;
         dptos=new ArrayList();
-        dt = new SimpleDateFormat("dd-mm-yyyy"); 
-        this.data =dt.parse(data);
         t = new Thread(this,titulo);
         ArrayList<ListaCandidatos> listas=new ArrayList();
-        System.out.println("");
+        this.mesas = new ArrayList();
+        this.horafim=horafim;
+        this.horaini=horaini;
     }
     
     public String getTipo() {
@@ -103,23 +102,34 @@ public class Eleicao implements Runnable,Serializable {
     public void setDptos(ArrayList<String> dptos) {
         this.dptos = dptos;
     }
-
-    public Date getData() {
-        return data;
+    public void setMesas(Mesa_voto m){
+        this.mesas.add(m);
     }
-
-    public void setData(String data) throws ParseException {
-        this.data = new Date();
-        this.data =dt.parse(data);
-
-    }
-    
     @Override
     public void run(){
         //8hrs
         //this.data.getTime();
-        
-        
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+        SimpleDateFormat sdf1= new SimpleDateFormat("dd/MM/yyyy");
+        sdf1.setLenient(false);
+        boolean verifica=true;
+            while(verifica==true){
+                if(sdf1.format(new Date()).equals(data)&&sdf.format(new Date()).equals(horaini)){
+                    verifica=false;
+                    while (true) {
+                        System.out.println(sdf.format(new Date()));
+                        try {
+                            Thread.sleep(1000);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Eleicao.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        if (sdf.format(new Date()).equals(horafim)) {
+                            System.out.println("fim da eleicao!");
+                            break;
+                        }            
+                    }
+                }
+        /*
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
         Date now = new Date();
         Date horafim = new Date();
@@ -131,35 +141,28 @@ public class Eleicao implements Runnable,Serializable {
             ex.getMessage();
         }
         
-        //long inicio=System.currentTimeMillis();
-        //long duracao=28800000;
-        
-        /*System.out.println(System.currentTimeMillis()+" date: "+dt.format(now.getTime())
-        +"  "+dt.format(horaini.getTime())+" "+dt.format(horafim.getTime()));*/
         if(now.after(horaini)){
            // System.out.println("passou no primeiro");
             boolean verifica=true;
             Integer verify;
             while(verifica==true){ 
                 now=new Date(System.currentTimeMillis()); 
-                //System.out.println(System.currentTimeMillis()+" date: "+dt.format(now));
+              //  System.out.println(System.currentTimeMillis()+" date: "+dt.format(now));
                 verify=horafim.compareTo(now);
                 if(verify==0){
                     break;
                 }
-                else{
-                    //System.out.println("Mostra valor: "+verify);
-                }
                 try {
-                    Thread.sleep(1000);
+                    
                     } catch (InterruptedException ex) {
                         ex.getMessage();
                     }        
                 }
             
-            }
+            }*/
+        }
     }
-    
+        
     public void StartEleicao(){
         t = new Thread(this,titulo);
         t.start();
@@ -173,7 +176,11 @@ public class Eleicao implements Runnable,Serializable {
     }
     @Override
     public String toString(){
-        return "tipo|"+this.tipo+";"+"titulo|"+this.titulo+";"+"data|"+this.data.toGMTString();
+
+        return this.tipo+";"+this.titulo+";"+this.data+
+        ";"+this.horaini+";"+this.horafim+";"+this.mesas.toString();
+
+
     }
     
    

@@ -7,6 +7,7 @@ package AdminConsole;
 
 import Server_RMI.Comunication_client;
 import Server_RMI.Comunication_server;
+import Server_RMI.Eleicao;
 import Server_RMI.ListaCandidatos;
 import Server_RMI.Faculdade;
 import java.io.IOException;
@@ -36,9 +37,14 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     public void reply_list_on_client(ListaCandidatos list){
         System.out.println(list.toString());
     }
+    @Override
     public void reply_FacultyDptolist_on_client(Faculdade f){
         System.out.println(f.toString());
-    } 
+    }
+    @Override
+    public void replyElection(Eleicao e){
+        System.out.println(e.toString());
+    }
     
     public static void main(String args[]) throws RemoteException, NotBoundException, IOException{
         Integer opcao=0;
@@ -65,25 +71,31 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
             
             do{
                 opcao=Integer.parseInt(JOptionPane.showInputDialog("1-verificar conexao"+"\n"+"2-criar eleicao"+"\n"+"3-criar lista de candidato\n"+"4-Registrar Pessoa"
-                        +"\n"+"9- sair do menu"));
+                        +"\n"+"7-adicionar mesa de voto a eleicao\n"+"9- sair do menu"));
                 switch(opcao){
                     case 1:
                         System.out.println(reply=h.Test_connection());
-                    break;
+                        break;
                     case 2:
                         h.criarEleicao();
-                    break; 
+                        break; 
                     case 3:
                         h.CriarLista();
                         break;
+                        
                     case 4:
                         h.CadastrarPessoa();
                         break;
                     case 5:
                         h.CriarFaculdade_Dpto();
+                        break;
                     case 6:
-                        
-                        //h.alterar_eleicao();
+                        h.alterar_eleicao();
+                        break;
+                    case 7:
+                        String rep="";
+                        rep=JOptionPane.showInputDialog("digite o titulo da eleicao:");
+                        h.Add_VoteTable(rep);
                         break;
                     case 9:
                         verifica=false;

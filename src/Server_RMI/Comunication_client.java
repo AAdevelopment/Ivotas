@@ -22,4 +22,5 @@ public interface Comunication_client extends Remote {
      public void reply_on_client(String a)throws RemoteException;
      public void reply_list_on_client(ListaCandidatos list)throws RemoteException;
      public void reply_FacultyDptolist_on_client(Faculdade f)throws RemoteException;
+     public void replyElection(Eleicao e)throws RemoteException;
 }
