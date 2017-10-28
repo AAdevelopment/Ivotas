@@ -46,6 +46,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     static Comunication_client c;
     //ArrayList <ListaCandidatos> ListasCandidatas;
     ArrayList <Eleicao> ArrayEleicoes; 
+    ArrayList <Pessoa> Pessoas;
     Thread t;
     static DatagramSocket  aSocket;
     static Server_RMI server;
@@ -196,108 +197,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
     }
     
-    /*
-    *
-    *Author Andre Santos
-    *
-    */
-    
-    //salva a lista de candidatos de uma eleicao
-    public void saveEleicao (Eleicao eleicao){
-        
-        try {
-                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao.titulo+".txt";
-                FileWriter file = new FileWriter(path);
-                BufferedWriter out = new BufferedWriter(file);
-                DateFormat formatter = new SimpleDateFormat("dd-mm-yyyy");
-                String s="";
-                int i=0;
-                int j=0;
-                out.write("titulo|tipo|descricao|data|departamentos");
-                out.newLine();
-                out.write(eleicao.titulo+"|"+eleicao.tipo+"|"+eleicao.descricao+"|"+formatter.format(eleicao.data)+"|");
-                for(i=0; i<eleicao.dptos.size()-1;i++)
-                    out.write(eleicao.dptos.get(i)+",");
-                 out.write(eleicao.dptos.get(i));
-                 out.newLine();
-                
-                out.write("NomeLista|Nome1|Nome2|Nome3|NomeN...");
-                out.newLine();
-                
-                for(i=0; i<eleicao.listas.size();i++){
-                    out.write(eleicao.listas.get(i).nome+"|");
-                    for(j=0;j<eleicao.listas.get(i).Lista.size()-1;j++){
-                        out.write(eleicao.listas.get(i).Lista.get(j)+"|");
-                    }
-                    out.write(eleicao.listas.get(i).Lista.get(j));
-                    out.newLine();
-                }
-                
-                out.close();
-              
-        } catch (FileNotFoundException ex) {
-            ex.getMessage();
-        } catch (IOException ex) { 
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    
-    public Eleicao loadEleicao(String eleicao_titulo){
-        ArrayList<String> dptos=null;
-        Eleicao eleicao=null;
-        try {
-                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao_titulo+".txt";
-                FileReader read = new FileReader(path);
-                BufferedReader in = new BufferedReader(read);
-                String s="";
-                String array[];
-                String deps[];
-                int i=0;
-                int j=0;
-                
-                in.readLine();  //ignora a primeira linha
-                s=in.readLine();    //le eleicao
-                array=s.split("\\|");
-                System.out.println(Arrays.toString(array));
-                deps=array[4].split(",");   // guarda os departamentos
-                System.out.println(Arrays.toString(deps));
-                dptos=new ArrayList<>(Arrays.asList(deps));
-                eleicao=new Eleicao(array[1],array[0],array[2], array[3],dptos);
-                
-                in.readLine(); //ignora cabecalho da informacao das listas
-                while((s=in.readLine())!=null){
-                    array=s.split("\\|");
-                    System.out.println(Arrays.toString(array));
-                    ListaCandidatos aux=new ListaCandidatos(array[0]);
-                    for(i=1;i<array.length;i++){
-                        aux.Lista.add(array[i]);
-                    }
-                    eleicao.listas.add(aux);
-                } 
-                  
-        } catch (FileNotFoundException ex) {
-            ex.getMessage();
-        } catch (IOException ex) { 
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return eleicao;
-    }
-    
-    @Override
-    public ArrayList<ListaCandidatos> get_Listas(String eleicao){
-        ArrayList<ListaCandidatos> Listas=new ArrayList();
-        for(int i=0; i<ArrayEleicoes.size();i++){
-            if(ArrayEleicoes.get(i).titulo.equals(eleicao))
-                Listas=ArrayEleicoes.get(i).listas;
-        }
-        
-        return Listas;
-    }
-    
    @Override
     public synchronized  void criarEleicao(){
          try {
@@ -407,42 +306,136 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
      *Author: Andre Santos
      *
      **/
-    @Override
-    public  boolean autenticate(String campo, String dados){
-        FileReader read;
-        try {
-            read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Mesa_voto\\src\\Pessoas.txt");
+     
+      //salva a lista de candidatos de uma eleicao
+    public void saveEleicao (Eleicao eleicao){
         
-                BufferedReader in = new BufferedReader(read);
+        try {
+                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao.titulo+".txt";
+                FileWriter file = new FileWriter(path);
+                BufferedWriter out = new BufferedWriter(file);
+                DateFormat formatter = new SimpleDateFormat("dd-mm-yyyy");
                 String s="";
-                String[] a=null;
-                int index_campo=-1;
-                s=in.readLine();
-                a=s.split(";");
-                for(int i=0;i< a.length ;i++){
-                    if(campo.equals(a[i]))
-                        index_campo=i;
-                }
-                if(index_campo==-1) return false; //caso em que nao encontra o campo de informacao
+                int i=0;
+                int j=0;
+                out.write("titulo|tipo|descricao|data|departamentos");
+                out.newLine();
+                out.write(eleicao.titulo+"|"+eleicao.tipo+"|"+eleicao.descricao+"|"+formatter.format(eleicao.data)+"|");
+                for(i=0; i<eleicao.dptos.size()-1;i++)
+                    out.write(eleicao.dptos.get(i)+",");
+                 out.write(eleicao.dptos.get(i));
+                 out.newLine();
                 
-                while((s=in.readLine())!=null){
-                    a=s.split(";");
-                    for(int i=0;i< a.length ;i++){
-                        if(i==index_campo){
-                            if(a[i].equals(dados)){
-                                return true;
-                            }
-                                
-                        }
+                out.write("NomeLista|Nome1|Nome2|Nome3|NomeN...");
+                out.newLine();
+                
+                for(i=0; i<eleicao.listas.size();i++){
+                    out.write(eleicao.listas.get(i).nome+"|");
+                    for(j=0;j<eleicao.listas.get(i).Lista.size()-1;j++){
+                        out.write(eleicao.listas.get(i).Lista.get(j)+"|");
                     }
-                    
+                    out.write(eleicao.listas.get(i).Lista.get(j));
+                    out.newLine();
                 }
+                
+                out.close();
+              
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+            ex.getMessage();
+        } catch (IOException ex) { 
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+    }
+    
+    
+    public Eleicao loadEleicao(String eleicao_titulo){
+        ArrayList<String> dptos=null;
+        Eleicao eleicao=null;
+        try {
+                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao_titulo+".txt";
+                FileReader read = new FileReader(path);
+                BufferedReader in = new BufferedReader(read);
+                String s="";
+                String array[];
+                String deps[];
+                int i=0;
+                int j=0;
+                
+                in.readLine();  //ignora a primeira linha
+                s=in.readLine();    //le eleicao
+                array=s.split("\\|");
+                System.out.println(Arrays.toString(array));
+                deps=array[4].split(",");   // guarda os departamentos
+                System.out.println(Arrays.toString(deps));
+                dptos=new ArrayList<>(Arrays.asList(deps));
+                eleicao=new Eleicao(array[1],array[0],array[2], array[3],dptos);
+                
+                in.readLine(); //ignora cabecalho da informacao das listas
+                while((s=in.readLine())!=null){
+                    array=s.split("\\|");
+                    System.out.println(Arrays.toString(array));
+                    ListaCandidatos aux=new ListaCandidatos(array[0]);
+                    for(i=1;i<array.length;i++){
+                        aux.Lista.add(array[i]);
+                    }
+                    eleicao.listas.add(aux);
+                } 
+                  
+        } catch (FileNotFoundException ex) {
+            ex.getMessage();
+        } catch (IOException ex) { 
+            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return eleicao;
+    }
+    
+    
+    @Override
+    public ArrayList<ListaCandidatos> get_Listas(String eleicao){
+        ArrayList<ListaCandidatos> Listas=new ArrayList();
+        for(int i=0; i<ArrayEleicoes.size();i++){
+            if(ArrayEleicoes.get(i).titulo.equals(eleicao))
+                Listas=ArrayEleicoes.get(i).listas;
+        }
+        
+        return Listas;
+    }
+     
+    @Override
+    public  Pessoa autenticate(String campo, String dados){
+        for (int i=0; i<this.Pessoas.size();i++){
+            switch (campo){
+                case "nome":{
+                    if(this.Pessoas.get(i).name.equalsIgnoreCase(dados))
+                        return Pessoas.get(i);
+                    break;
+                }
+                case "CC":{
+                    if(this.Pessoas.get(i).cartao.toString().equalsIgnoreCase(dados))
+                        return Pessoas.get(i);
+                    break;
+                }
+                case "password":{
+                    if(this.Pessoas.get(i).Password.equalsIgnoreCase(dados))
+                        return Pessoas.get(i);
+                    break;
+                }
+                case "morada":{
+                    if(this.Pessoas.get(i).morada.equalsIgnoreCase(dados))
+                        return Pessoas.get(i);
+                    break;
+                }
+                case "telefone":{
+                    if(this.Pessoas.get(i).tel.equalsIgnoreCase(dados))
+                        return Pessoas.get(i);
+                    break;
+                }
+            }
+        }
+        return null;
 
     }
     
@@ -475,7 +468,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         return false;
 
     }
-    
+
     
     @Override
     public ArrayList<String> get_Eleicoes(){
