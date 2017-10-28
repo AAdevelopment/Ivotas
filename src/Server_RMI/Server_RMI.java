@@ -223,8 +223,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                
                 
             }
-            }
-        }
+            
+        
            
      public synchronized  void alterar_eleicao(Eleicao e){//falta terminar
         String nome="";
@@ -321,7 +321,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public void saveEleicao (Eleicao eleicao){
         
         try {
-                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao.titulo+".txt";
+                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicoes\\"+eleicao.titulo+".txt";
                 FileWriter file = new FileWriter(path);
                 BufferedWriter out = new BufferedWriter(file);
                 DateFormat formatter = new SimpleDateFormat("dd-mm-yyyy");
@@ -362,7 +362,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         ArrayList<String> dptos=null;
         Eleicao eleicao=null;
         try {
-                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao_titulo+".txt";
+                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicoes\\"+eleicao_titulo+".txt";
                 FileReader read = new FileReader(path);
                 BufferedReader in = new BufferedReader(read);
                 String s="";
@@ -401,6 +401,34 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         
         return eleicao;
     }
+    
+    public void saveArrayEleicao(){
+       
+            for(int i=0; i<bufferEleicao.size();i++){
+                Eleicao eleicao= bufferEleicao.get(i);
+                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao.titulo+".txt";
+               this.saveEleicao(eleicao);
+            }
+    }
+     public void loadArrayEleicao(){
+        String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicoes\\";
+        File folder = new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicoes");
+        File[] listOfFiles = folder.listFiles();
+
+            
+            try {
+                for (int i = 0; i < listOfFiles.length; i++) {
+                    FileReader file= new FileReader( path+listOfFiles[i].getName());
+                    BufferedReader in = new BufferedReader(file);
+                    Eleicao eleicao=loadEleicao(listOfFiles[i].getName().replace(".txt", ""));
+                    bufferEleicao.add(eleicao);
+                }
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                
+    } 
+   
     
     
     @Override
@@ -546,15 +574,20 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             aSocket = new DatagramSocket(Integer.parseInt(args[0]));
             System.out.println("Socket Datagram à escuta no porto "+args[0]);
             
-            /*while(true){
-               a=reader.readLine();
-               c.reply_on_client(a);
-            } */   
-           
+            server.loadArrayEleicao();
+            ArrayList<String> dptos= new ArrayList <String> ();
+            dptos.add("DEI");
+            dptos.add("DEEC");
+            Eleicao eleicao=new Eleicao("geral", "Eleicao_28-10-2017","minahd descricao","28-10-2017",dptos);
+            server.bufferEleicao.add(eleicao);
+            server.saveArrayEleicao();
+            
         }catch(RemoteException re){
             System.out.println(re.getMessage());
         
      
+        } catch (SocketException ex) {
+            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         }
     } 
 
