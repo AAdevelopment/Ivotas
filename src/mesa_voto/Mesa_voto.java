@@ -27,7 +27,6 @@ import java.util.logging.Logger;
  */
 public class Mesa_voto {
     
-    public Comunication_server Rmi_server;
     public String departamento;
     public int ID;
     
@@ -44,19 +43,11 @@ public class Mesa_voto {
            /* System.getProperties().put("java.security.policy","C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Mesa_voto\\src\\mesa_voto\\policy.all");
             System.setSecurityManager(new RMISecurityManager());
 
-            String serverIP="192.168.43.53";
+            String serverIP="192.168.43.53";*/
             
-*/
-            String serverIP="localhost";
-            String url="rmi://" + serverIP  + ":6500/connection_RMI";
-            System.out.println(url);
-             Comunication_server Rmi_server= (Comunication_server) Naming.lookup(url);
-             String reply=Rmi_server.Test_connection();
-            System.out.println(reply);
-            System.out.flush();
             Mesa_voto Mesa= new Mesa_voto(1,"DEI");
             
-             /*System.out.println(Rmi_server.unlock_terminal("2017199598", "abc123"));*/
+           
           
           
            
@@ -70,7 +61,7 @@ public class Mesa_voto {
                Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
                System.out.println("CLIENT_SOCKET (created at accept()) = "+ clientSocket);
                Mesa.ID=numero ++;
-               new Terminal_voto(clientSocket, numero, Mesa.Rmi_server, Mesa);
+               new Terminal_voto(clientSocket, numero, Mesa);
            }
        }catch(IOException e){
            System.out.println("Listen:" + e.getMessage());
@@ -85,19 +76,24 @@ class Terminal_voto extends Thread {
     PrintWriter outToClient;
     BufferedReader inFromClient = null;
     Socket clientSocket;
-    Comunication_server Rmi_server;
+    public Comunication_server Rmi_server;
     Mesa_voto mesa;
     
-    public Terminal_voto (Socket aClientSocket, int ID, Comunication_server Rmi_server, Mesa_voto mesa) throws IOException {
+    public Terminal_voto (Socket aClientSocket, int ID, Mesa_voto mesa) throws IOException {
         try{
             clientSocket = aClientSocket;
              // create streams for writing to and reading from the socket
             inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             outToClient = new PrintWriter(clientSocket.getOutputStream());
-            this.Rmi_server=Rmi_server;
+            String serverIP="localhost";
+            String url="rmi://" + serverIP  + ":6500/connection_RMI";
+            Comunication_server Rmi= (Comunication_server) Naming.lookup(url);
+            this.Rmi_server=Rmi;
             this.mesa=mesa;
             this.start();
-        }catch(IOException e){System.out.println("Connection:" + e.getMessage());}
+        }catch(IOException e){System.out.println("Connection:" + e.getMessage());} catch (NotBoundException ex) {
+            Logger.getLogger(Terminal_voto.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
 
         //=============================
@@ -114,8 +110,7 @@ class Terminal_voto extends Thread {
         }.start();
         // the main thread loops reading from the client and answering back
         
-        vote();
-        
+         select_elections();
        }
     
 
@@ -129,9 +124,11 @@ class Terminal_voto extends Thread {
         resp="Expected: type|validate;identificador|valor";
         outToClient.println(resp);
         outToClient.flush();
+      
+        
         String[] message=le_consola();
          // procurar a pessoa na base de dados
-       
+        System.out.println(Arrays.toString(message));
         if((user=Rmi_server.autenticate(message[2],message[3]))!=null){
             resp="type|validate;" + message[3] + "|OK";
             outToClient.println(resp);
@@ -142,6 +139,7 @@ class Terminal_voto extends Thread {
         else{
             resp="type|validate;" + message[3] + "|NOT FOUND";
             outToClient.println(resp);
+            outToClient.println();
             outToClient.flush();
             return null;
         }
@@ -180,12 +178,9 @@ class Terminal_voto extends Thread {
 
             data=message.split("[|;]");
 
-            int i=0;
-            while(i< data.length){
-                System.out.println(data[i]);
-                i++;
-            }
-            if(!"type".equals(data[0])){
+            //System.out.println(Arrays.toString(data));
+            
+            if(!"type".equalsIgnoreCase(data[0])){
                 outToClient.println("[ERROR]Primeiro campo obrigatorio \"type\" nao encontrado");
                 outToClient.println("Evite colocar espacos entre campos!");
                 outToClient.println("Exemplo: type|valor1;chave2|valor2;chave3|valor3" );
@@ -295,7 +290,7 @@ class Terminal_voto extends Thread {
             if(user==null){
                 user=validate_client(); //procura cliente na base de dados
             }
-            if(!logon && user==null){
+            if(!logon && user!=null){
                 logon=login(user);              //autentica o cliente na mesa de voto (desbloqueia a mesa)
             }
             if(logon && user!=null ){

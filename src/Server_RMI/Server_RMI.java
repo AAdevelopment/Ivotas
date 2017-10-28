@@ -444,7 +444,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         for (int i=0; i<this.bufferPessoas.size();i++){
             switch (campo){
                 case "nome":{
-                    System.out.println("cenas");
                     if(this.bufferPessoas.get(i).name.equalsIgnoreCase(dados))
                         return bufferPessoas.get(i);
                     break;
