@@ -542,6 +542,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     //server runnig;
     public  void CarregaPessoas() throws FileNotFoundException, IOException, ParseException{
+        boolean exists = (new File("/home/gustavo/NetBeansProjects/ivotas/Ivotas/pessoas")).exists();
+        if (exists) {
         FileReader read = new FileReader("/home/gustavo/NetBeansProjects/ivotas/Ivotas/pessoas");
         BufferedReader in = new BufferedReader(read);
         String s="";
@@ -554,6 +556,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
           //System.out.println(p.toString());
         }
         in.close();
+        }
     }
     public static void main(String args[])throws RemoteException, MalformedURLException, SocketException, IOException, FileNotFoundException,ParseException {
         
@@ -586,8 +589,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             System.out.println(re.getMessage());
         
      
-        } catch (SocketException ex) {
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         }
     } 
     
