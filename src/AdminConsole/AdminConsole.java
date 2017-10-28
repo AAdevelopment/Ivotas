@@ -81,6 +81,10 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         break;
                     case 5:
                         h.CriarFaculdade_Dpto();
+                    case 6:
+                        
+                        //h.alterar_eleicao();
+                        break;
                     case 9:
                         verifica=false;
                     break;

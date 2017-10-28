@@ -7,6 +7,7 @@ package Server_RMI;
 
 import java.io.Serializable;
 import java.util.Date;
+import mesa_voto.Mesa_voto;
 
 /**
  *
@@ -23,6 +24,8 @@ public class Pessoa implements Serializable {
     Date card_valid;
     String tel;
     String morada;
+    String localVoto;
+    Date data_voto;
    
     public Pessoa(String tipo_pessoa,String name,Long cartao,String Password,String Dpto,Date card_valid,String tel,String morada){
         this.name =name;
@@ -35,6 +38,18 @@ public class Pessoa implements Serializable {
         this.tipo_pessoa = tipo_pessoa; 
     }
     
+    public String getLocalVoto() {
+        return localVoto;
+    }
+    
+    public void setData_voto() {
+        this.data_voto = new Date();
+    }
+
+    public void setLocalVoto(Mesa_voto m) {
+        //Mesa de voto precisa passar o local
+        this.localVoto = m.departamento;
+    }
     public void setName(String name){
         this.name =name;
     }

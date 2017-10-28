@@ -169,7 +169,7 @@ public class Eleicao implements Runnable,Serializable {
     }
     @Override
     public String toString(){
-        return this.tipo+this.titulo+this.data.toGMTString();
+        return this.tipo+";"+this.titulo+";"+this.data.toGMTString();
     }
     //
     /*
