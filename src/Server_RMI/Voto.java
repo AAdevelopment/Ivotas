@@ -8,24 +8,23 @@ package Server_RMI;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import mesa_voto.Mesa_voto;
 
 /**
  *
  * @author Admin
  */
 public class Voto implements Serializable{
-    private ArrayList<String> ListaCandidatos;
     private Date data;
-    private String departamento;
+    Eleicao eleicao;
+    Mesa_voto mesa;
 
-    public ArrayList<String> getListaCandidatos() {
-        return ListaCandidatos;
+    public Voto(Date data,Eleicao eleicao,Mesa_voto mesa){
+        this.data=data;
+        this.mesa=mesa;
+        this.eleicao=eleicao;
     }
-
-    public void setListaCandidatos(ArrayList<String> ListaCandidatos) {
-        this.ListaCandidatos = ListaCandidatos;
-    }
-
+   
     public Date getData() {
         return data;
     }
@@ -34,12 +33,6 @@ public class Voto implements Serializable{
         this.data = data;
     }
 
-    public String getDepartamento() {
-        return departamento;
-    }
-
-    public void setDepartamento(String departamento) {
-        this.departamento = departamento;
-    }
+ 
     
 }

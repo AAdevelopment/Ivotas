@@ -23,6 +23,8 @@ public class ListaCandidatos implements Serializable{
     public ArrayList<String> Lista;
     public String nome;
     public String tipo;
+    public ArrayList<Voto> votos;
+    
     public ListaCandidatos(){
         Lista=new ArrayList();
     }

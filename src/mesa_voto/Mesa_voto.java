@@ -70,7 +70,7 @@ public class Mesa_voto {
                Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
                System.out.println("CLIENT_SOCKET (created at accept()) = "+ clientSocket);
                Mesa.ID=numero ++;
-               new Terminal_voto(clientSocket, numero, Mesa.Rmi_server, Mesa.departamento);
+               new Terminal_voto(clientSocket, numero, Mesa.Rmi_server, Mesa);
            }
        }catch(IOException e){
            System.out.println("Listen:" + e.getMessage());
@@ -86,18 +86,16 @@ class Terminal_voto extends Thread {
     BufferedReader inFromClient = null;
     Socket clientSocket;
     Comunication_server Rmi_server;
-    String departamento;
-    int ID_Mesa;
+    Mesa_voto mesa;
     
-    public Terminal_voto (Socket aClientSocket, int ID, Comunication_server Rmi_server, String departamento) throws IOException {
-        ID_Mesa = ID;
+    public Terminal_voto (Socket aClientSocket, int ID, Comunication_server Rmi_server, Mesa_voto mesa) throws IOException {
         try{
             clientSocket = aClientSocket;
              // create streams for writing to and reading from the socket
             inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             outToClient = new PrintWriter(clientSocket.getOutputStream());
-            this.departamento=departamento;
             this.Rmi_server=Rmi_server;
+            this.mesa=mesa;
             this.start();
         }catch(IOException e){System.out.println("Connection:" + e.getMessage());}
         
@@ -251,76 +249,48 @@ class Terminal_voto extends Thread {
             }
             outToClient.println();
         }
+        outToClient.println();
      
     }
-   /* public void select_lista(Eleicao eleicao) throws IOException{
+   public boolean select_lista(Eleicao eleicao, Pessoa pessoa) throws IOException{
         
         try{
-             show_listas(eleicao);
-
-          //  input esperado "type|item_list;option|num"
+            show_listas(eleicao);
+            String resp="Expected: type|item_list;option|list_name";
+            outToClient.println(resp);
+            outToClient.flush();
+          //  input esperado "type|item_list;option|nome"
             String[] message=le_consola();
-            if("item_list".equals(message[1])){
-                if(Rmi_server.vote(message[3], eleicao, this.ID_Mesa, this.departamento, new Date())){
-                        outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
-                        outToClient.flush();
-                    }
-                    else{
-                        outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
-                        outToClient.flush();
-                        while(!"item_list".equals(message[1])){
-                            outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
-                            outToClient.flush();
-                            message=le_consola();
-                            if(Rmi_server.vote(message[3], eleicao, this.ID_Mesa, this.departamento, new Date())){
-                                outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
-                                outToClient.flush();
-                            }
-                            else{
-                                outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
-                                outToClient.flush();
-                            }
-                        }
-                    }
+            if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){
+                Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, new Date());
+                outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
+                outToClient.flush();
+                return true;
             }
             else{
-                while(!"item_list".equals(message[1])){
+                
+                while(!"item_list".equals(message[1])&& "option".equalsIgnoreCase(message[2])){
                     outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
                     outToClient.flush();
                     message=le_consola();
-                    if(Rmi_server.vote(message[3], eleicao, this.ID_Mesa, this.departamento, new Date())){
+                    if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){
+                        Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, new Date());
                         outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
                         outToClient.flush();
+                        return true;
                     }
-                    else{
-                        outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
-                        outToClient.flush();
-                        while(!"item_list".equals(message[1])){
-                            outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
-                            outToClient.flush();
-                            message=le_consola();
-                            if(Rmi_server.vote(message[3], eleicao, this.ID_Mesa, this.departamento, new Date())){
-                                outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
-                                outToClient.flush();
-                            }
-                            else{
-                                outToClient.println("[Error] O valor de \"nome\" nao e conhecido");
-                                outToClient.flush();
-                            }
-                        }
-                    }
-                  }
+                }
             }
-            
         }catch(IOException E){
             System.out.println("Erro na leitura das listas de candidatos");
         }
-
-    }*/
+        return false;
+    }
     public void vote() throws IOException{
         Boolean logon=false;
         Pessoa user=null;
-        while(!clientSocket.isClosed()){
+        boolean votou= false;
+        while(!clientSocket.isClosed() && !votou){
             
             if(user==null){
                 user=validate_client(); //procura cliente na base de dados
@@ -328,17 +298,14 @@ class Terminal_voto extends Thread {
             if(!logon && user==null){
                 logon=login(user);              //autentica o cliente na mesa de voto (desbloqueia a mesa)
             }
-            if(logon && user!=null){
+            if(logon && user!=null ){
                 Eleicao eleicao=select_elections();  //escolhe  eleicao pretendida 
-                select_lista(eleicao);              //vota na lista pretendida
-                }
+                votou=select_lista(eleicao, user);              //vota na lista pretendida
             }
         }
-        
-        public String toSring(){
-            return this.ID_Mesa+";"+this.departamento;
-        }
     }
+        
+}
        
 
 

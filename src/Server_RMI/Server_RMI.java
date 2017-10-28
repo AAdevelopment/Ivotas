@@ -148,32 +148,24 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     */
      
     @Override
-    public synchronized boolean vote(String list, String eleicao, int id_mesa, String depto, Date data)throws RemoteException{
-        Integer qtd=null;
-        try {
-                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\"+eleicao+".txt";
-                FileWriter out = new FileWriter(path);
-                FileReader read = new FileReader(path);
-                BufferedReader in = new BufferedReader(read);
-                String s="";
-                while((s=in.readLine())!=null){
-                    String[] a;
-                    a=s.split("=");
-                    qtd=Integer.parseInt(a[1]);
-                    qtd++;
-                    a[1]=Integer.toString(qtd);
-                    out.write(a[1]);
-                    out.close();
+    public void vote(String lista, Eleicao eleicao, Pessoa pessoa, Mesa_voto mesa, Date data)throws RemoteException{
+        Voto vote=new Voto (data, eleicao,mesa);
+        for(int i=0; i<this.bufferPessoas.size();i++){
+            if(this.bufferPessoas.get(i).cartao==pessoa.cartao){
+                this.bufferPessoas.get(i).votos.add(vote);
+            }
+        }
+        for (int i=0; i<this.bufferEleicao.size();i++){
+            if(this.bufferEleicao.get(i).equals(eleicao))
+                for(int j=0;j<this.bufferEleicao.get(i).listas.size();j++){
+                    if(this.bufferEleicao.get(i).listas.get(j).nome.equalsIgnoreCase(lista)){
+                        this.bufferEleicao.get(i).listas.get(j).votos.add(vote);
+                    }
                 }
-              
-        } catch (FileNotFoundException ex) {
-            ex.getMessage();
-        } catch (IOException ex) { 
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
         
         
-        return true;
     }
     
     public synchronized void Add_ELectionlocal(String local,Pessoa p){
