@@ -50,9 +50,14 @@ public class Pessoa implements Serializable {
         this.data_voto = new Date();
     }
 
-    public void setLocalVoto(Mesa_voto m) {
+    public void setLocalVoto(Mesa_voto m,String local) {
         //Mesa de voto precisa passar o local
-        this.localVoto = m.departamento;
+        for (int i = 0; i <m.departamento.size(); i++) {
+            if(local==m.departamento.get(i)){
+                this.localVoto = m.departamento.get(i);
+            }
+        }
+        
     }
     public void setName(String name){
         this.name =name;

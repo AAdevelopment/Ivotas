@@ -26,13 +26,20 @@ import java.util.logging.Logger;
 public class Mesa_voto {
     
     public Comunication_server Rmi_server;
-    public String departamento;
+    public ArrayList<String> departamento;
     public int ID;
     
-    public Mesa_voto(int ID,String departamento){
-        this.ID=ID=0;
-        this.departamento=departamento;
+    public Mesa_voto(int ID){
+        this.ID=ID;
+        departamento= new ArrayList();
+    }
+ 
+    public String toSring(){
+        return this.ID+";"+this.departamento.toString();
+    }
         
+    public void setMdptoMesa(String dpto){
+        this.departamento.add(dpto);
     }
     public static void main(String args[]) throws NotBoundException{
         int numero=0;
@@ -52,7 +59,7 @@ public class Mesa_voto {
              String reply=Rmi_server.Test_connection();
             System.out.println(reply);
             System.out.flush();
-            Mesa_voto Mesa= new Mesa_voto(1,"DEI");
+            Mesa_voto Mesa= new Mesa_voto(1);
             
              /*System.out.println(Rmi_server.unlock_terminal("2017199598", "abc123"));*/
           
@@ -68,15 +75,13 @@ public class Mesa_voto {
                Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
                System.out.println("CLIENT_SOCKET (created at accept()) = "+ clientSocket);
                Mesa.ID=numero ++;
-               new Terminal_voto(clientSocket, numero, Mesa.Rmi_server, Mesa.departamento);
+         //      new Terminal_voto(clientSocket, numero, Mesa.Rmi_server, Mesa.departamento);
            }
        }catch(IOException e){
            System.out.println("Listen:" + e.getMessage());
        }
     }
-    
-    
-    
+   
 }
 //= Thread para tratar de cada canal de comunicação com um cliente
 class Terminal_voto extends Thread {
@@ -321,9 +326,6 @@ class Terminal_voto extends Thread {
             }
         }
         
-        public String toSring(){
-            return this.ID_Mesa+";"+this.departamento;
-        }
     }
        
 

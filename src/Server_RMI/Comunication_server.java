@@ -31,4 +31,5 @@ public interface Comunication_server extends Remote {
     public void CriarFaculdade_Dpto()throws RemoteException;
     public void alterar_eleicao(Eleicao e)throws RemoteException;
     public void Add_ELectionlocal(String local,Pessoa p)throws RemoteException;
+    public void Add_VoteTable(String titulo)throws RemoteException;
 }
