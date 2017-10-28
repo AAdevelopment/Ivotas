@@ -101,6 +101,7 @@ public class Pessoa implements Serializable {
         return this.morada;
     }
     
+    @Override
     public String toString(){
         return this.tipo_pessoa+"-"+this.name+"-"+this.cartao+"-"+this.Password+"-"
                +this.card_valid.toString()+"-"+this.tel+"-"+this.morada;

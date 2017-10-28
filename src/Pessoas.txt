@@ -1,3 +1,3 @@
-nome;cartao;password;departamento;cartao_val;telemovel;morada
-gustavo galao;2017199598;abc123;DEI;Fri Dec 01 00:00:00 WET 2017;(47)997146462;sao bento
-andre santos;2017199666;abc456;DEIEI;Fri Dec 01 00:00:00 WET 2017;(47)997146666;Coimbra-Portagem
+String tipo_pessoa,String name,Long cartao,String Password,String Dpto,String card_valid,String tel,String morada
+docente;joao;342421;2131ffsf;dei;22-12-2001;13414114;coimbra
+aluno;gustavo;14124141;2341kmrm;dec;12-11-2000;2134141;porto

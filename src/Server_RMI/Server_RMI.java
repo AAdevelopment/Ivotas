@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -47,14 +48,13 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     static Comunication_client c;
     //ArrayList <ListaCandidatos> ListasCandidatas;
     ArrayList <Eleicao> ArrayEleicoes; 
-    ArrayList <Pessoa> Pessoas;
+    ArrayList <Pessoa> bufferPessoas;
     Thread t;
     static DatagramSocket  aSocket;
     static Server_RMI server;
     
     /*BUFFERS DE DADOS PARA ARMAZENAR NOS DOIS SERVIDORES*/
     ArrayList <ListaCandidatos> buffercandidatos;
-    ArrayList<Pessoa> bufferPessoas;
     ArrayList<Eleicao> bufferEleicao;
     ArrayList<Faculdade> bufferFaculdade;
     ArrayList<Mesa_voto> buffermesa;
@@ -438,43 +438,43 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     
     @Override
-    public ArrayList<ListaCandidatos> get_Listas(String eleicao){
-        ArrayList<ListaCandidatos> Listas=new ArrayList();
-        for(int i=0; i<ArrayEleicoes.size();i++){
-            if(ArrayEleicoes.get(i).titulo.equals(eleicao))
-                Listas=ArrayEleicoes.get(i).listas;
+    public ArrayList<ListaCandidatos> get_Listas(Eleicao eleicao){
+        for(int i=0; i<bufferEleicao.size();i++){
+            if(bufferEleicao.get(i).titulo.equalsIgnoreCase(eleicao.titulo))
+                return bufferEleicao.get(i).listas;
         }
         
-        return Listas;
+        return null;
     }
      
     @Override
     public  Pessoa autenticate(String campo, String dados){
-        for (int i=0; i<this.Pessoas.size();i++){
+        for (int i=0; i<this.bufferPessoas.size();i++){
             switch (campo){
                 case "nome":{
-                    if(this.Pessoas.get(i).name.equalsIgnoreCase(dados))
-                        return Pessoas.get(i);
+                    System.out.println("cenas");
+                    if(this.bufferPessoas.get(i).name.equalsIgnoreCase(dados))
+                        return bufferPessoas.get(i);
                     break;
                 }
                 case "CC":{
-                    if(this.Pessoas.get(i).cartao.toString().equalsIgnoreCase(dados))
-                        return Pessoas.get(i);
+                    if(this.bufferPessoas.get(i).cartao.toString().equalsIgnoreCase(dados))
+                        return bufferPessoas.get(i);
                     break;
                 }
                 case "password":{
-                    if(this.Pessoas.get(i).Password.equalsIgnoreCase(dados))
-                        return Pessoas.get(i);
+                    if(this.bufferPessoas.get(i).Password.equalsIgnoreCase(dados))
+                        return bufferPessoas.get(i);
                     break;
                 }
                 case "morada":{
-                    if(this.Pessoas.get(i).morada.equalsIgnoreCase(dados))
-                        return Pessoas.get(i);
+                    if(this.bufferPessoas.get(i).morada.equalsIgnoreCase(dados))
+                        return bufferPessoas.get(i);
                     break;
                 }
                 case "telefone":{
-                    if(this.Pessoas.get(i).tel.equalsIgnoreCase(dados))
-                        return Pessoas.get(i);
+                    if(this.bufferPessoas.get(i).tel.equalsIgnoreCase(dados))
+                        return bufferPessoas.get(i);
                     break;
                 }
             }
@@ -484,80 +484,51 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     }
     
     @Override
-    public  boolean unlock_terminal(String cartao, String pass){
-        FileReader read;
-        try {
-            read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Mesa_voto\\src\\Pessoas.txt");
-        
-                BufferedReader in = new BufferedReader(read);
-                String s="";
-                String[] a=null;
-                s=in.readLine();
-                a=s.split(";");
-                
-                if(!a[1].equals("cartao") || !a[2].equals("password")) return false;
-
-                while((s=in.readLine())!=null){
-                    a=s.split(";");
-                    if(a[1].equals(cartao) && a[2].equals(pass)){
-                        return true;
-                    }
-                    
+    public  Resposta unlock_terminal(Pessoa pessoa,String CC, String Password){
+        Resposta resposta=new Resposta(0,"");
+        if(pessoa.Password.equals(Password) ){
+            if(pessoa.cartao.toString().equals(CC)){
+                if(pessoa.card_valid.before(new Date())){
+                    resposta.mensagem="Terminal Operacional";
+                    resposta.valor=1;
                 }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+                else {
+                    resposta.mensagem="O seu CC encontra-se invalido.";
+                    resposta.valor=-1;
+                }
+            }else {
+                resposta.mensagem="Numero de CC invalido.";
+                resposta.valor=-1;
+            }
+        }else{
+            resposta.mensagem="Password incompativel.";
+            resposta.valor=-1;
         }
-        return false;
-
-    }
+        return resposta;
+ }
 
     
     @Override
-    public ArrayList<String> get_Eleicoes(){
-        FileReader read;
-        ArrayList<String> cenas=new ArrayList();
-        try {
-            read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicao.txt");
-        
-                BufferedReader in = new BufferedReader(read);
-                String s="";
-                String[] a=null;
-                s=in.readLine();
-                a=s.split("\\|");
-                
-                while((s=in.readLine())!=null){
-                    a=s.split("\\|");
-                    cenas.add(a[0]);
-                    System.out.println(a[0]);
-                    
-                }
-                
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return cenas;
+    public ArrayList<Eleicao> get_Eleicoes(){
+        return this.bufferEleicao;
     }
     //servers methods
     
     //server runnig;
-  /*  public  void CarregaPessoas() throws FileNotFoundException, IOException, ParseException{
-        FileReader read = new FileReader("/home/gustavo/NetBeansProjects/ivotas/Ivotas/pessoas");
+   public  void CarregaPessoas() throws FileNotFoundException, IOException, ParseException{
+        FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt");
         BufferedReader in = new BufferedReader(read);
         String s="";
         String[] a=null;
-        //s=in.readLine();
+        in.readLine();
         while((s=in.readLine())!=null){
           a=s.split(";");
           Pessoa p = new Pessoa(a[0],a[1],Long.parseLong(a[2]),a[3],a[4],(a[5]),a[6],a[7]);
           this.bufferPessoas.add(p);
-          System.out.println(p.toString());
+          //System.out.println(p.toString());
         }
         in.close();
-    }*/
+    }
     public static void main(String args[])throws RemoteException, MalformedURLException, SocketException, IOException, FileNotFoundException,ParseException {
         
          try{
@@ -574,11 +545,16 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             r.rebind("connection_RMI",server);
             String a="";
             System.out.println("Server RMI ready...");
-            server2.CarregaPessoas();
+            //
             aSocket = new DatagramSocket(Integer.parseInt(args[0]));
             System.out.println("Socket Datagram à escuta no porto "+args[0]);
-            
-            
+            server.CarregaPessoas();
+            Pessoa pessoa= server.autenticate("nome", "gustavo");
+            if(pessoa!=null)
+                 System.out.println(pessoa.toString());
+            else
+                 System.out.println("NULL");
+             System.out.println(server.unlock_terminal(pessoa,"14124141","2341kmrm").mensagem);
             
         }catch(RemoteException re){
             System.out.println(re.getMessage());
@@ -588,7 +564,16 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         }
     } 
-
+    
+    @Override
+    public Eleicao getEleicao(String titulo){
+        for(int i=0; i<this.bufferEleicao.size();i++){
+            if(this.bufferEleicao.get(i).titulo.equals(titulo))
+                return this.bufferEleicao.get(i);
+        }
+        return null;                
+    }
     
     
 }
+
