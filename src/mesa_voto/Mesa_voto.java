@@ -29,6 +29,11 @@ public class Mesa_voto {
     public String departamento;
     public int ID;
     
+    public Mesa_voto(int ID,String departamento){
+        this.ID=ID=0;
+        this.departamento=departamento;
+        
+    }
     public static void main(String args[]) throws NotBoundException{
         int numero=0;
 
@@ -47,14 +52,14 @@ public class Mesa_voto {
              String reply=Rmi_server.Test_connection();
             System.out.println(reply);
             System.out.flush();
-            Mesa_voto Mesa= new Mesa_voto();
+            Mesa_voto Mesa= new Mesa_voto(1,"DEI");
             
              /*System.out.println(Rmi_server.unlock_terminal("2017199598", "abc123"));*/
           
           
            
          //TCP server
-           Mesa.departamento="DEI";
+           //Mesa.departamento="DEI";
            int serverPort = 6003;
            System.out.println("A Escuta no Porto 6000");
            ServerSocket listenSocket = new ServerSocket(serverPort);
@@ -315,7 +320,10 @@ class Terminal_voto extends Thread {
                 }
             }
         }
-            
+        
+        public String toSring(){
+            return this.ID_Mesa+";"+this.departamento;
+        }
     }
        
 

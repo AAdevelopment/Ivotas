@@ -27,6 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mesa_voto.Mesa_voto;
 
 /**
  *
@@ -43,11 +44,13 @@ public class Eleicao implements Runnable,Serializable {
     Date data;
     Date horafim;
     Date horaini;
+    ArrayList<Mesa_voto> mesas;
     SimpleDateFormat dt;
     
     public Eleicao(){
         listas=new ArrayList();
         dptos=new ArrayList();
+        this.mesas = new ArrayList();
         dt = new SimpleDateFormat("dd-mm-yyyy"); 
 
     }
@@ -60,7 +63,7 @@ public class Eleicao implements Runnable,Serializable {
         this.data = new Date();
         dt = new SimpleDateFormat("dd-mm-yyyy"); 
         this.data =dt.parse(data);
-         listas=new ArrayList();
+        listas=new ArrayList();
         t = new Thread(this,titulo);
         t.start();
     }

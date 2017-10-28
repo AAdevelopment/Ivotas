@@ -6,6 +6,8 @@
 package Server_RMI;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import mesa_voto.Mesa_voto;
 
@@ -26,13 +28,15 @@ public class Pessoa implements Serializable {
     String morada;
     String localVoto;
     Date data_voto;
+    SimpleDateFormat dt;
    
-    public Pessoa(String tipo_pessoa,String name,Long cartao,String Password,String Dpto,Date card_valid,String tel,String morada){
+    public Pessoa(String tipo_pessoa,String name,Long cartao,String Password,String Dpto,String card_valid,String tel,String morada) throws ParseException{
         this.name =name;
         this.cartao =cartao;
         this.Password =Password;
         this.Dpto =Dpto;
-        this.card_valid = card_valid ;
+        dt = new SimpleDateFormat("dd-mm-yyyy");
+        this.card_valid = dt.parse(card_valid);
         this.tel = tel ;
         this.morada = morada;
         this.tipo_pessoa = tipo_pessoa; 
@@ -95,6 +99,11 @@ public class Pessoa implements Serializable {
     }
     public String getMorada(){
         return this.morada;
+    }
+    
+    public String toString(){
+        return this.tipo_pessoa+"-"+this.name+"-"+this.cartao+"-"+this.Password+"-"
+               +this.card_valid.toString()+"-"+this.tel+"-"+this.morada;
     }
     
     

@@ -36,6 +36,7 @@ import java.util.Date;
 //import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mesa_voto.Mesa_voto;
 
 /**
  *
@@ -56,6 +57,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     ArrayList<Pessoa> bufferPessoas;
     ArrayList<Eleicao> bufferEleicao;
     ArrayList<Faculdade> bufferFaculdade;
+    ArrayList<Mesa_voto> buffermesa;
     
     public Server_RMI() throws RemoteException{
         super();
@@ -199,21 +201,31 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
    @Override
     public synchronized  void criarEleicao(){
-         try {
+         
+           int id;
+           String departamento;
+           String v1[]={"Digite o id da mesa:","digite o departamento:"};
+           String saida1[]= new String [v1.length]; 
            String v[]={"Defina o tipo de eleicao","nome da eleicao","Data ex:yyyy-mm-dd"};
            String saida[]= new String [v.length];
            for(int i=0;i<v.length;i++){
                saida[i]=JOptionPane.showInputDialog(v[i]);
+           }
+            Eleicao  el;
+            try {
+                    el = new Eleicao(saida[0],saida[1],saida[2]);
+                    el.StartEleicao();
+                    this.bufferEleicao.add(el);
+                    System.out.println(el); 
+                  } catch (ParseException ex) {
+                      Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+                  }
+               
+                
             }
-           Eleicao  el = new Eleicao(saida[0],saida[1],saida[2]);
-           el.StartEleicao();
-           this.bufferEleicao.add(el);
-           System.out.println(el);
-        } catch (ParseException ex) {
-          ex.getMessage();
+            }
         }
-    }
-    
+           
      public synchronized  void alterar_eleicao(Eleicao e){//falta terminar
         String nome="";
         e.t.isAlive();
@@ -267,7 +279,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         Long cartao = null;
         String Password = "";
         String Dpto_facul="";
-        Date card_valid=null;
+        String card_valid="";
         String tel="";
         String morada="";
         
@@ -279,16 +291,14 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            o[i]=JOptionPane.showInputDialog(s[i]); 
         }
         
-        DateFormat formatter = new SimpleDateFormat("MM/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-mm-yyyy");
         try {
-            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/pessoas",true);
-            
-            Pessoa p = new Pessoa(tipo_pessoa=o[0],name=o[1],cartao=Long.parseLong(o[2]),Password=o[3],Dpto_facul=o[4],
-            card_valid=(java.util.Date)formatter.parse(o[5]),tel=o[6],morada=o[7]);
+            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/ivotas/Ivotas/pessoas",true);
+            Pessoa p = new Pessoa(o[0],o[1],Long.parseLong(o[2]),o[3],o[4],o[5],o[6],o[7]);
             String saida="";
-            
-            saida=p.getTipoPessoa()+";"+p.getName()+";"+p.getPassword()+";"+p.getDpto()+";"+
-            p.getCard_valid()+";"+p.getTel()+";"+p.getMorada();
+            System.out.println(card_valid);
+            saida=p.getTipoPessoa()+";"+p.getName()+";"+p.getCartao()+";"+p.getPassword()+";"+
+            p.getDpto()+";"+formatter.format(p.card_valid)+";"+p.getTel()+";"+p.getMorada();
             out.write(saida+"\n");
             out.close();
             this.bufferPessoas.add(p);
@@ -506,13 +516,14 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         String s="";
         String[] a=null;
         //s=in.readLine();
-        DateFormat formatter = new SimpleDateFormat("MM/yyyy");
         while((s=in.readLine())!=null){
           a=s.split(";");
-          Pessoa p = new Pessoa(a[0],a[1],Long.parseLong(a[2]),a[3],a[4],(java.util.Date)formatter.parse(a[5]),a[6],a[7]);
+          Pessoa p = new Pessoa(a[0],a[1],Long.parseLong(a[2]),a[3],a[4],(a[5]),a[6],a[7]);
           this.bufferPessoas.add(p);
+          System.out.println(p.toString());
         }
         in.close();
+        
     }
     public static void main(String args[])throws RemoteException, MalformedURLException, SocketException, IOException, FileNotFoundException,ParseException {
         
@@ -524,23 +535,22 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            //System.setSecurityManager(new RMISecurityManager());
             
             Server_RMI server = new Server_RMI();
-            server.CarregaPessoas();
+            Server_RMI server2 = new Server_RMI();
+            
             //Registry r = LocateRegistry.createRegistry(6500);
             Registry r = LocateRegistry.createRegistry(Integer.parseInt(args[0]));
             r.rebind("connection_RMI",server);
             String a="";
             System.out.println("Server RMI ready...");
+            server2.CarregaPessoas();
             aSocket = new DatagramSocket(Integer.parseInt(args[0]));
             System.out.println("Socket Datagram à escuta no porto "+args[0]);
+            
             /*while(true){
                a=reader.readLine();
                c.reply_on_client(a);
             } */   
-            Eleicao ivotas;
-            ivotas=server.loadEleicao("Eleicao");
-            ivotas.setDescricao("alterei a descricao");
-            server.saveEleicao(ivotas);
-             System.out.println(ivotas.data);
+           
         }catch(RemoteException re){
             System.out.println(re.getMessage());
         
