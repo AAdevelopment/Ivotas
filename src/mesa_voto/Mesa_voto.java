@@ -8,12 +8,14 @@ package mesa_voto;
 
 // TCPServer2.java: Multithreaded server
 import Server_RMI.Comunication_server;
+import Server_RMI.Eleicao;
 import java.net.*;
 import java.io.*;
 import java.util.*;
 import java.rmi.*;
 import Server_RMI.ListaCandidatos;
 import Server_RMI.Pessoa;
+import Server_RMI.Resposta;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -145,26 +147,30 @@ class Terminal_voto extends Thread {
             return user;
         }
         else{
-            resp="type|validate;" + message[3] + "|DENIED";
+            resp="type|validate;" + message[3] + "|NOT FOUND";
             outToClient.println(resp);
             outToClient.flush();
             return null;
         }
     }
-    public boolean login() throws IOException{
-         String resp;
+    public boolean login(Pessoa Pessoa) throws IOException{
+        String resp;
+        resp="type|login;username|valor;password|valor";
+        outToClient.println(resp);
+        outToClient.println("Efectue login para poder votar");
+        outToClient.flush();
          String[] message=le_consola();
         // desbloquear o terminal de voto
         //Type|login;username|valor;password|valor
-        if(Rmi_server.unlock_terminal(message[3],message[5])){
-            resp="type|login; status|logged:on; msg: Welcome to Ivotas";
+        Resposta resposta=Rmi_server.unlock_terminal(Pessoa,message[3],message[5]);
+        if(resposta.valor>0){
+            resp="type|login; status|logged:on; msg:"+resposta.mensagem;
             outToClient.println(resp);
-            outToClient.println("[INFO] Terminal de voto desbloqueado");
             outToClient.flush();
             return true;
         }
         else{
-            resp="type|validate;" + message[3] + "|DENIED";
+            resp="type|validate;" + message[3] + "|DENIED."+resposta.mensagem;
             outToClient.println(resp);
             outToClient.flush();
             return false;
@@ -198,53 +204,61 @@ class Terminal_voto extends Thread {
         }
         return data;
     }
-    public String select_elections() throws IOException{
+    public Eleicao select_elections() throws IOException{
         String resp;
-        ArrayList<String> Elections;
+        ArrayList<Eleicao> Elections;
         Elections=Rmi_server.get_Eleicoes();
         resp="type|item_list;item_count|"+ Elections.size()+';';
-        outToClient.print(resp);
+        outToClient.println(resp);
         for(int i=0;i<Elections.size();i++)
-            outToClient.print("item_"+i+'|'+Elections.get(i)+';');
+            outToClient.println("item_"+i+'|'+Elections.get(i).toString()+';');
         outToClient.flush();
         
+        resp="Expected: type|item_list;option|nome";
+        outToClient.println(resp);
+        outToClient.flush();
+
         //input esperado "type|item_list;option|nome"
         String[] message=le_consola();
-        String option=null;
-        if("item_list".equals(message[1]) && Elections.contains(message[3])){
-            option=message[3];
+        if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){
+            Eleicao eleicao=Rmi_server.getEleicao(message[3]);
+            return eleicao;
         }
-        else{
-            do{
-                outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\" escolhendo um nome da lista apresentada");
-                outToClient.flush();
-                message=le_consola();
-            } while(!"item_list".equals(message[1]) && Elections.contains(message[3]) );
-            option=message[3];
-        }
-        return option;
+        
+        do{
+            outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\" escolhendo um nome da lista de eleicoes apresentada");
+            outToClient.flush();
+            message=le_consola();
+        } while(!"item_list".equals(message[1]) && "option".equalsIgnoreCase(message[2]));
+        Eleicao eleicao=Rmi_server.getEleicao(message[3]);
+        
+        return eleicao;
         
     }
     
-    public void show_listas(String eleicao) throws IOException{
+    public void show_listas(Eleicao eleicao) throws IOException{
         
         
         ArrayList<ListaCandidatos> listas=Rmi_server.get_Listas(eleicao);
-        String input;
-        String output="type|item_list;item_count|"+ listas.size()+';';
         
+        String output="type|item_list;item_count|"+ listas.size()+';';
+        outToClient.println(output);
+        outToClient.flush();
         for(int i=0;i<listas.size();i++){
             ListaCandidatos lista=listas.get(i);
+            outToClient.print("list_name|"+lista.nome+";");
+            outToClient.flush();
             ArrayList<String> aux=lista.Lista;
             for(int j=0 ; j < aux.size() ; j++){
                 output=output.concat("item_" + i +'|' + aux.get(i) + ';');
                 outToClient.println(output);
                 outToClient.flush();      
             }
+            outToClient.println();
         }
      
     }
-    public void select_lista(String eleicao) throws IOException{
+   /* public void select_lista(Eleicao eleicao) throws IOException{
         
         try{
              show_listas(eleicao);
@@ -307,7 +321,7 @@ class Terminal_voto extends Thread {
             System.out.println("Erro na leitura das listas de candidatos");
         }
 
-    }
+    }*/
     public void vote() throws IOException{
         Boolean logon=false;
         Pessoa user=null;
@@ -317,11 +331,11 @@ class Terminal_voto extends Thread {
                 user=validate_client(); //procura cliente na base de dados
             }
             if(!logon && user==null){
-                logon=login();              //autentica o cliente na mesa de voto (desbloqueia a mesa)
+                logon=login(user);              //autentica o cliente na mesa de voto (desbloqueia a mesa)
             }
             if(logon && user!=null){
-                String eleicao=select_elections();  //escolhe  eleicao pretendida 
-                select_lista(eleicao);              //vota na lista pretendida
+                Eleicao eleicao=select_elections();  //escolhe  eleicao pretendida 
+              //  select_lista(eleicao);              //vota na lista pretendida
                 }
             }
         }
