@@ -1,5 +1,5 @@
 titulo|tipo|descricao|data|departamentos
-Eleicao2|assembleia|descricao eleicao|06-10-1998|dei,deec,dec
+Eleicao2|nucleo|alterei a descricao|05-10-1998|dei,deec,dec
 NomeLista|Nome1|Nome2|Nome3|NomeN...
 Galao|Andre|Gustavo|Cara1|Cara2
 Galao|Andre|Gustavo|Cara1|Cara2

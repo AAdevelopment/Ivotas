@@ -55,7 +55,7 @@ public class Eleicao implements Runnable,Serializable {
 
     }
     
-    public Eleicao(String tipo,String titulo,String descricao, String data, ArrayList<String> deptos) throws ParseException{
+    public Eleicao(String tipo,String titulo,String descricao, String data, ArrayList<String> deptos, ArrayList <ListaCandidatos> listas) throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
         this.dptos=deptos;
@@ -63,7 +63,8 @@ public class Eleicao implements Runnable,Serializable {
         this.data = new Date();
         dt = new SimpleDateFormat("dd-mm-yyyy"); 
         this.data =dt.parse(data);
-        listas=new ArrayList();
+        this.listas=listas;
+
         t = new Thread(this,titulo);
         t.start();
     }
