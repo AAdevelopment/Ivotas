@@ -33,6 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 //import java.util.HashMap;
 //import java.util.Hashtable;
 import java.util.logging.Level;
@@ -82,7 +83,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         tipo=JOptionPane.showInputDialog("Digite o tipo da lista:");
         ListaCandidatos l = new ListaCandidatos(nome,tipo);
         try {
-            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/listas",true);
+            FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\listas.txt",true);
             int n=0;
             String saida="";
             boolean verifica =true;
@@ -114,7 +115,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         Faculdade f = new Faculdade(nome);
         String saida="";
         try {
-            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/Faculdade_dpto",true);
+            FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Faculdade_dpto",true);
        
         boolean verifica =true;
         while(verifica==true){
@@ -146,7 +147,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public void vote(String lista, Eleicao eleicao, Pessoa pessoa, Mesa_voto mesa, Date data)throws RemoteException{
         Voto vote=new Voto (data, eleicao,mesa);
         for(int i=0; i<this.bufferPessoas.size();i++){
-            if(this.bufferPessoas.get(i).cartao==pessoa.cartao){
+            if(Objects.equals(this.bufferPessoas.get(i).cartao, pessoa.cartao)){
                 this.bufferPessoas.get(i).votos.add(vote);
             }
         }
@@ -559,7 +560,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             
             Server_RMI server = new Server_RMI();
            
-            Registry r = LocateRegistry.createRegistry(6501);
+            Registry r = LocateRegistry.createRegistry(6500);
             //Registry r = LocateRegistry.createRegistry(Integer.parseInt(args[0]));
             r.rebind("connection_RMI",server);
             server.loadArrayEleicao();
@@ -570,12 +571,12 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             aSocket = new DatagramSocket(Integer.parseInt(args[0]));
             System.out.println("Socket Datagram à escuta no porto "+args[0]);
             server.CarregaPessoas();
-            Pessoa pessoa= server.autenticate("nome", "gustavo");
+            Pessoa pessoa= server.autenticate("nome", "gustavo magalhaes");
             if(pessoa!=null)
                  System.out.println(pessoa.toString());
             else
                  System.out.println("NULL");
-             System.out.println(server.unlock_terminal(pessoa,"14124141","2341kmrm").mensagem);
+             System.out.println(server.unlock_terminal(pessoa,"146871413","2eheskmrm").mensagem);
              /*for(int i =0; i<server.bufferEleicao.size();i++){
                  System.out.println(server.bufferEleicao.get(i).toString());
              }*/

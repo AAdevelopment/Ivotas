@@ -34,9 +34,11 @@ public class Pessoa implements Serializable {
         this.name =name;
         this.cartao =cartao;
         this.Password =Password;
+        this.Dpto=Dpto;
         dt = new SimpleDateFormat("dd-mm-yyyy");
         this.card_valid = dt.parse(card_valid);
         this.tel = tel ;
+        this.votos=new ArrayList();
         this.morada = morada;
         this.tipo_pessoa = tipo_pessoa; 
     }
@@ -90,8 +92,8 @@ public class Pessoa implements Serializable {
     
     @Override
     public String toString(){
-        return this.tipo_pessoa+"-"+this.name+"-"+this.cartao+"-"+this.Password+"-"
-               +this.card_valid.toString()+"-"+this.tel+"-"+this.morada;
+        return "tipo | "+this.tipo_pessoa+" ; name | "+this.name+" ; cartao |"+this.cartao+" ; password | "+this.Password+" ; card_valid | "
+                +this.card_valid.toString()+" ; tel | "+this.tel+" ; morada | "+this.morada;
     }
     
     

@@ -1,4 +1,6 @@
 titulo|tipo|descricao|data|departamentos
-Eleicao_28-10-2017|geral|minahd descricao|28-10-2017|DEI,DEEC
+Eleicao_28-10-2017|geral|descricao da eleicao 28-10-2017|28-10-2017|DEI,DEEC
 NomeLista|Nome1|Nome2|Nome3|NomeN...
-lista|Andre Santos|gustavo nao_consigo
+A|andre miguel|gustavo magalhaes|julio afonso|eduardo miguel
+B|francisco santos|joao santos|carlos jesus|cosmo santos
+C|artur gustavo|luis artur|cosmo joao|artur luis

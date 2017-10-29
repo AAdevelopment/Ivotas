@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  *
  * @author Admin
  */
-public class Mesa_voto {
+public class Mesa_voto implements Serializable{
     
     public String departamento;
     public int ID;
@@ -53,9 +53,6 @@ public class Mesa_voto {
             
             Mesa_voto Mesa= new Mesa_voto(1,"DEI");
             
-           
-          
-          
            
          //TCP server
            //Mesa.departamento="DEI";
@@ -91,7 +88,7 @@ class Terminal_voto extends Thread {
             inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             outToClient = new PrintWriter(clientSocket.getOutputStream());
             String serverIP="localhost";
-            String url="rmi://" + serverIP  + ":6501/connection_RMI";
+            String url="rmi://" + serverIP  + ":6500/connection_RMI";
             Comunication_server Rmi= (Comunication_server) Naming.lookup(url);
             this.Rmi_server=Rmi;
             this.mesa=mesa;
@@ -151,9 +148,8 @@ class Terminal_voto extends Thread {
     }
     public boolean login(Pessoa Pessoa) throws IOException{
         String resp;
-        resp="type|login;username|valor;password|valor";
+        resp="Expected: \"type|login;username|valor;password|valor\"";
         outToClient.println(resp);
-        outToClient.println("Efectue login para poder votar");
         outToClient.flush();
          String[] message=le_consola();
         // desbloquear o terminal de voto
@@ -195,6 +191,7 @@ class Terminal_voto extends Thread {
             else 
                 bad_input=false;
         }
+        outToClient.println();
         return data;
     }
     public Eleicao select_elections() throws IOException{
@@ -224,7 +221,7 @@ class Terminal_voto extends Thread {
             message=le_consola();
         } while(!"item_list".equals(message[1]) && "option".equalsIgnoreCase(message[2]));
         Eleicao eleicao=Rmi_server.getEleicao(message[3]);
-        
+        outToClient.println();
         return eleicao;
         
     }
@@ -243,8 +240,8 @@ class Terminal_voto extends Thread {
             outToClient.flush();
             ArrayList<String> aux=lista.Lista;
             for(int j=0 ; j < aux.size() ; j++){
-                output=output.concat("item_" + j +'|' + aux.get(j) + ';');
-                outToClient.println(output);
+                output="item_" + j +'|' + aux.get(j) + ';';
+                outToClient.print(output);
                 outToClient.flush();      
             }
             outToClient.println();
@@ -262,14 +259,15 @@ class Terminal_voto extends Thread {
           //  input esperado "type|item_list;option|nome"
             String[] message=le_consola();
             if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){
+                System.out.println("ENTROU NO VOTO");
                 Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, new Date());
                 outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
                 outToClient.flush();
                 return true;
             }
             else{
-                
-                while(!"item_list".equals(message[1])&& "option".equalsIgnoreCase(message[2])){
+                System.out.println("LEU MAL O INPUT");
+                while(!"item_list".equalsIgnoreCase(message[1]) && !"option".equalsIgnoreCase(message[2])){
                     outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
                     outToClient.flush();
                     message=le_consola();
@@ -282,7 +280,9 @@ class Terminal_voto extends Thread {
                 }
             }
         }catch(IOException E){
-            System.out.println("Erro na leitura das listas de candidatos");
+             E.printStackTrace();
+             outToClient.println("Ocorreu um erro no processamento do voto. Repita o processo!");
+             outToClient.flush();
         }
         return false;
     }
