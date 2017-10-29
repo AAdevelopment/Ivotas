@@ -47,13 +47,6 @@ public class Eleicao implements Runnable,Serializable {
     ArrayList<Mesa_voto> mesas;
     SimpleDateFormat dt;
     
-    public Eleicao(){
-        listas=new ArrayList();
-        dptos=new ArrayList();
-        this.mesas = new ArrayList();
-        dt = new SimpleDateFormat("dd-mm-yyyy"); 
-
-    }
     
     public Eleicao(String tipo,String titulo,String descricao, String data, ArrayList<String> deptos, ArrayList <ListaCandidatos> listas) throws ParseException{
         this.tipo = tipo;
@@ -61,13 +54,13 @@ public class Eleicao implements Runnable,Serializable {
         this.dptos=deptos;
         this.descricao=descricao;
         
-        dt = new SimpleDateFormat("dd-mm-yyyy"); 
+        dt = new SimpleDateFormat("dd/mm/yyyy"); 
         
         this.listas=listas;
         t = new Thread(this,titulo);
         t.start();
     }
-    public Eleicao(String tipo,String titulo,String data,String horaini,String horafim) throws ParseException{
+    public Eleicao(String tipo,String titulo,String data,String horaini,String horafim)throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
         this.data = data;
@@ -108,7 +101,6 @@ public class Eleicao implements Runnable,Serializable {
     @Override
     public void run(){
         //8hrs
-        //this.data.getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
         SimpleDateFormat sdf1= new SimpleDateFormat("dd/MM/yyyy");
         sdf1.setLenient(false);
@@ -129,37 +121,6 @@ public class Eleicao implements Runnable,Serializable {
                         }            
                     }
                 }
-        /*
-        SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
-        Date now = new Date();
-        Date horafim = new Date();
-        Date horaini = new Date();
-        try {
-            horafim=dt.parse("03:23");
-            horaini=dt.parse("01:00");
-        } catch (ParseException ex) {
-            ex.getMessage();
-        }
-        
-        if(now.after(horaini)){
-           // System.out.println("passou no primeiro");
-            boolean verifica=true;
-            Integer verify;
-            while(verifica==true){ 
-                now=new Date(System.currentTimeMillis()); 
-              //  System.out.println(System.currentTimeMillis()+" date: "+dt.format(now));
-                verify=horafim.compareTo(now);
-                if(verify==0){
-                    break;
-                }
-                try {
-                    
-                    } catch (InterruptedException ex) {
-                        ex.getMessage();
-                    }        
-                }
-            
-            }*/
         }
     }
         

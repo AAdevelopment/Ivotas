@@ -61,7 +61,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
 
             
             AdminConsole c = new AdminConsole();
-            h.subscribe("oi", (Comunication_client) c);
+            h.subscribe("new Cliente Conection", (Comunication_client) c);
            // System.out.println("Client sent subscription to server");
             String reply="";
             String a="";

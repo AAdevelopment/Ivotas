@@ -35,7 +35,8 @@ public class Pessoa implements Serializable {
         this.cartao =cartao;
         this.Password =Password;
         this.Dpto=Dpto;
-        dt = new SimpleDateFormat("dd-mm-yyyy");
+        dt = new SimpleDateFormat("mm/yyyy");
+        dt.setLenient(false);
         this.card_valid = dt.parse(card_valid);
         this.tel = tel ;
         this.votos=new ArrayList();

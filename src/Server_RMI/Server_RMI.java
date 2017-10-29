@@ -270,7 +270,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         String tel="";
         String morada="";
         
-        String s[]={"Cadastrar tipo pessoa","Cadastrar nome:","Cadastrar Cartao do cidadao:","Cadastrar Password","Cadastrar DPto","Cadastrar Card_valid MM/yyyy",
+        String s[]={"Cadastrar tipo pessoa","Cadastrar nome:","Cadastrar Cartao do cidadao:","Cadastrar Password","Cadastrar DPto","Cadastrar Card_valid mm/yyyy",
             "Cadastrar telefone","Cadastrar Moradia"};
         String o[] = new String[s.length];
         
@@ -278,19 +278,19 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            o[i]=JOptionPane.showInputDialog(s[i]); 
         }
         
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-mm-yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("mm/yyyy");
+        formatter.setLenient(false);
         try {
-            FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt",true);
+            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/pessoas",true);
             Pessoa p = new Pessoa(o[0],o[1],Long.parseLong(o[2]),o[3],o[4],o[5],o[6],o[7]);
             String saida="";
-            System.out.println(card_valid);
             saida=p.getTipoPessoa()+";"+p.getName()+";"+p.getCartao()+";"+p.getPassword()+";"+
-            p.getDpto()+";"+formatter.format(p.card_valid)+";"+p.getTel()+";"+p.getMorada();
+            p.getDpto()+";"+formatter.parse(o[5])+";"+p.getTel()+";"+p.getMorada();
             out.write(saida+"\n");
             out.close();
             this.bufferPessoas.add(p);
         } catch (ParseException ex) {
-           // Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -560,16 +560,16 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             
             Server_RMI server = new Server_RMI();
            
-            Registry r = LocateRegistry.createRegistry(6500);
-            //Registry r = LocateRegistry.createRegistry(Integer.parseInt(args[0]));
+            //Registry r = LocateRegistry.createRegistry(6500);
+            Registry r = LocateRegistry.createRegistry(Integer.parseInt(args[0]));
             r.rebind("connection_RMI",server);
             server.loadArrayEleicao();
             server.CarregaPessoas();
             String a="";
             System.out.println("Server RMI ready...");
             //
-            aSocket = new DatagramSocket(Integer.parseInt(args[0]));
-            System.out.println("Socket Datagram à escuta no porto "+args[0]);
+            aSocket = new DatagramSocket(Integer.parseInt(args[1]));
+            System.out.println("Socket Datagram à escuta no porto "+args[1]);
             server.CarregaPessoas();
             Pessoa pessoa= server.autenticate("nome", "gustavo magalhaes");
             if(pessoa!=null)
