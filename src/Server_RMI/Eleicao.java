@@ -40,7 +40,7 @@ public class Eleicao implements Runnable,Serializable {
     String descricao;
     ArrayList<String> dptos;
     ArrayList<ListaCandidatos> listas;
-    Thread t;
+    transient Thread t;
     String data;
     String horafim;
     String horaini;
@@ -177,8 +177,8 @@ public class Eleicao implements Runnable,Serializable {
     @Override
     public String toString(){
 
-        return this.tipo+";"+this.titulo+";"+this.data+
-        ";"+this.horaini+";"+this.horafim+";"+this.mesas.toString();
+        return "tipo|"+this.tipo+";"+"titulo|"+this.titulo+";"+"data|"+this.data+
+        ";"+"inicio|"+this.horaini+";"+"fim|"+this.horafim;
 
 
     }

@@ -29,6 +29,7 @@ public class Mesa_voto {
     
     public String departamento;
     public int ID;
+    private static final long serialVersionUID = 1L;
     
     public Mesa_voto(int ID, String departamento){
         this.ID=ID;
@@ -36,7 +37,7 @@ public class Mesa_voto {
     }
  
     public String toSring(){
-        return this.ID+";"+this.departamento.toString();
+        return this.ID+";"+this.departamento;
     }
         
    
@@ -77,6 +78,7 @@ public class Mesa_voto {
 //= Thread para tratar de cada canal de comunicação com um cliente
 class Terminal_voto extends Thread {
     PrintWriter outToClient;
+    private static final long serialVersionUID = 1L;
     BufferedReader inFromClient = null;
     Socket clientSocket;
     public Comunication_server Rmi_server;
@@ -89,7 +91,7 @@ class Terminal_voto extends Thread {
             inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             outToClient = new PrintWriter(clientSocket.getOutputStream());
             String serverIP="localhost";
-            String url="rmi://" + serverIP  + ":6500/connection_RMI";
+            String url="rmi://" + serverIP  + ":6501/connection_RMI";
             Comunication_server Rmi= (Comunication_server) Naming.lookup(url);
             this.Rmi_server=Rmi;
             this.mesa=mesa;
@@ -113,7 +115,7 @@ class Terminal_voto extends Thread {
         }.start();
         // the main thread loops reading from the client and answering back
         
-         select_elections();
+         vote();
        }
     
 
@@ -241,7 +243,7 @@ class Terminal_voto extends Thread {
             outToClient.flush();
             ArrayList<String> aux=lista.Lista;
             for(int j=0 ; j < aux.size() ; j++){
-                output=output.concat("item_" + i +'|' + aux.get(i) + ';');
+                output=output.concat("item_" + j +'|' + aux.get(j) + ';');
                 outToClient.println(output);
                 outToClient.flush();      
             }
@@ -300,6 +302,7 @@ class Terminal_voto extends Thread {
                 Eleicao eleicao=select_elections();  //escolhe  eleicao pretendida 
                 votou=select_lista(eleicao, user);              //vota na lista pretendida
             }
+            
         }
     }
         
