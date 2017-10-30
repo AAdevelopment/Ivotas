@@ -6,6 +6,7 @@
 package Server_RMI;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +26,15 @@ public class Voto implements Serializable{
         this.mesa=mesa;
         this.eleicao=eleicao;
     }
+    public Voto(Date data,String titulo,Mesa_voto mesa){
+        this.data=data;
+        this.mesa=mesa;
+        this.eleicao.titulo=titulo;
+    }
+
+    public void setEleicao(Eleicao eleicao) {
+        this.eleicao = eleicao;
+    }
    
     public Date getData() {
         return data;
@@ -35,7 +45,8 @@ public class Voto implements Serializable{
     }
 
  public String toString(){
-     return this.eleicao.titulo+";"+this.mesa.departamento+";"+this.data.toString();
+     DateFormat dt=new SimpleDateFormat("hh:mm dd-mm-yyyy");
+     return this.eleicao.titulo+";"+this.mesa.departamento+";"+dt.format(this.data);
  }
     
 }

@@ -266,7 +266,7 @@ class Terminal_voto extends Thread {
                 return true;
             }
             else{
-                System.out.println("LEU MAL O INPUT");
+               
                 while(!"item_list".equalsIgnoreCase(message[1]) && !"option".equalsIgnoreCase(message[2])){
                     outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
                     outToClient.flush();

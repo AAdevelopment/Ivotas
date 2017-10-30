@@ -41,29 +41,30 @@ public class Eleicao implements Runnable,Serializable {
     ArrayList<String> dptos;
     ArrayList<ListaCandidatos> listas;
     transient Thread t;
-    String data;
+    Date data;
     String horafim;
     String horaini;
     ArrayList<Mesa_voto> mesas;
     SimpleDateFormat dt;
     
     
-    public Eleicao(String tipo,String titulo,String descricao, String data, ArrayList<String> deptos, ArrayList <ListaCandidatos> listas) throws ParseException{
+    public Eleicao(String tipo,String titulo,String descricao, String data, ArrayList<String> deptos) throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
         this.dptos=deptos;
         this.descricao=descricao;
         
-        dt = new SimpleDateFormat("dd/mm/yyyy"); 
-        
-        this.listas=listas;
+        dt = new SimpleDateFormat("dd-mm-yyyy"); 
+        this.data=dt.parse(data);
+        this.listas=new ArrayList();
         t = new Thread(this,titulo);
         t.start();
     }
     public Eleicao(String tipo,String titulo,String data,String horaini,String horafim)throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
-        this.data = data;
+        dt = new SimpleDateFormat("dd-mm-yyyy"); 
+        this.data = dt.parse(data);
         dptos=new ArrayList();
         t = new Thread(this,titulo);
         ArrayList<ListaCandidatos> listas=new ArrayList();
@@ -79,7 +80,9 @@ public class Eleicao implements Runnable,Serializable {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
-
+    public void setLista(ListaCandidatos lista){
+        this.listas.add(lista);
+    }
     public String getTitulo() {
         return titulo;
     }
