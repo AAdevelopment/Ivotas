@@ -6,6 +6,7 @@
 package Server_RMI;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import mesa_voto.Mesa_voto;
@@ -33,6 +34,8 @@ public class Voto implements Serializable{
         this.data = data;
     }
 
- 
+ public String toString(){
+     return this.eleicao.titulo+";"+this.mesa.departamento+";"+this.data.toString();
+ }
     
 }
