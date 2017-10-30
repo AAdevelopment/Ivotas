@@ -251,11 +251,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-        
-       
-        
-    }
-    
+        }
+     }
     @Override
      public synchronized  void CadastrarPessoa(){
         String tipo_pessoa=""; 
