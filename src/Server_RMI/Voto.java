@@ -25,6 +25,15 @@ public class Voto implements Serializable{
         this.mesa=mesa;
         this.eleicao=eleicao;
     }
+    public Voto(Date data,String titulo,Mesa_voto mesa){
+        this.data=data;
+        this.mesa=mesa;
+        this.eleicao.titulo=titulo;
+    }
+
+    public void setEleicao(Eleicao eleicao) {
+        this.eleicao = eleicao;
+    }
    
     public Date getData() {
         return data;

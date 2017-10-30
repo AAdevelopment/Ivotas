@@ -1,6 +1,8 @@
 titulo|tipo|descricao|data|departamentos
 Eleicao_28-10-2017|geral|descricao da eleicao 28-10-2017|28-10-2017|DEI,DEEC
-NomeLista|Nome1|Nome2|Nome3|NomeN...
-A|andre miguel|gustavo magalhaes|julio afonso|eduardo miguel
-B|francisco santos|joao santos|carlos jesus|cosmo santos
-C|artur gustavo|luis artur|cosmo joao|artur luis
+A|0
+andre miguel|gustavo magalhaes|julio afonso|eduardo miguel|
+B|0
+francisco santos|joao santos|carlos jesus|cosmo santos|
+C|0
+artur gustavo|luis artur|cosmo joao|artur luis|
