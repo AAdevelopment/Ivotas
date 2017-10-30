@@ -215,15 +215,14 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             
         
            
-     public synchronized  void alterar_eleicao(){//falta terminar
-        String nome="";
-            nome=JOptionPane.showInputDialog("Digite o nome da eleicao que dejesa alterar:");
+    @Override
+     public synchronized  void alterar_eleicao(String nome){//falta terminar
             FileReader read;
-            boolean exists = (new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicoes"+nome)).exists();
-            if (exists) {
+            File arquivo = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
+            if(arquivo.exists()){
                 try {
                
-                    read = new FileReader("/home/gustavo/NetBeansProjects/ivotas/Ivotas/"+nome);
+                    read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
                     BufferedReader in = new BufferedReader(read);
                     String s="";
                     String a[] = null;
@@ -232,7 +231,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                     while((s=in.readLine())!=null){
                         a=s.split(";");
                     }
-                    FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicoes\\"+nome);
+                    FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
                     for (int i = 0; i <a.length; i++) {
                         o[i]=JOptionPane.showInputDialog(null,vet[i],a[i]);
                     }
@@ -241,9 +240,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                     out.write(o[2]);
                     out.close();
                     
-                File arquivo;
-                arquivo = new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicoes\\"+nome);
-                arquivo.renameTo(new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicoes\\"+o[1]));
+                //File arquivo2;
+             //   arquivo = new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicoes\\"+nome);
+               // arquivo.renameTo(new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicoes\\"+o[1]));
                 //this.bufferEleicao.add(a);
                 System.out.println(s);
         } catch (FileNotFoundException ex) {
@@ -253,12 +252,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             }
             
         }
-        else{
-            JOptionPane.showMessageDialog(null,"O arquivo especificado nao existe !","Atencao",1);
-        }
-        
-    }
-    
+     }
     @Override
      public synchronized  void CadastrarPessoa(){
         String tipo_pessoa=""; 
@@ -668,7 +662,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
         return null;                
     }
-    
     
 }
 

@@ -67,7 +67,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
             
             do{
                 opcao=Integer.parseInt(JOptionPane.showInputDialog("1-verificar conexao"+"\n"+"2-criar eleicao"+"\n"+"3-criar lista de candidato\n"+"4-Registrar Pessoa"
-                        +"\n"+"7-adicionar mesa de voto a eleicao\n"+"9- sair do menu"));
+                      +"\n5-Criar faculdade/dpto\n"+"6-Alterar eleicao"+"\n"+"7-adicionar mesa de voto a eleicao\n"+"9- sair do menu"));
                 switch(opcao){
                     case 1:
                         System.out.println(reply=h.Test_connection());
@@ -86,7 +86,9 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         h.CriarFaculdade_Dpto();
                         break;
                     case 6:
-                        h.alterar_eleicao();
+                        String nome;
+                        nome=JOptionPane.showInputDialog("Digite o nome da eleicao que dejesa alterar:");
+                        h.alterar_eleicao(nome);
                         break;
                     case 7:
                         String rep="";
