@@ -604,6 +604,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                         out.write(bufferPessoas.get(i).votos.get(j).toString());
                         out.newLine();
                     }
+                    out.newLine();
                 }
                 out.close();
             } catch (IOException ex) {

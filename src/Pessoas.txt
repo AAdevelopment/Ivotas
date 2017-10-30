@@ -20,6 +20,7 @@ aluno;andre miguel;141257813;29671kmrm;deq;12-11-2015;966414196;coimbra;0
 funcionario;cosmo eduardo;765521432;a5656jsf;dec;05-03-2010;914242145;porto;0
 funcionario;artur luis;234535432;a56j76ju6j;dec;05-03-2010;914242145;coimbra;0
 funcionario;luis ricardo;367821765;as3nek766sf;dec;05-03-2010;914242145;porto;0
-funcionario;cosmo joao;147987983;2gk7k7um;deec;07-04-2011;916414196;coimbra;0
+funcionario;cosmo joao;147987983;2gk7k7um;deec;07-04-2011;916414196;coimbra;1
+Eleicao;DEI;Mon Oct 30 03:59:05 GMT 2017
 funcionario;luis artur;385986413;23eh3g6urm;deec;07-04-2011;916414196;porto;0
 funcionario;artur gustavo;143968353;23k89krm;deec;07-04-2011;916414196;coimbra;0
