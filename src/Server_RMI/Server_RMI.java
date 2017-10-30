@@ -535,17 +535,17 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public  void CarregaPessoas() throws FileNotFoundException, IOException, ParseException{
         boolean exists = (new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt")).exists();
         if (exists) {
-        FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt");
-        BufferedReader in = new BufferedReader(read);
-        String s="";
-        String[] a=null;
-        in.readLine();
-        while((s=in.readLine())!=null){
-          a=s.split(";");
-          Pessoa p = new Pessoa(a[0],a[1],Long.parseLong(a[2]),a[3],a[4],(a[5]),a[6],a[7]);
-          this.bufferPessoas.add(p);
+            FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt");
+            BufferedReader in = new BufferedReader(read);
+            String s="";
+            String[] a=null;
+            in.readLine();
+            while((s=in.readLine())!=null){
+                a=s.split(";");
+                Pessoa p = new Pessoa(a[0],a[1],Long.parseLong(a[2]),a[3],a[4],(a[5]),a[6],a[7]);
+                this.bufferPessoas.add(p);
           //System.out.println(p.toString());
-        }
+             }
         in.close();
         }
     }

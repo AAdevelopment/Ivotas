@@ -100,7 +100,7 @@ public class Eleicao implements Runnable,Serializable {
     }
     @Override
     public void run(){
-        //8hrs
+        
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
         SimpleDateFormat sdf1= new SimpleDateFormat("dd/MM/yyyy");
         sdf1.setLenient(false);
@@ -116,12 +116,13 @@ public class Eleicao implements Runnable,Serializable {
                                 Logger.getLogger(Eleicao.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         if (sdf.format(new Date()).equals(horafim)) {
-                            System.out.println("fim da eleicao!");
-                            break;
+                            System.out.println("fim da eleicao "+this.titulo+" !");
+                            return;
+                            
                         }            
                     }
                 }
-        }
+        }    
     }
         
     public void StartEleicao(){
