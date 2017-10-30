@@ -42,6 +42,7 @@ public class Eleicao implements Runnable,Serializable {
     ArrayList<ListaCandidatos> listas;
     transient Thread t;
     Date data;
+    String data_texto;
     String horafim;
     String horaini;
     ArrayList<Mesa_voto> mesas;
@@ -63,8 +64,7 @@ public class Eleicao implements Runnable,Serializable {
     public Eleicao(String tipo,String titulo,String data,String horaini,String horafim)throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
-        dt = new SimpleDateFormat("dd-mm-yyyy"); 
-        this.data = dt.parse(data);
+        this.data_texto = data;
         dptos=new ArrayList();
         t = new Thread(this,titulo);
         ArrayList<ListaCandidatos> listas=new ArrayList();
