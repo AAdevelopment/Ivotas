@@ -1,6 +1,6 @@
 titulo|tipo|descricao|data|departamentos
 Eleicao|nucleo|descricao da eleicao de 05-10-1998|05-10-1998|dei,deec,dec
-A|0
+A|tipo1|0
 andre miguel|gustavo magalhaes|julio afonso|eduardo miguel|
-B|0
+B|tipo2|0
 alexande afonso|luis miguel|artur afonso|cosmo afonso|

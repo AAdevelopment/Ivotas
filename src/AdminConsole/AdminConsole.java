@@ -50,10 +50,6 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         Integer opcao=0;
         
         try{
-
-
-            //System.getProperties().put("java.security.policy", "/home/gustavo/NetBeansProjects/Ivotas/src/Server_RMI/policy.all");
-            //System.setSecurityManager(new RMISecurityManager());
             
            // System.getProperties().put("java.security.policy", "C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\AdminConsole\\policy.all");
            // System.setSecurityManager(new RMISecurityManager());
@@ -99,7 +95,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         break;
                     case 9:
                         verifica=false;
-                    break;
+                        break;
                 }    
             }while(verifica == true);
             
