@@ -13,7 +13,6 @@ package Server_RMI;
  */
 
 import java.util.ArrayList;
-import java.util.List;
 import java.io.Serializable;
 /**
  *
@@ -25,17 +24,7 @@ public class ListaCandidatos implements Serializable{
     public String tipo;
     public ArrayList<Voto> votos;
     
-    public ListaCandidatos(){
-        Lista=new ArrayList();
-    }
     
-    public ListaCandidatos(String nome){
-      //  super();
-        this.nome = nome;
-        this.Lista = new ArrayList();
-        this.votos=new ArrayList();
-        
-    }
     public ListaCandidatos(String nome, String tipo){
       //  super();
         this.nome = nome;
@@ -55,6 +44,17 @@ public class ListaCandidatos implements Serializable{
      return this.tipo+this.nome+ this.Lista.toString();
     }
     
+    public void printListaCandidatos(){
+        System.out.println(this.nome+" | "+this.tipo);
+        for(int i=0; i<this.Lista.size();i++){
+            System.out.print(this.Lista.get(i)+" ; ");
+        }
+        System.out.println();
+        for(int i=0;i<this.votos.size();i++){
+            System.out.println(this.votos.get(i).toString());
+        }
+
+    }
      /* public ArrayList<String> Getlista(String[] v){
       listacandidato = new ArrayList();
       for(int i=0;i<v.length;i++)
