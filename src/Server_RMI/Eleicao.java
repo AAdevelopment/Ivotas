@@ -100,8 +100,20 @@ public class Eleicao implements Runnable,Serializable {
     public void setDptos(ArrayList<String> dptos) {
         this.dptos = dptos;
     }
+
+    public void setHorafim(String horafim) {
+        this.horafim = horafim;
+    }
+
+    public void setHoraini(String horaini) {
+        this.horaini = horaini;
+    }
     public void setMesas(Mesa_voto m){
         this.mesas.add(m);
+    }
+    
+    public void setData_texto(String data){
+        this.data_texto=data;
     }
     @Override
     public void run(){

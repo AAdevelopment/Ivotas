@@ -214,14 +214,28 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            
     @Override
      public synchronized  void alterar_eleicao(String nome){
-            //falta terminar
-            for (int i = 0; i <this.bufferEleicao.size(); i++) {
-                if(this.bufferEleicao.get(i).titulo.equals(nome)){
-                    System.out.println(this.bufferEleicao.get(i));
-                }
+         
+        String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?","deseja alterar a hora inicial","Hora final" };
+        String v[] = new String[vet.length];
+        for (int i = 0; i <vet.length; i++) {
+            v[i]=JOptionPane.showInputDialog(vet[i]);
+        }
+        
+        for(int i=0;i<this.bufferEleicao.size();i++){
+            if(this.bufferEleicao.get(i).titulo.equalsIgnoreCase(nome)){
+               this.bufferEleicao.get(i).setTipo(v[0]);
+               this.bufferEleicao.get(i).setTitulo(v[1]);
+               this.bufferEleicao.get(i).setData_texto(v[2]);
+               this.bufferEleicao.get(i).setHoraini(v[3]);
+               this.bufferEleicao.get(i).setHorafim(v[4]);
+               System.out.println(this.bufferEleicao.get(i));
             }
-            
-            FileReader read;
+        
+        }
+        
+     }       
+ 
+           /* FileReader read;
             File arquivo = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
             if(arquivo.exists()){
                 try {
@@ -253,10 +267,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         }   catch (IOException ex) {
                 Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-        }
-     }
+            }*/
+           
+        
+    
     @Override
      public synchronized  void CadastrarPessoa(){
         String tipo_pessoa=""; 
