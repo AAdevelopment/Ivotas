@@ -214,24 +214,26 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            
     @Override
      public synchronized  void alterar_eleicao(String nome){
-         
+        printBufferEleicao(this.bufferEleicao); 
         String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?","deseja alterar a hora inicial","Hora final" };
         String v[] = new String[vet.length];
-        for (int i = 0; i <vet.length; i++) {
-            v[i]=JOptionPane.showInputDialog(vet[i]);
-        }
+        
         
         for(int i=0;i<this.bufferEleicao.size();i++){
             if(this.bufferEleicao.get(i).titulo.equalsIgnoreCase(nome)){
-               this.bufferEleicao.get(i).setTipo(v[0]);
-               this.bufferEleicao.get(i).setTitulo(v[1]);
-               this.bufferEleicao.get(i).setData_texto(v[2]);
-               this.bufferEleicao.get(i).setHoraini(v[3]);
-               this.bufferEleicao.get(i).setHorafim(v[4]);
-               System.out.println(this.bufferEleicao.get(i));
+                for(int j=0; j <vet.length; j++) {  
+                    v[j]=JOptionPane.showInputDialog(vet[i],this.bufferEleicao.get(j));
+                }
+                this.bufferEleicao.get(i).setTipo(v[0]);
+                this.bufferEleicao.get(i).setTitulo(v[1]);
+                this.bufferEleicao.get(i).setData_texto(v[2]);
+                this.bufferEleicao.get(i).setHoraini(v[3]);
+                this.bufferEleicao.get(i).setHorafim(v[4]);
+                
             }
         
         }
+        printBufferEleicao(this.bufferEleicao);
         
      }       
  
@@ -314,9 +316,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
       Integer id;
       String dep;
       ArrayList <String> dpto= new ArrayList();
-      id=Integer.parseInt(JOptionPane.showInputDialog("Digite o ID da mesa:"));
       Mesa_voto mesa=null;
       boolean verifica=true;
+      id=Integer.parseInt(JOptionPane.showInputDialog("Digite o ID da mesa:"));
       while(verifica==true){
           dep=JOptionPane.showInputDialog("Digite o departamento da mesa:");
           if(dep==null){
@@ -327,13 +329,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 
             }
       }
-       for (int i = 0; i <this.bufferEleicao.size(); i++) {
-            if(this.bufferEleicao.get(i).titulo.equals(titulo)){
-                System.out.println("passou:");
-                this.bufferEleicao.get(i).mesas.add(mesa);
-                System.out.println(this.bufferEleicao.get(i).toString());
-            }
-        }
+       
         System.out.println(mesa.toSring());
        
       //JOptionPane.showInputDialog("Digite o Titulo da eleicao:"); 
