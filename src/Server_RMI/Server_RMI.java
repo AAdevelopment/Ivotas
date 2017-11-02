@@ -218,18 +218,18 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?","deseja alterar a hora inicial","Hora final" };
         String v[] = new String[vet.length];
         
+        for (int i = 0; i <vet.length; i++) {
+            v[i]=JOptionPane.showInputDialog(vet[i],this.bufferEleicao.get(i));
+        }
         
         for(int i=0;i<this.bufferEleicao.size();i++){
             if(this.bufferEleicao.get(i).titulo.equalsIgnoreCase(nome)){
-                for(int j=0; j <vet.length; j++) {  
-                    v[j]=JOptionPane.showInputDialog(vet[i],this.bufferEleicao.get(j));
-                }
-                this.bufferEleicao.get(i).setTipo(v[0]);
-                this.bufferEleicao.get(i).setTitulo(v[1]);
-                this.bufferEleicao.get(i).setData_texto(v[2]);
-                this.bufferEleicao.get(i).setHoraini(v[3]);
-                this.bufferEleicao.get(i).setHorafim(v[4]);
-                
+               this.bufferEleicao.get(i).setTipo(v[0]);
+               this.bufferEleicao.get(i).setTitulo(v[1]);
+               this.bufferEleicao.get(i).setData_texto(v[2]);
+               this.bufferEleicao.get(i).setHoraini(v[3]);
+               this.bufferEleicao.get(i).setHorafim(v[4]);
+               System.out.println(this.bufferEleicao.get(i));
             }
         
         }
@@ -311,31 +311,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         
     }
      
-    @Override
-    public void Add_VoteTable(String titulo) throws RemoteException{
-      Integer id;
-      String dep;
-      ArrayList <String> dpto= new ArrayList();
-      Mesa_voto mesa=null;
-      boolean verifica=true;
-      id=Integer.parseInt(JOptionPane.showInputDialog("Digite o ID da mesa:"));
-      while(verifica==true){
-          dep=JOptionPane.showInputDialog("Digite o departamento da mesa:");
-          if(dep==null){
-              break;
-          }
-          else{
-              mesa = new Mesa_voto(id,dep);
-                
-            }
-      }
-       
-        System.out.println(mesa.toSring());
-       
-      //JOptionPane.showInputDialog("Digite o Titulo da eleicao:"); 
-     
-        
-    } 
+    
     
      
      /************************************************************************************************************************
