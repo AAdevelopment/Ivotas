@@ -17,7 +17,9 @@ import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import mesa_voto.Mesa_voto;
 
 /**
  *
@@ -28,6 +30,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     public AdminConsole() throws RemoteException {
         super();
     }
+    // INTERFACE SERVER-SIDE METHODS
     
     @Override
     public void reply_on_client(String a){
@@ -45,6 +48,32 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     public void replyElection(Eleicao e){
         System.out.println(e.toString());
     }
+    
+    //CLIENT- SIDE METHODS
+    public void Add_VoteTable(String titulo) throws RemoteException{
+      Integer id;
+      String dep;
+      ArrayList <String> dpto= new ArrayList();
+      Mesa_voto mesa=null;
+      boolean verifica=true;
+      id=Integer.parseInt(JOptionPane.showInputDialog("Digite o ID da mesa:"));
+      while(verifica==true){
+          dep=JOptionPane.showInputDialog("Digite o departamento da mesa:");
+          if(dep==null){
+              break;
+          }
+          else{
+              mesa = new Mesa_voto(id,dep);
+              ////wainting....  
+            }
+      }
+      
+        System.out.println(mesa.toSring());
+       
+      //JOptionPane.showInputDialog("Digite o Titulo da eleicao:"); 
+     
+        
+    } 
     
     public static void main(String args[]) throws RemoteException, NotBoundException, IOException{
         Integer opcao=0;
@@ -93,7 +122,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                     case 7:
                         String rep="";
                         rep=JOptionPane.showInputDialog("digite o titulo da eleicao:");
-                        h.Add_VoteTable(rep);
+                        c.Add_VoteTable(rep);
                         break;
                     case 9:
                         verifica=false;

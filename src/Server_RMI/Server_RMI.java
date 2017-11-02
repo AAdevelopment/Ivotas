@@ -189,39 +189,59 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
    @Override
     public synchronized  void criarEleicao() throws RemoteException{
-         
-           int id;
-           String departamento;
-           String v1[]={"Digite o id da mesa:","digite o departamento:"};
-           String saida1[]= new String [v1.length]; 
-           String v[]={"Defina o tipo de eleicao","nome da eleicao","Data ex:dd/MM/yyyy","Horainicial ex:hh:mm:ss","HoraFim ex:hh:mm:ss"};
+           String saida1[]= new String [5]; 
+           String v[]={"Defina o tipo de eleicao","nome da eleicao","Data ex:dd-MM-yyyy","Horainicial ex:hh:mm:ss","HoraFim ex:hh:mm:ss"};
            String saida[]= new String [v.length];
            for(int i=0;i<v.length;i++){
                saida[i]=JOptionPane.showInputDialog(v[i]);
            }
             Eleicao  el;
-            try {
+            try{
                     el = new Eleicao(saida[0],saida[1],saida[2],saida[3],saida[4]);
                     el.StartEleicao();
                     this.bufferEleicao.add(el);
+                    ///this.saveEleicao(el);
                     System.out.println(el);
                     c.replyElection(el);
                   } catch (ParseException ex) {
                       Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-                  }
-               
-                
+                  } catch (IOException ex) {
+                   Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+               }    
             }
             
         
            
     @Override
-     public synchronized  void alterar_eleicao(String nome){//falta terminar
-            FileReader read;
+     public synchronized  void alterar_eleicao(String nome){
+        printBufferEleicao(this.bufferEleicao); 
+        String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?","deseja alterar a hora inicial","Hora final" };
+        String v[] = new String[vet.length];
+        
+        for (int i = 0; i <vet.length; i++) {
+            v[i]=JOptionPane.showInputDialog(vet[i],this.bufferEleicao.get(i));
+        }
+        
+        for(int i=0;i<this.bufferEleicao.size();i++){
+            if(this.bufferEleicao.get(i).titulo.equalsIgnoreCase(nome)){
+               this.bufferEleicao.get(i).setTipo(v[0]);
+               this.bufferEleicao.get(i).setTitulo(v[1]);
+               this.bufferEleicao.get(i).setData_texto(v[2]);
+               this.bufferEleicao.get(i).setHoraini(v[3]);
+               this.bufferEleicao.get(i).setHorafim(v[4]);
+               System.out.println(this.bufferEleicao.get(i));
+            }
+        
+        }
+        printBufferEleicao(this.bufferEleicao);
+        
+     }       
+ 
+           /* FileReader read;
             File arquivo = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
             if(arquivo.exists()){
                 try {
-               
+                   
                     read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
                     BufferedReader in = new BufferedReader(read);
                     String s="";
@@ -229,9 +249,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                     String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?" };
                     String o[] = new String[vet.length];
                     while((s=in.readLine())!=null){
-                        a=s.split(";");
+                        a=s.split("[|;]");
                     }
-                    FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
+                    FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+nome,true);
                     for (int i = 0; i <a.length; i++) {
                         o[i]=JOptionPane.showInputDialog(null,vet[i],a[i]);
                     }
@@ -239,20 +259,20 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                     out.write(o[1]+";");
                     out.write(o[2]);
                     out.close();
-                    
-                //File arquivo2;
-             //   arquivo = new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicoes\\"+nome);
-               // arquivo.renameTo(new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Eleicoes\\"+o[1]));
-                //this.bufferEleicao.add(a);
+                
+                //this.bufferEleicao.add(a);    
+                File arquivo2;
+                arquivo2 = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
+                arquivo2.renameTo(new File("/home/gustavo/NetBeansProjects/Ivotas/"+o[1]));
                 System.out.println(s);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         }   catch (IOException ex) {
                 Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-        }
-     }
+            }*/
+           
+        
+    
     @Override
      public synchronized  void CadastrarPessoa(){
         String tipo_pessoa=""; 
@@ -272,7 +292,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            o[i]=JOptionPane.showInputDialog(s[i]); 
         }
         
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-mm-yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         formatter.setLenient(false);
         try {
             FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt",true);
@@ -293,37 +313,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public void addMesaVoto(Mesa_voto mesa){
         this.bufferMesas.add(mesa);
     }
-    @Override
-    public void Add_VoteTable(String titulo) throws RemoteException{
-      Integer id;
-      String dep;
-      ArrayList <String> dpto= new ArrayList();
-      id=Integer.parseInt(JOptionPane.showInputDialog("Digite o ID da mesa:"));
-      Mesa_voto mesa=null;
-      boolean verifica=true;
-      while(verifica==true){
-          dep=JOptionPane.showInputDialog("Digite o departamento da mesa:");
-          if(dep==null){
-              break;
-          }
-          else{
-              mesa = new Mesa_voto(id,dep);
-                
-            }
-      }
-       for (int i = 0; i <this.bufferEleicao.size(); i++) {
-            if(this.bufferEleicao.get(i).titulo.equals(titulo)){
-                System.out.println("passou:");
-                this.bufferEleicao.get(i).mesas.add(mesa);
-                System.out.println(this.bufferEleicao.get(i).toString());
-            }
-        }
-        System.out.println(mesa.toSring());
-       
-      //JOptionPane.showInputDialog("Digite o Titulo da eleicao:"); 
-     
-        
-    } 
+
     
      
      /************************************************************************************************************************

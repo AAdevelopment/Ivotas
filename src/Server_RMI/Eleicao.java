@@ -55,7 +55,7 @@ public class Eleicao implements Runnable,Serializable {
         this.dptos=deptos;
         this.descricao=descricao;
         
-        dt = new SimpleDateFormat("dd-mm-yyyy"); 
+        dt = new SimpleDateFormat("dd-MM-yyyy"); 
         this.data=dt.parse(data);
         this.listas=new ArrayList();
         t = new Thread(this,titulo);
@@ -64,10 +64,12 @@ public class Eleicao implements Runnable,Serializable {
     public Eleicao(String tipo,String titulo,String data,String horaini,String horafim)throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
+        dt = new SimpleDateFormat("dd-MM-yyyy"); 
+        this.data =dt.parse(data);
         this.data_texto = data;
         dptos=new ArrayList();
         t = new Thread(this,titulo);
-        listas=new ArrayList();
+        this.listas=new ArrayList();
         this.mesas = new ArrayList();
         this.horafim=horafim;
         this.horaini=horaini;
@@ -98,34 +100,45 @@ public class Eleicao implements Runnable,Serializable {
     public void setDptos(ArrayList<String> dptos) {
         this.dptos = dptos;
     }
+
+    public void setHorafim(String horafim) {
+        this.horafim = horafim;
+    }
+
+    public void setHoraini(String horaini) {
+        this.horaini = horaini;
+    }
     public void setMesas(Mesa_voto m){
         this.mesas.add(m);
+    }
+    
+    public void setData_texto(String data){
+        this.data_texto=data;
     }
     @Override
     public void run(){
         
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-        SimpleDateFormat sdf1= new SimpleDateFormat("dd/MM/yyyy");
-        sdf1.setLenient(false);
+        DateFormat sdf = new SimpleDateFormat("hh:mm:ss");
         boolean verifica=true;
-            while(verifica==true){
-                if(sdf1.format(new Date()).equals(data)&&sdf.format(new Date()).equals(horaini)){
-                    verifica=false;
-                    while (true) {
-                        System.out.println(sdf.format(new Date()));
-                        try {
-                            Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(Eleicao.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        if (sdf.format(new Date()).equals(horafim)) {
-                            System.out.println("fim da eleicao "+this.titulo+" !");
-                            return;
-                            
-                        }            
+       
+        while(verifica==true){
+            if(dt.format(new Date()).equals(this.data_texto)&&sdf.format(new Date()).equals(horaini)){
+                verifica=false;
+                while (true) {
+                    System.out.println(sdf.format(new Date()));
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Eleicao.class.getName()).log(Level.SEVERE, null, ex);            
+                    }
+                    if (sdf.format(new Date()).equals(horafim)) {
+                        System.out.println("fim da eleicao "+this.titulo+" !");
+                        break;
+                        
                     }
                 }
-        }    
+            }
+        }
     }
         
     public void StartEleicao(){
