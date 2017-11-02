@@ -67,7 +67,7 @@ public class Eleicao implements Runnable,Serializable {
         this.data_texto = data;
         dptos=new ArrayList();
         t = new Thread(this,titulo);
-        ArrayList<ListaCandidatos> listas=new ArrayList();
+        listas=new ArrayList();
         this.mesas = new ArrayList();
         this.horafim=horafim;
         this.horaini=horaini;
