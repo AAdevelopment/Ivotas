@@ -188,21 +188,21 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     }
     
    @Override
-    public synchronized  void criarEleicao() throws RemoteException{
-           String saida1[]= new String [5]; 
-           String v[]={"Defina o tipo de eleicao","nome da eleicao","Data ex:dd-MM-yyyy","Horainicial ex:hh:mm:ss","HoraFim ex:hh:mm:ss"};
-           String saida[]= new String [v.length];
-           for(int i=0;i<v.length;i++){
-               saida[i]=JOptionPane.showInputDialog(v[i]);
-           }
+    public synchronized  void criarEleicao(String saida[]) throws RemoteException{ 
+          
             Eleicao  el;
-            try{
+            try{    
+                    File file = new File("/home/gustavo/NetBeansProjects/Ivotas/"+saida[1]);
+                    FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+saida[1],true);
                     el = new Eleicao(saida[0],saida[1],saida[2],saida[3],saida[4]);
                     el.StartEleicao();
                     this.bufferEleicao.add(el);
+                    out.write(el.toString());
+                    out.close();
                     ///this.saveEleicao(el);
                     System.out.println(el);
                     c.replyElection(el);
+                    printBufferEleicao(this.bufferEleicao);
                   } catch (ParseException ex) {
                       Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
                   } catch (IOException ex) {
@@ -213,66 +213,61 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         
            
     @Override
-     public synchronized  void alterar_eleicao(String nome){
-        printBufferEleicao(this.bufferEleicao); 
-        String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?","deseja alterar a hora inicial","Hora final" };
-        String v[] = new String[vet.length];
-        
-        for (int i = 0; i <vet.length; i++) {
-            v[i]=JOptionPane.showInputDialog(vet[i],this.bufferEleicao.get(i));
-        }
-        
+     public synchronized  void alterar_eleicao(String nome,String v[]){ 
         for(int i=0;i<this.bufferEleicao.size();i++){
             if(this.bufferEleicao.get(i).titulo.equalsIgnoreCase(nome)){
-               this.bufferEleicao.get(i).setTipo(v[0]);
-               this.bufferEleicao.get(i).setTitulo(v[1]);
-               this.bufferEleicao.get(i).setData_texto(v[2]);
-               this.bufferEleicao.get(i).setHoraini(v[3]);
-               this.bufferEleicao.get(i).setHorafim(v[4]);
-               System.out.println(this.bufferEleicao.get(i));
+                try {
+                    if(v[0]!=null)
+                        this.bufferEleicao.get(i).setTipo(v[0]);
+                    if(v[1]!=null)
+                        this.bufferEleicao.get(i).setTitulo(v[1]);
+                    if(v[2]!=null)
+                        this.bufferEleicao.get(i).setData(v[2]);
+                    if(v[3]!=null)
+                        this.bufferEleicao.get(i).setHoraini(v[3]);
+                    if(v[4]!=null)
+                        this.bufferEleicao.get(i).setHorafim(v[4]);
+                    
+                    FileReader read;
+                    File arquivo = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
+                    
+                    if(arquivo.exists()){
+                        try {
+                            read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
+                            BufferedReader in = new BufferedReader(read);
+                            String linha="";
+                            String arquivo_todo;
+                            linha=in.readLine();
+                            arquivo.renameTo(new File("/home/gustavo/NetBeansProjects/Ivotas/"+this.bufferEleicao.get(i).getTitulo()));
+                            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+this.bufferEleicao.get(i).getTitulo());
+                            out.write(this.bufferEleicao.get(i).toString()+"\n");
+                            while((arquivo_todo=in.readLine())!=null){
+                                if(arquivo_todo.equals(linha)){
+                                    continue;
+                                }
+                                
+                                out.write(arquivo_todo+"\n");
+                            }
+                            out.close();
+                            read.close();
+                            in.close();
+                            
+                        } catch (FileNotFoundException ex) {
+                            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+                        }   catch (IOException ex) {
+                            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
+                    }
+                } catch (ParseException ex) {           
+                    Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         
         }
-        printBufferEleicao(this.bufferEleicao);
         
-     }       
- 
-           /* FileReader read;
-            File arquivo = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
-            if(arquivo.exists()){
-                try {
-                   
-                    read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
-                    BufferedReader in = new BufferedReader(read);
-                    String s="";
-                    String a[] = null;
-                    String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?" };
-                    String o[] = new String[vet.length];
-                    while((s=in.readLine())!=null){
-                        a=s.split("[|;]");
-                    }
-                    FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+nome,true);
-                    for (int i = 0; i <a.length; i++) {
-                        o[i]=JOptionPane.showInputDialog(null,vet[i],a[i]);
-                    }
-                    out.write(o[0]+";");
-                    out.write(o[1]+";");
-                    out.write(o[2]);
-                    out.close();
-                
-                //this.bufferEleicao.add(a);    
-                File arquivo2;
-                arquivo2 = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
-                arquivo2.renameTo(new File("/home/gustavo/NetBeansProjects/Ivotas/"+o[1]));
-                System.out.println(s);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-        }   catch (IOException ex) {
-                Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
-           
-        
-    
+            
+        }
     @Override
      public synchronized  void CadastrarPessoa(){
         String tipo_pessoa=""; 

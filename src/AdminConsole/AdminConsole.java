@@ -73,8 +73,10 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
       //JOptionPane.showInputDialog("Digite o Titulo da eleicao:"); 
      
         
-    } 
+    }
     
+
+ 
     public static void main(String args[]) throws RemoteException, NotBoundException, IOException{
         Integer opcao=0;
         
@@ -102,7 +104,12 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         System.out.println(reply=h.Test_connection());
                         break;
                     case 2:
-                        h.criarEleicao();
+                        String s[]={"Defina o tipo de eleicao","nome da eleicao","Data ex:dd-MM-yyyy","Horainicial ex:hh:mm:ss","HoraFim ex:hh:mm:ss"};
+                        String saida[]= new String [s.length];
+                        for(int i=0;i<s.length;i++){
+                            saida[i]=JOptionPane.showInputDialog(s[i]);
+                        }
+                        h.criarEleicao(saida);
                         break; 
                     case 3:
                         h.CriarLista();
@@ -117,7 +124,12 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                     case 6:
                         String nome;
                         nome=JOptionPane.showInputDialog("Digite o nome da eleicao que dejesa alterar:");
-                        h.alterar_eleicao(nome);
+                        String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?","deseja alterar a hora inicial","Hora final" };
+                        String v[] = new String[vet.length];
+                        for (int i = 0; i <vet.length; i++) {
+                            v[i]=JOptionPane.showInputDialog(vet[i]);
+                        }
+                        h.alterar_eleicao(nome,v);
                         break;
                     case 7:
                         String rep="";

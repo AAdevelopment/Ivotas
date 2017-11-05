@@ -47,6 +47,18 @@ public class Eleicao implements Runnable,Serializable {
     String horaini;
     ArrayList<Mesa_voto> mesas;
     SimpleDateFormat dt;
+
+    public String getData_texto() {
+        return data_texto;
+    }
+
+    public String getHorafim() {
+        return horafim;
+    }
+
+    public String getHoraini() {
+        return horaini;
+    }
     
     
     public Eleicao(String tipo,String titulo,String descricao, String data, ArrayList<String> deptos) throws ParseException{
@@ -101,6 +113,10 @@ public class Eleicao implements Runnable,Serializable {
         this.dptos = dptos;
     }
 
+    public void setData(String data) throws ParseException {
+        this.data = dt.parse(data);
+    }
+
     public void setHorafim(String horafim) {
         this.horafim = horafim;
     }
@@ -137,6 +153,11 @@ public class Eleicao implements Runnable,Serializable {
                         
                     }
                 }
+            }
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Eleicao.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
