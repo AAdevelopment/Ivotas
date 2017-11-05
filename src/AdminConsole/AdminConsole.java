@@ -10,6 +10,7 @@ import Server_RMI.Comunication_server;
 import Server_RMI.Eleicao;
 import Server_RMI.ListaCandidatos;
 import Server_RMI.Faculdade;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -75,8 +76,35 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         
     }
     
-
- 
+    public static String criarFaculdadeDpto() throws IOException{
+        String nome="";
+        nome=JOptionPane.showInputDialog("Digite o nome da faculdade:");
+        String saida="";
+        boolean verifica =true;
+        while(verifica==true){
+            saida=JOptionPane.showInputDialog("digite o nome do Departamento, clique em cancel para sair:");
+            if(saida==null){
+                verifica =false;   
+                break;
+            }
+            else{
+                return saida;
+            }
+        }
+        return null;
+    }
+    
+    public static String [] CadastroPessoa(){
+        String s[]={"Cadastrar tipo pessoa","Cadastrar nome:","Cadastrar Cartao do cidadao:","Cadastrar Password","Cadastrar DPto","Cadastrar Card_valid dd-mm-yyyy",
+            "Cadastrar telefone","Cadastrar Moradia"};
+        String o[] = new String[s.length];
+        
+        for(int i=0;i<o.length;i++){
+           o[i]=JOptionPane.showInputDialog(s[i]); 
+        }
+        return o;
+    }
+    
     public static void main(String args[]) throws RemoteException, NotBoundException, IOException{
         Integer opcao=0;
         
@@ -112,24 +140,28 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         h.criarEleicao(saida);
                         break; 
                     case 3:
-                        h.CriarLista();
+                        String eleicao="";
+                        eleicao=JOptionPane.showInputDialog("Digite o nome da eleicao:");
+                        h.CriarLista(eleicao);
                         break;
                         
                     case 4:
-                        h.CadastrarPessoa();
+                        h.CadastrarPessoa(CadastroPessoa());
                         break;
                     case 5:
-                        h.CriarFaculdade_Dpto();
+                        String nome="";
+                        nome=JOptionPane.showInputDialog("Digite o nome da faculdade:");
+                        h.CriarFaculdade_Dpto(nome,criarFaculdadeDpto());
                         break;
                     case 6:
-                        String nome;
-                        nome=JOptionPane.showInputDialog("Digite o nome da eleicao que dejesa alterar:");
+                        String nome1;
+                        nome1=JOptionPane.showInputDialog("Digite o nome da eleicao que dejesa alterar:");
                         String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?","deseja alterar a hora inicial","Hora final" };
                         String v[] = new String[vet.length];
                         for (int i = 0; i <vet.length; i++) {
                             v[i]=JOptionPane.showInputDialog(vet[i]);
                         }
-                        h.alterar_eleicao(nome,v);
+                        h.alterar_eleicao(nome1,v);
                         break;
                     case 7:
                         String rep="";

@@ -7,7 +7,6 @@ package Server_RMI;
 
 
 
-import Server_RMI.Comunication_server;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,27 +14,20 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import java.rmi.server.*;
 import java.net.*;
-import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
-import java.rmi.Remote;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
-//import java.util.HashMap;
-//import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mesa_voto.Mesa_voto;
@@ -63,7 +55,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         super();
     }
     
-    //interface methods;
+    //INTERFACE REMOTE METHODS;
     @Override
     public String Test_connection() throws RemoteException {
 		return "Server: Running!";
@@ -76,14 +68,16 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     
     @Override
-    public   void CriarLista(){
+    public   void CriarLista(String eleicao){
         String nome="";
         String tipo="";
         nome=JOptionPane.showInputDialog("Digite o nome da lista:");
         tipo=JOptionPane.showInputDialog("Digite o tipo da lista:");
         ListaCandidatos l = new ListaCandidatos(nome,tipo);
+        
         try {
-            FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\listas.txt",true);
+            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+eleicao,true);
+            // FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\listas.txt",true);
             int n=0;
             String saida="";
             boolean verifica =true;
@@ -96,45 +90,37 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 else{
                     l.setList(saida);    
                 }
-            
             }
-            out.write(l.toString()+"qtd=0"+"\n");
+            out.write("\n"+l.toString()+"qtd=0"+"\n");
             out.close();
             this.buffercandidatos.add(l);
             c.reply_list_on_client(l);
-            System.out.println(l);
+            //System.out.println(l);
           } catch (IOException ex) {
             ex.getMessage();
         }
     }
   
    @Override
-    public synchronized void CriarFaculdade_Dpto() throws RemoteException{
-        String nome="";
-        nome=JOptionPane.showInputDialog("Digite o nome da faculdade:");
-        Faculdade f = new Faculdade(nome);
-        String saida="";
+    public synchronized void CriarFaculdade_Dpto(String nome,String saida) throws RemoteException{
+        FileWriter out = null;
         try {
-            FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Faculdade_dpto",true);
-       
-        boolean verifica =true;
-        while(verifica==true){
-            saida=JOptionPane.showInputDialog("digite o nome do Departamento, clique em cancel para sair:");
-            if(saida==null){
-                verifica =false;   
-                break;
-            }
-            else{
-                f.criarDPTO(saida);    
-            }
-        }
-        out.write(f.toString()+"\n");
-        out.close();
-        this.bufferFaculdade.add(f);
-        c.reply_FacultyDptolist_on_client(f);
-
+            Faculdade f = new Faculdade(nome);
+            out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/Faculdade_dpto",true);
+            //FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Faculdade_dpto",true);
+            f.criarDPTO(saida);
+            out.write(f.toString()+"\n");
+            out.close();
+            this.bufferFaculdade.add(f);
+            c.reply_FacultyDptolist_on_client(f);
         } catch (IOException ex) {
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                out.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     /*
@@ -167,8 +153,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public synchronized void Add_ELectionlocal(String local,Pessoa p){
         try {
             String nome =p.name;
+            //FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/pessoas");
             FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt");
             BufferedReader in = new BufferedReader(read);
+            //FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/pessoas",true);
             FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt",true);
             String s="";
             while((s=in.readLine())!=null){
@@ -269,28 +257,13 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             
         }
     @Override
-     public synchronized  void CadastrarPessoa(){
-        String tipo_pessoa=""; 
-        String name ="";
-        Long cartao = null;
-        String Password = "";
-        String Dpto_facul="";
-        String card_valid="";
-        String tel="";
-        String morada="";
-        
-        String s[]={"Cadastrar tipo pessoa","Cadastrar nome:","Cadastrar Cartao do cidadao:","Cadastrar Password","Cadastrar DPto","Cadastrar Card_valid dd-mm-yyyy",
-            "Cadastrar telefone","Cadastrar Moradia"};
-        String o[] = new String[s.length];
-        
-        for(int i=0;i<o.length;i++){
-           o[i]=JOptionPane.showInputDialog(s[i]); 
-        }
+     public synchronized  void CadastrarPessoa(String o[]){
         
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         formatter.setLenient(false);
         try {
-            FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt",true);
+            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/pessoas",true);
+            //FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt",true);
             Pessoa p = new Pessoa(o[0],o[1],Long.parseLong(o[2]),o[3],o[4],o[5],o[6],o[7]);
             String saida="";
             saida=p.getTipoPessoa()+";"+p.getName()+";"+p.getCartao()+";"+p.getPassword()+";"+
@@ -525,10 +498,11 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     //server runnig;
     public  void CarregaPessoas() throws FileNotFoundException, IOException, ParseException{
-        boolean exists = (new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt")).exists();
+        boolean exists = (new File("/home/gustavo/NetBeansProjects/Ivotas/pessoas")).exists();
+        //boolean exists = (new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt")).exists();
         if (exists) {
-           
-            FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt");
+            FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/pessoas");
+            //FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt");
             BufferedReader in = new BufferedReader(read);
             String s="";
             String[] a= new String[9];
@@ -632,13 +606,13 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             r.rebind("connection_RMI",server);
             Mesa_voto mesa=new Mesa_voto(123,"DEI");
             server.addMesaVoto(mesa);
-            server.loadArrayEleicao();
+            //server.loadArrayEleicao();
             server.CarregaPessoas();
-            server.printBufferEleicao(server.bufferEleicao);
+            //server.printBufferEleicao(server.bufferEleicao);
             server.printBufferPessoas(server.bufferPessoas);
             
-//            aSocket = new DatagramSocket(Integer.parseInt(args[1]));
-           // System.out.println("Socket Datagram à escuta no porto "+args[1]);
+            aSocket = new DatagramSocket(Integer.parseInt(args[1]));
+            System.out.println("Socket Datagram à escuta no porto "+args[1]);
             server.savePessoas();
             server.saveArrayEleicao();
                   
