@@ -45,7 +45,7 @@ public class ListaCandidatos implements Serializable{
     }
     
     public void printListaCandidatos(){
-        System.out.println(this.nome+" | "+this.tipo);
+        System.out.println(this.nome+" | "+this.tipo+" | "+ this.votos.size());
         for(int i=0; i<this.Lista.size();i++){
             System.out.print(this.Lista.get(i)+" ; ");
         }
@@ -55,10 +55,5 @@ public class ListaCandidatos implements Serializable{
         }
 
     }
-     /* public ArrayList<String> Getlista(String[] v){
-      listacandidato = new ArrayList();
-      for(int i=0;i<v.length;i++)
-            listacandidato.add(i,v[i]);    
-      return listacandidato;
-    }*/
+    
 }

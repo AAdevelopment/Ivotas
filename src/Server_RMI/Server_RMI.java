@@ -305,8 +305,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
         
     }
-     
-    
+    public void addMesaVoto(Mesa_voto mesa){
+        this.bufferMesas.add(mesa);
+    }
+
     
      
      /************************************************************************************************************************
@@ -529,21 +531,23 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt");
             BufferedReader in = new BufferedReader(read);
             String s="";
-            String[] a;
+            String[] a= new String[9];
             String[] b;
-            in.readLine();
+            in.readLine(); // ignora cabeçalho
             while((s=in.readLine())!=null){
-              a=s.split(";");
-               // System.out.println(Arrays.toString(a));
-              Pessoa p = new Pessoa(a[0],a[1],Long.parseLong(a[2]),a[3],a[4],(a[5]),a[6],a[7]);
-              for(int i=0;i<Integer.parseInt(a[8]);i++){
-                  s=in.readLine();
-                  b=s.split(";");
-                  Eleicao eleicao=procuraEleicao(b[0]);
-                  Mesa_voto mesa=procuraMesa(b[1]);
-                  Date data = new SimpleDateFormat("hh:mm dd-mm-yyyy").parse(b[2]);
-                  Voto voto=new Voto(data,eleicao,mesa);
-                  p.votos.add(voto);
+                a=s.split(";");
+                 // System.out.println(Arrays.toString(a));
+                Pessoa p = new Pessoa(a[0],a[1],Long.parseLong(a[2]),a[3],a[4],(a[5]),a[6],a[7]);
+                if(a.length>8){
+                  for(int i=0;i<Integer.parseInt(a[8]);i++){
+                      s=in.readLine();
+                      b=s.split(";");
+                      Eleicao eleicao=procuraEleicao(b[0]);
+                      Mesa_voto mesa=procuraMesa(b[1]);
+                      Date data = new SimpleDateFormat("hh:mm dd-mm-yyyy").parse(b[2]);
+                      Voto voto=new Voto(data,eleicao,mesa);
+                      p.votos.add(voto);
+                  }
               }
               this.bufferPessoas.add(p);
               //System.out.println(p.toString());
@@ -594,6 +598,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public void printBufferPessoas(ArrayList <Pessoa> lista){
         for (int i=0;i<lista.size();i++){
             System.out.println(lista.get(i).toString());
+            if(lista.get(i).votos.size()>0){
+                for(int j=0;j<lista.get(i).votos.size();j++)
+                    System.out.println(lista.get(i).votos.get(j).toString());
+            }
         }
     }
     public void printBufferEleicao(ArrayList <Eleicao> lista){
@@ -622,14 +630,17 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            
             Registry r = LocateRegistry.createRegistry(Integer.parseInt(args[0]));
             r.rebind("connection_RMI",server);
+            Mesa_voto mesa=new Mesa_voto(123,"DEI");
+            server.addMesaVoto(mesa);
             server.loadArrayEleicao();
             server.CarregaPessoas();
             server.printBufferEleicao(server.bufferEleicao);
             server.printBufferPessoas(server.bufferPessoas);
+            
 //            aSocket = new DatagramSocket(Integer.parseInt(args[1]));
            // System.out.println("Socket Datagram à escuta no porto "+args[1]);
-            //server.savePessoas();
-            //server.saveArrayEleicao();
+            server.savePessoas();
+            server.saveArrayEleicao();
                   
             
         }catch(RemoteException re){

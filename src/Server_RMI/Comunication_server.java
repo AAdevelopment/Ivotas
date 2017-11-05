@@ -33,4 +33,6 @@ public interface Comunication_server extends Remote {
     public void alterar_eleicao(String nome_eleicao,String v[])throws RemoteException;
     public void Add_ELectionlocal(String local,Pessoa p)throws RemoteException;
     public Eleicao getEleicao(String titulo) throws RemoteException;
+    public void addMesaVoto(Mesa_voto mesa)throws RemoteException;
+
 }
