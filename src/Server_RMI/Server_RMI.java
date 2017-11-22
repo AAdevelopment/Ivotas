@@ -20,9 +20,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 import java.net.*;
-import java.rmi.RMISecurityManager;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -231,8 +229,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                             while((arquivo_todo=in.readLine())!=null){
                                 if(arquivo_todo.equals(linha)){
                                     continue;
-                                }
-                                
+                                }                           
                                 out.write(arquivo_todo+"\n");
                             }
                             out.close();
@@ -493,6 +490,14 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public ArrayList<Eleicao> get_Eleicoes(){
         return this.bufferEleicao;
     }
+     @Override
+    public Eleicao getEleicao(String titulo){
+        for(int i=0; i<this.bufferEleicao.size();i++){
+            if(this.bufferEleicao.get(i).titulo.equals(titulo))
+                return this.bufferEleicao.get(i);
+        }
+        return null;                
+    }
     
     // SERVER METHODS
     
@@ -661,14 +666,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
     } 
     
-    @Override
-    public Eleicao getEleicao(String titulo){
-        for(int i=0; i<this.bufferEleicao.size();i++){
-            if(this.bufferEleicao.get(i).titulo.equals(titulo))
-                return this.bufferEleicao.get(i);
-        }
-        return null;                
-    }
+   
     
 }
 
