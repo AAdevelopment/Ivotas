@@ -1,5 +1,5 @@
 titulo|tipo|descricao|data|departamentos
-Eleicao|nucleo|descricao da eleicao de 05-10-1998|05-10-1998|dei,deec,dec
+Eleicao|nucleo|descricao da eleicao de 05-10-1998|05-00-1993|dei,deec,dec
 A|tipo1|0
 andre miguel|gustavo magalhaes|julio afonso|eduardo miguel|
 B|tipo2|0
