@@ -10,6 +10,7 @@ import Server_RMI.Comunication_server;
 import Server_RMI.Eleicao;
 import Server_RMI.ListaCandidatos;
 import Server_RMI.Faculdade;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -73,7 +74,57 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
       //JOptionPane.showInputDialog("Digite o Titulo da eleicao:"); 
      
         
-    } 
+    }
+    
+    
+    
+    public static String [] CadastroPessoa(){
+        String s[]={"Cadastrar tipo pessoa","Cadastrar nome:","Cadastrar Cartao do cidadao:","Cadastrar Password","Cadastrar DPto","Cadastrar Card_valid dd-mm-yyyy",
+            "Cadastrar telefone","Cadastrar Moradia"};
+        String o[] = new String[s.length];
+        
+        for(int i=0;i<o.length;i++){
+           o[i]=JOptionPane.showInputDialog(s[i]); 
+        }
+        return o;
+    }
+    
+    public static ArrayList<String> criarLista(){
+        String saida="";
+        ArrayList<String> array = new ArrayList();
+         
+            boolean verifica =true;
+            while(verifica==true){
+                saida=JOptionPane.showInputDialog("digite o nome do candidato, clique em cancel para sair:");
+                if(saida==null){
+                    verifica=false;   
+                    break;
+                }
+                else{
+                     array.add(saida);
+                  
+                }
+            }
+        return array;
+    }
+    
+    
+    public static ArrayList<String> criarFaculdadeDpto() throws IOException{
+        String saida="";
+        ArrayList<String> array = new ArrayList();
+        boolean verifica =true;
+        while(verifica==true){
+            saida=JOptionPane.showInputDialog("digite o nome do Departamento, clique em cancel para sair:");
+            if(saida==null){
+                verifica =false;   
+                break;
+            }
+            else{
+                array.add(saida);
+            }
+        }
+        return array;
+    }
     
     public static void main(String args[]) throws RemoteException, NotBoundException, IOException{
         Integer opcao=0;
@@ -82,7 +133,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
             
            // System.getProperties().put("java.security.policy", "C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\AdminConsole\\policy.all");
            // System.setSecurityManager(new RMISecurityManager());
-            Comunication_server h = (Comunication_server) LocateRegistry.getRegistry(6500).lookup("connection_RMI");
+            Comunication_server h = (Comunication_server) LocateRegistry.getRegistry(6501).lookup("connection_RMI");
 
             
             AdminConsole c = new AdminConsole();
@@ -102,22 +153,40 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         System.out.println(reply=h.Test_connection());
                         break;
                     case 2:
-                        h.criarEleicao();
+                        String s[]={"Defina o tipo de eleicao","nome da eleicao","Data ex:dd-MM-yyyy","Horainicial ex:hh:mm:ss","HoraFim ex:hh:mm:ss"};
+                        String saida[]= new String [s.length];
+                        for(int i=0;i<s.length;i++){
+                            saida[i]=JOptionPane.showInputDialog(s[i]);
+                        }
+                        h.criarEleicao(saida);
                         break; 
                     case 3:
-                        h.CriarLista();
+                        String eleicao="";
+                        eleicao=JOptionPane.showInputDialog("Digite o nome da eleicao:");
+                        String tipo="";
+                        tipo=JOptionPane.showInputDialog("Digite o tipo da Lista:");
+                        String nomeLista="";
+                        nomeLista=JOptionPane.showInputDialog("Digite o nome da Lista:");
+                        h.CriarLista(eleicao,criarLista(),nomeLista,tipo);
                         break;
                         
                     case 4:
-                        h.CadastrarPessoa();
+                        h.CadastrarPessoa(CadastroPessoa());
                         break;
                     case 5:
-                        h.CriarFaculdade_Dpto();
+                        String nome="";
+                        nome=JOptionPane.showInputDialog("Digite o nome da faculdade:");
+                        h.CriarFaculdade_Dpto(nome,criarFaculdadeDpto());
                         break;
                     case 6:
-                        String nome;
-                        nome=JOptionPane.showInputDialog("Digite o nome da eleicao que dejesa alterar:");
-                        h.alterar_eleicao(nome);
+                        String nome1;
+                        nome1=JOptionPane.showInputDialog("Digite o nome da eleicao que dejesa alterar:");
+                        String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?","deseja alterar a hora inicial","Hora final" };
+                        String v[] = new String[vet.length];
+                        for (int i = 0; i <vet.length; i++) {
+                            v[i]=JOptionPane.showInputDialog(vet[i]);
+                        }
+                        h.alterar_eleicao(nome1,v);
                         break;
                     case 7:
                         String rep="";
@@ -131,7 +200,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
             }while(verifica == true);
             
         }catch(RemoteException re){
-            re.getMessage();
+            System.out.println(re.getMessage()); 
         } catch (NotBoundException ex) {
             ex.getMessage();
         }

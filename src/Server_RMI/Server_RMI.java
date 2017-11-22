@@ -7,7 +7,7 @@ package Server_RMI;
 
 
 
-import Server_RMI.Comunication_server;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,27 +15,20 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import java.rmi.server.*;
 import java.net.*;
-import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
-import java.rmi.Remote;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
-//import java.util.HashMap;
-//import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mesa_voto.Mesa_voto;
@@ -45,25 +38,25 @@ import mesa_voto.Mesa_voto;
  * @author gustavo
  */
 
-public class Server_RMI  extends UnicastRemoteObject implements Comunication_server {
+public class Server_RMI  extends UnicastRemoteObject implements Comunication_server,Runnable {
     static Comunication_client c;
     private static final long serialVersionUID = 1L;
-    Thread t;
+    static Thread t;
     static DatagramSocket  aSocket;
     static Server_RMI server;
     
     /*BUFFERS DE DADOS PARA ARMAZENAR NOS DOIS SERVIDORES*/
-    ArrayList <ListaCandidatos> buffercandidatos= new ArrayList();
-    ArrayList <Pessoa> bufferPessoas= new ArrayList();
-    ArrayList<Eleicao> bufferEleicao= new ArrayList();
-    ArrayList<Faculdade> bufferFaculdade= new ArrayList();
-    ArrayList<Mesa_voto> bufferMesas= new ArrayList();
+     ArrayList <ListaCandidatos> buffercandidatos= new ArrayList();
+     ArrayList <Pessoa> bufferPessoas= new ArrayList();
+     ArrayList<Eleicao> bufferEleicao= new ArrayList();
+     ArrayList<Faculdade> bufferFaculdade= new ArrayList();
+     ArrayList<Mesa_voto> bufferMesas= new ArrayList();
     
     public Server_RMI() throws RemoteException{
         super();
     }
     
-    //interface methods;
+    //INTERFACE REMOTE METHODS;
     @Override
     public String Test_connection() throws RemoteException {
 		return "Server: Running!";
@@ -76,65 +69,58 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     
     @Override
-    public   void CriarLista(){
-        String nome="";
-        String tipo="";
-        nome=JOptionPane.showInputDialog("Digite o nome da lista:");
-        tipo=JOptionPane.showInputDialog("Digite o tipo da lista:");
-        ListaCandidatos l = new ListaCandidatos(nome,tipo);
-        try {
-            FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\listas.txt",true);
-            int n=0;
-            String saida="";
-            boolean verifica =true;
-            while(verifica==true){
-                saida=JOptionPane.showInputDialog("digite o nome do candidato, clique em cancel para sair:");
-                if(saida==null){
-                    verifica =false;   
-                    break;
-                }
-                else{
-                    l.setList(saida);    
-                }
-            
-            }
-            out.write(l.toString()+"qtd=0"+"\n");
-            out.close();
-            this.buffercandidatos.add(l);
-            c.reply_list_on_client(l);
-            System.out.println(l);
-          } catch (IOException ex) {
-            ex.getMessage();
-        }
-    }
-  
-   @Override
-    public synchronized void CriarFaculdade_Dpto() throws RemoteException{
-        String nome="";
-        nome=JOptionPane.showInputDialog("Digite o nome da faculdade:");
-        Faculdade f = new Faculdade(nome);
-        String saida="";
-        try {
-            FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Faculdade_dpto",true);
-       
-        boolean verifica =true;
-        while(verifica==true){
-            saida=JOptionPane.showInputDialog("digite o nome do Departamento, clique em cancel para sair:");
-            if(saida==null){
-                verifica =false;   
-                break;
+    public   void CriarLista(String eleicao, ArrayList<String> array,String nome,String tipo){
+      
+        Eleicao el =getEleicao(eleicao);
+        if(el!=null){
+            if(el.tipo.equals(tipo)){
+                ListaCandidatos l = new ListaCandidatos(nome,tipo);
+        
+                try {
+                    FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+eleicao,true);
+                    // FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\listas.txt",true);
+                    l.setList(array);
+                    int n=0;
+                    out.write(l.toString()+"qtd=0"+"\n");
+                    out.close();
+                    this.buffercandidatos.add(l);
+                    getEleicao(eleicao).setLista(l);
+                    c.reply_list_on_client(l);
+                    //System.out.println(l);
+                } catch (IOException ex) {
+                    ex.getMessage();
+                    }
             }
             else{
-                f.criarDPTO(saida);    
+                System.out.println("Este tipo nao corresponde com o permitido na eleicao");
             }
+               
+        
         }
-        out.write(f.toString()+"\n");
-        out.close();
-        this.bufferFaculdade.add(f);
-        c.reply_FacultyDptolist_on_client(f);
-
+        else{
+            System.out.println("Essa eleicao nao existe!");
+        }
+    }
+   @Override
+    public synchronized void CriarFaculdade_Dpto(String nome,ArrayList<String> array) throws RemoteException{
+        FileWriter out = null;
+        try {
+            Faculdade f = new Faculdade(nome);
+            out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/Faculdade_dpto",true);
+            //FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Faculdade_dpto",true);
+            f.criarDPTO(array);
+            out.write(f.toString()+"\n");
+            out.close();
+            this.bufferFaculdade.add(f);
+            c.reply_FacultyDptolist_on_client(f);
         } catch (IOException ex) {
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                out.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     /*
@@ -171,9 +157,11 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public synchronized void Add_ELectionlocal(String local,Pessoa p){
         try {
             String nome =p.name;
-            FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt");
+            FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/pessoas");
+            //FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt");
             BufferedReader in = new BufferedReader(read);
-            FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt",true);
+            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/pessoas",true);
+            //FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt",true);
             String s="";
             while((s=in.readLine())!=null){
                 String a[];
@@ -192,18 +180,17 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     }
     
    @Override
-    public synchronized  void criarEleicao() throws RemoteException{
-           String saida1[]= new String [5]; 
-           String v[]={"Defina o tipo de eleicao","nome da eleicao","Data ex:dd-MM-yyyy","Horainicial ex:hh:mm:ss","HoraFim ex:hh:mm:ss"};
-           String saida[]= new String [v.length];
-           for(int i=0;i<v.length;i++){
-               saida[i]=JOptionPane.showInputDialog(v[i]);
-           }
+    public synchronized  void criarEleicao(String saida[]) throws RemoteException{ 
+          
             Eleicao  el;
-            try{
+            try{    
+                    File file = new File("/home/gustavo/NetBeansProjects/Ivotas/"+saida[1]);
+                    FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+saida[1],true);
                     el = new Eleicao(saida[0],saida[1],saida[2],saida[3],saida[4]);
                     el.StartEleicao();
                     this.bufferEleicao.add(el);
+                    out.write(el.toString());
+                    out.close();
                     ///this.saveEleicao(el);
                     System.out.println(el);
                     c.replyElection(el);
@@ -217,89 +204,69 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         
            
     @Override
-     public synchronized  void alterar_eleicao(String nome){
-        printBufferEleicao(this.bufferEleicao); 
-        String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?","deseja alterar a hora inicial","Hora final" };
-        String v[] = new String[vet.length];
-        
-        for (int i = 0; i <vet.length; i++) {
-            v[i]=JOptionPane.showInputDialog(vet[i],this.bufferEleicao.get(i));
-        }
-        
+     public synchronized  void alterar_eleicao(String nome,String v[]){  
         for(int i=0;i<this.bufferEleicao.size();i++){
             if(this.bufferEleicao.get(i).titulo.equalsIgnoreCase(nome)){
-               this.bufferEleicao.get(i).setTipo(v[0]);
-               this.bufferEleicao.get(i).setTitulo(v[1]);
-               this.bufferEleicao.get(i).setData_texto(v[2]);
-               this.bufferEleicao.get(i).setHoraini(v[3]);
-               this.bufferEleicao.get(i).setHorafim(v[4]);
-               System.out.println(this.bufferEleicao.get(i));
+                try {
+                    if(v[0]!=null)
+                        this.bufferEleicao.get(i).setTipo(v[0]);
+                    if(v[1]!=null)
+                        this.bufferEleicao.get(i).setTitulo(v[1]);
+                    if(v[2]!=null)
+                        this.bufferEleicao.get(i).setData(v[2]);
+                    if(v[3]!=null)
+                        this.bufferEleicao.get(i).setHoraini(v[3]);
+                    if(v[4]!=null)
+                        this.bufferEleicao.get(i).setHorafim(v[4]);
+                    
+                    FileReader read;
+                    File arquivo = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
+                    
+                    if(arquivo.exists()){
+                        try {
+                            read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
+                            BufferedReader in = new BufferedReader(read);
+                            String linha="";
+                            String arquivo_todo;
+                            linha=in.readLine();
+                            arquivo.renameTo(new File("/home/gustavo/NetBeansProjects/Ivotas/"+this.bufferEleicao.get(i).getTitulo()));
+                            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+this.bufferEleicao.get(i).getTitulo());
+                            out.write(this.bufferEleicao.get(i).toString()+"\n");
+                            while((arquivo_todo=in.readLine())!=null){
+                                if(arquivo_todo.equals(linha)){
+                                    continue;
+                                }
+                                
+                                out.write(arquivo_todo+"\n");
+                            }
+                            out.close();
+                            read.close();
+                            in.close();
+                            
+                        } catch (FileNotFoundException ex) {
+                            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+                        }   catch (IOException ex) {
+                            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
+                    }
+                } catch (ParseException ex) {           
+                    Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         
         }
-        printBufferEleicao(this.bufferEleicao);
         
-     }       
- 
-           /* FileReader read;
-            File arquivo = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
-            if(arquivo.exists()){
-                try {
-                   
-                    read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
-                    BufferedReader in = new BufferedReader(read);
-                    String s="";
-                    String a[] = null;
-                    String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?" };
-                    String o[] = new String[vet.length];
-                    while((s=in.readLine())!=null){
-                        a=s.split("[|;]");
-                    }
-                    FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+nome,true);
-                    for (int i = 0; i <a.length; i++) {
-                        o[i]=JOptionPane.showInputDialog(null,vet[i],a[i]);
-                    }
-                    out.write(o[0]+";");
-                    out.write(o[1]+";");
-                    out.write(o[2]);
-                    out.close();
-                
-                //this.bufferEleicao.add(a);    
-                File arquivo2;
-                arquivo2 = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
-                arquivo2.renameTo(new File("/home/gustavo/NetBeansProjects/Ivotas/"+o[1]));
-                System.out.println(s);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-        }   catch (IOException ex) {
-                Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
-           
-        
-    
-    @Override
-     public synchronized  void CadastrarPessoa(){
-        String tipo_pessoa=""; 
-        String name ="";
-        Long cartao = null;
-        String Password = "";
-        String Dpto_facul="";
-        String card_valid="";
-        String tel="";
-        String morada="";
-        
-        String s[]={"Cadastrar tipo pessoa","Cadastrar nome:","Cadastrar Cartao do cidadao:","Cadastrar Password","Cadastrar DPto","Cadastrar Card_valid dd-mm-yyyy",
-            "Cadastrar telefone","Cadastrar Moradia"};
-        String o[] = new String[s.length];
-        
-        for(int i=0;i<o.length;i++){
-           o[i]=JOptionPane.showInputDialog(s[i]); 
+            
         }
+    @Override
+     public synchronized  void CadastrarPessoa(String o[]){
         
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         formatter.setLenient(false);
         try {
-            FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt",true);
+            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/pessoas",true);
+            //FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt",true);
             Pessoa p = new Pessoa(o[0],o[1],Long.parseLong(o[2]),o[3],o[4],o[5],o[6],o[7]);
             String saida="";
             saida=p.getTipoPessoa()+";"+p.getName()+";"+p.getCartao()+";"+p.getPassword()+";"+
@@ -530,14 +497,16 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public ArrayList<Eleicao> get_Eleicoes(){
         return this.bufferEleicao;
     }
-    //servers methods
     
-    //server runnig;
+    // SERVER METHODS
+    
+    
     public  void CarregaPessoas() throws FileNotFoundException, IOException, ParseException{
-        boolean exists = (new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt")).exists();
+        boolean exists = (new File("/home/gustavo/NetBeansProjects/Ivotas/pessoas")).exists();
+        //boolean exists = (new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt")).exists();
         if (exists) {
-           
-            FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt");
+            FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/pessoas");
+            //FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\Pessoas.txt");
             BufferedReader in = new BufferedReader(read);
             String s="";
             String[] a= new String[9];
@@ -626,6 +595,42 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 lista.get(i).listas.get(j).printListaCandidatos();
             }
         }
+    }
+    
+    @Override
+    public void run(){
+        try {
+             String teste="oi";
+             String Response;
+             while(true){
+                System.out.println("Teste");
+                byte[] bufferReceive = new byte[1000];
+                DatagramPacket request_receive = new DatagramPacket(bufferReceive,bufferReceive.length);
+                aSocket.receive(request_receive);
+                Response=new String(request_receive.getData(), 0, request_receive.getLength());	
+	        System.out.println("Server Recebeu: " + Response);
+                
+                byte[] bufferRequest =teste.getBytes();
+                
+                InetAddress aHost = InetAddress.getByName("6502");
+                int serverPort = 6504;
+                DatagramPacket request = new DatagramPacket(bufferRequest,bufferRequest.length,aHost,serverPort); 
+                aSocket.send(request);
+               
+              
+                Thread.sleep(2000);
+            }
+        } catch (InterruptedException | UnknownHostException ex) {
+            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+           // Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    public void StartUDPConnection(){
+        t = new Thread(this,"Thread1");
+        t.start();
     }
     public static void main(String args[])throws RemoteException, MalformedURLException, SocketException, IOException, FileNotFoundException,ParseException {
         
