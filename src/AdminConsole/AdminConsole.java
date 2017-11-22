@@ -76,23 +76,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         
     }
     
-    public static String criarFaculdadeDpto() throws IOException{
-        String nome="";
-        nome=JOptionPane.showInputDialog("Digite o nome da faculdade:");
-        String saida="";
-        boolean verifica =true;
-        while(verifica==true){
-            saida=JOptionPane.showInputDialog("digite o nome do Departamento, clique em cancel para sair:");
-            if(saida==null){
-                verifica =false;   
-                break;
-            }
-            else{
-                return saida;
-            }
-        }
-        return null;
-    }
+    
     
     public static String [] CadastroPessoa(){
         String s[]={"Cadastrar tipo pessoa","Cadastrar nome:","Cadastrar Cartao do cidadao:","Cadastrar Password","Cadastrar DPto","Cadastrar Card_valid dd-mm-yyyy",
@@ -105,6 +89,43 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         return o;
     }
     
+    public static ArrayList<String> criarLista(){
+        String saida="";
+        ArrayList<String> array = new ArrayList();
+         
+            boolean verifica =true;
+            while(verifica==true){
+                saida=JOptionPane.showInputDialog("digite o nome do candidato, clique em cancel para sair:");
+                if(saida==null){
+                    verifica=false;   
+                    break;
+                }
+                else{
+                     array.add(saida);
+                  
+                }
+            }
+        return array;
+    }
+    
+    
+    public static ArrayList<String> criarFaculdadeDpto() throws IOException{
+        String saida="";
+        ArrayList<String> array = new ArrayList();
+        boolean verifica =true;
+        while(verifica==true){
+            saida=JOptionPane.showInputDialog("digite o nome do Departamento, clique em cancel para sair:");
+            if(saida==null){
+                verifica =false;   
+                break;
+            }
+            else{
+                array.add(saida);
+            }
+        }
+        return array;
+    }
+    
     public static void main(String args[]) throws RemoteException, NotBoundException, IOException{
         Integer opcao=0;
         
@@ -112,7 +133,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
             
            // System.getProperties().put("java.security.policy", "C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\AdminConsole\\policy.all");
            // System.setSecurityManager(new RMISecurityManager());
-            Comunication_server h = (Comunication_server) LocateRegistry.getRegistry(6500).lookup("connection_RMI");
+            Comunication_server h = (Comunication_server) LocateRegistry.getRegistry(6501).lookup("connection_RMI");
 
             
             AdminConsole c = new AdminConsole();
@@ -142,7 +163,11 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                     case 3:
                         String eleicao="";
                         eleicao=JOptionPane.showInputDialog("Digite o nome da eleicao:");
-                        h.CriarLista(eleicao);
+                        String tipo="";
+                        tipo=JOptionPane.showInputDialog("Digite o tipo da Lista:");
+                        String nomeLista="";
+                        nomeLista=JOptionPane.showInputDialog("Digite o nome da Lista:");
+                        h.CriarLista(eleicao,criarLista(),nomeLista,tipo);
                         break;
                         
                     case 4:
@@ -175,7 +200,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
             }while(verifica == true);
             
         }catch(RemoteException re){
-            re.getMessage();
+            System.out.println(re.getMessage()); 
         } catch (NotBoundException ex) {
             ex.getMessage();
         }

@@ -14,6 +14,7 @@ package Server_RMI;
 
 import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.Arrays;
 /**
  *
  * @author gustavo
@@ -36,8 +37,8 @@ public class ListaCandidatos implements Serializable{
     public void setLista(ArrayList<String> lista){
         this.Lista=lista;
     }
-   public void setList(String nomecandidato){
-       this.Lista.add(nomecandidato);
+   public void setList(ArrayList<String> lista){
+       this.Lista.addAll((lista));
    }
   
     public String toString(){

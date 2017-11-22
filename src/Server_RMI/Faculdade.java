@@ -5,13 +5,14 @@
  */
 package Server_RMI;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author gustavo
  */
-public class Faculdade {
+public class Faculdade  implements Serializable {
     ArrayList<String> dpto;
     String nome;
     
@@ -20,8 +21,8 @@ public class Faculdade {
         this.dpto = new ArrayList();
     }
     
-    public void criarDPTO(String nome_dpto){
-        this.dpto.add(nome_dpto);
+    public void criarDPTO( ArrayList<String> array){
+        this.dpto.addAll(array);
     }
     
     public String toString(){

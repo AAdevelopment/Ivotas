@@ -27,9 +27,9 @@ public interface Comunication_server extends Remote {
     public  Pessoa autenticate(String campo, String dados) throws RemoteException;
     public  Resposta unlock_terminal(Pessoa pessoa,String CC, String Password)throws RemoteException;
     public  ArrayList<Eleicao> get_Eleicoes()throws RemoteException;
-    public void CriarLista(String eleicao)throws RemoteException;
+    public  void CriarLista(String eleicao,ArrayList<String> lista,String nome,String tipo)throws RemoteException;
     public ArrayList<ListaCandidatos> get_Listas(Eleicao eleicao)throws RemoteException;
-    public void CriarFaculdade_Dpto(String nome,String saida)throws RemoteException;
+    public void CriarFaculdade_Dpto(String nome,ArrayList<String> array)throws RemoteException;
     public void alterar_eleicao(String nome_eleicao,String v[])throws RemoteException;
     public void Add_ELectionlocal(String local,Pessoa p)throws RemoteException;
     public Eleicao getEleicao(String titulo) throws RemoteException;
