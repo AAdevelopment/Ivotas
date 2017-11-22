@@ -136,13 +136,17 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             }
         }
         for (int i=0; i<this.bufferEleicao.size();i++){
-            if(this.bufferEleicao.get(i).equals(eleicao))
+            if(this.bufferEleicao.get(i).equals(eleicao)){
                 for(int j=0;j<this.bufferEleicao.get(i).listas.size();j++){
                     if(this.bufferEleicao.get(i).listas.get(j).nome.equalsIgnoreCase(lista)){
                         this.bufferEleicao.get(i).listas.get(j).votos.add(vote);
                     }
                 }
+            }
         }
+        
+        this.printBufferEleicao(bufferEleicao);
+        this.printBufferPessoas(bufferPessoas);
         this.saveArrayEleicao();
         this.savePessoas();
         
@@ -645,20 +649,44 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            
             Registry r = LocateRegistry.createRegistry(Integer.parseInt(args[0]));
             r.rebind("connection_RMI",server);
-            System.out.println("Server RMI Running!");
-            aSocket = new DatagramSocket(Integer.parseInt(args[1]));
-            System.out.println("Socket Datagram à escuta no porto "+args[1]);
-            server.StartUDPConnection();
-           //Mesa_voto mesa=new Mesa_voto(123,"DEI");
-           // server.addMesaVoto(mesa);
-            //server.loadArrayEleicao();
-           // server.CarregaPessoas();
-            //server.printBufferEleicao(server.bufferEleicao);
-           // server.printBufferPessoas(server.bufferPessoas);
-           // server.savePessoas();
+            
+            Mesa_voto mesa=new Mesa_voto(123,"DEI");
+            Mesa_voto mesa_dem=new Mesa_voto(567,"DEM");
+             server.addMesaVoto(mesa);
+            server.addMesaVoto(mesa_dem);
+            server.loadArrayEleicao();
+            server.CarregaPessoas();
+            
+           
+            Date data= new Date();
+            ListaCandidatos A= new ListaCandidatos("Snow","alunos");
+            A.setList("Rhaegar Targarien");
+            A.setList("Jaime Lannister");
+            ListaCandidatos B= new ListaCandidatos("Snow","alunos");
+            B.setList("Daenherys Targarien");
+            B.setList("Tyrion Lannister");
+            Eleicao eleicao=new Eleicao("nucleo","eleicao nucleo DEM","20-11-1995","15:35", "18:00");
+            eleicao.mesas.add(mesa_dem);
+            eleicao.listas.add(A);
+            eleicao.listas.add(B);
+            Voto vote= new Voto (data,eleicao,mesa_dem);
+            eleicao.listas.get(0).votos.add(vote);
+            Pessoa pessoa= new Pessoa("Docente", "John Snow", 35832L,"NightsWatch","Castel Black", "18-03-2942","928372873","On top of the Wall");
+           
+            server.bufferEleicao.add(eleicao);
+            server.bufferPessoas.add(pessoa);
+            server.buffercandidatos.add(A);
+            server.buffercandidatos.add(B);
+            server.printBufferEleicao(server.bufferEleicao);
+            server.printBufferPessoas(server.bufferPessoas);
+            
+//            aSocket = new DatagramSocket(Integer.parseInt(args[1]));
+           // System.out.println("Socket Datagram à escuta no porto "+args[1]);
+           
+            //server.savePessoas();
            // server.saveArrayEleicao();
-         
-              
+                  
+            
         }catch(RemoteException re){
             System.out.println(re.getMessage());
         

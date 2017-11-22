@@ -1,6 +1,7 @@
 Tipo ; Nome ; Cartao ; Password ; Dpto ; Card_valid ; Telefone ; Morada
 docente;joao santos;342421432;213189sf;dei;22-12-2001;967141145;coimbra;0
-docente;carlos santos;378865432;as31ffsf;dec;05-03-2010;914242145;coimbra;0
+docente;carlos santos;378865432;as31ffsf;dec;05-03-2010;914242145;coimbra;1
+Eleicao;DEI;08:20 03-20-2017
 docente;ricardo santos;378521432;aj6rjsf;dec;05-03-2010;914242145;porto;0
 docente;carlos jesus;234521432;ar7rfsf;dec;05-03-2010;914242145;coimbra;0
 docente;francisco santos;378521765;as3k7r8sf;dec;05-03-2010;914242145;porto;0
