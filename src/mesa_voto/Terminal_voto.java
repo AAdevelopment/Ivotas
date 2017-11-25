@@ -241,7 +241,7 @@ class Terminal_voto extends Thread {
             }
             if(logon && user!=null ){
                 Eleicao eleicao=select_elections();  //escolhe  eleicao pretendida 
-                votou=select_lista(eleicao, user);              //vota na lista pretendida
+                votou=select_lista(eleicao, user);   //vota na lista pretendida
             }
             
         }

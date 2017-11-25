@@ -22,3 +22,4 @@ funcionario;luis ricardo;367821765;as3nek766sf;dec;05-03-2010;914242145;porto;0
 funcionario;cosmo joao;147987983;2gk7k7um;deec;07-04-2011;916414196;coimbra;0
 funcionario;luis artur;385986413;23eh3g6urm;deec;07-04-2011;916414196;porto;0
 funcionario;artur gustavo;143968353;23k89krm;deec;07-04-2011;916414196;coimbra;0
+

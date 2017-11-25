@@ -81,7 +81,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                     //FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+eleicao,true);
                     FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\listas.txt",true);
                     l.setList(array);
-                    int n=0;
                     out.write(l.toString()+"qtd=0"+"\n");
                     out.close();
                     this.buffercandidatos.add(l);
@@ -108,7 +107,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         try {
             Faculdade f = new Faculdade(nome);
            // out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/Faculdade_dpto",true);
-            out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Faculdade_dpto",true);
+            out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Faculdade_dpto.txt",true);
             f.criarDPTO(array);
             out.write(f.toString()+"\n");
             out.close();
@@ -150,8 +149,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         
         this.printBufferEleicao(bufferEleicao);
         this.printBufferPessoas(bufferPessoas);
-        this.saveArrayEleicao();
         this.savePessoas();
+        this.saveArrayEleicao();
+        
         
     }
     
@@ -312,10 +312,13 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 out.write("titulo|tipo|descricao|data|departamentos");
                 out.newLine();
                 out.write(eleicao.titulo+"|"+eleicao.tipo+"|"+eleicao.descricao+"|"+formatter.format(eleicao.data)+"|");
-                for(i=0; i<eleicao.dptos.size()-1;i++)
-                    out.write(eleicao.dptos.get(i)+",");
-                 out.write(eleicao.dptos.get(i));
-                 out.newLine();
+                if(eleicao.dptos.size()!=0){
+                    for(i=0; i<eleicao.dptos.size()-1;i++){
+                        out.write(eleicao.dptos.get(i)+",");
+                    }
+                     out.write(eleicao.dptos.get(i));
+                }
+                out.newLine();
                 
                 
                 for(i=0; i<eleicao.listas.size();i++){
@@ -360,9 +363,15 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 s=in.readLine();    //le eleicao
                 array=s.split("\\|");
                 //System.out.println(Arrays.toString(array));
-                deps=array[4].split(",");   // guarda os departamentos
+                if(array.length==5){
+                    deps=array[4].split(",");   // guarda os departamentos
+                
                 //System.out.println(Arrays.toString(deps));
-                dptos=new ArrayList<>(Arrays.asList(deps));
+                    dptos=new ArrayList<>(Arrays.asList(deps));
+                }
+                else{
+                    dptos=new ArrayList<>();
+                }
                 tipo=array[1];
                 titulo=array[0];
                 data=array[3];
@@ -410,7 +419,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     }
      public void loadArrayEleicao(){
         String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes\\";
-        File folder = new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes");
+        File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
 
             
@@ -557,7 +566,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         
             FileWriter file= null;
             try {
-                file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta_2\\Ivotas\\src\\Pessoas.txt");
+                file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Pessoas.txt");
                 BufferedWriter out = new BufferedWriter(file);
                 SimpleDateFormat dt = new SimpleDateFormat("dd-mm-yyyy");
                 String s="";
@@ -662,14 +671,16 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             Date data= new Date();
             ListaCandidatos A= new ListaCandidatos("Snow","alunos");
             ArrayList<String> lista1= new ArrayList(Arrays.asList("Rhaegar Targarien","Jaime Lannister")); 
-            ListaCandidatos B= new ListaCandidatos("Snow","alunos");
+            ListaCandidatos B= new ListaCandidatos("Stark","alunos");
             ArrayList<String> lista2= new ArrayList(Arrays.asList("Daenherys Targarien","Tyrion Lannister"));
             Eleicao eleicao=new Eleicao("nucleo","eleicao nucleo DEM","20-11-1995","15:35", "18:00");
+           A.setLista(lista1);
+           B.setLista(lista2);
             eleicao.mesas.add(mesa_dem);
             eleicao.listas.add(A);
             eleicao.listas.add(B);
-            Voto vote= new Voto (data,eleicao,mesa_dem);
-            eleicao.listas.get(0).votos.add(vote);
+           /* Voto vote= new Voto (data,eleicao,mesa_dem);
+            eleicao.listas.get(0).votos.add(vote);*/
             Pessoa pessoa= new Pessoa("Docente", "John Snow", 35832L,"NightsWatch","Castel Black", "18-03-2942","928372873","On top of the Wall");
            
             server.bufferEleicao.add(eleicao);
@@ -682,8 +693,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
 //            aSocket = new DatagramSocket(Integer.parseInt(args[1]));
            // System.out.println("Socket Datagram à escuta no porto "+args[1]);
            
-            //server.savePessoas();
-           // server.saveArrayEleicao();
+            server.savePessoas();
+            server.saveArrayEleicao();
                   
             
         }catch(RemoteException re){
