@@ -1,5 +1,4 @@
 package mesa_voto;
-        
 import java.io.*;
 import java.net.*;
 import java.util.*;

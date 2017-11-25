@@ -52,7 +52,6 @@ public class Mesa_voto implements Serializable{
             String serverIP="192.168.43.53";*/
             
             Mesa_voto Mesa= new Mesa_voto(1,"DEI");
-            
            
          //TCP server
            //Mesa.departamento="DEI";
@@ -287,6 +286,7 @@ class Terminal_voto extends Thread {
         return false;
     }
     public void vote() throws IOException{
+        
         Boolean logon=false;
         Pessoa user=null;
         boolean votou= false;
@@ -300,7 +300,8 @@ class Terminal_voto extends Thread {
             }
             if(logon && user!=null ){
                 Eleicao eleicao=select_elections();  //escolhe  eleicao pretendida 
-                votou=select_lista(eleicao, user);              //vota na lista pretendida
+                votou=select_lista(eleicao, user);   //vota na lista pretendida
+                
             }
             
         }

@@ -31,6 +31,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     public AdminConsole() throws RemoteException {
         super();
     }
+    
     // INTERFACE SERVER-SIDE METHODS
     
     @Override

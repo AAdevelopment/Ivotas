@@ -278,8 +278,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
         
     }
-    public void addMesaVoto(Mesa_voto mesa){
-        this.bufferMesas.add(mesa);
+    
+    public Integer Count_voters(Eleicao e,Boolean vote){
+        if (vote==true)
+            return;
     }
 
     
@@ -291,6 +293,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
      **/
      
       //salva a lista de candidatos de uma eleicao
+     public void addMesaVoto(Mesa_voto mesa){
+        this.bufferMesas.add(mesa);
+    }
     public void saveEleicao (Eleicao eleicao){
         
         try {
@@ -652,7 +657,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             
             Mesa_voto mesa=new Mesa_voto(123,"DEI");
             Mesa_voto mesa_dem=new Mesa_voto(567,"DEM");
-             server.addMesaVoto(mesa);
+            server.addMesaVoto(mesa);
             server.addMesaVoto(mesa_dem);
             server.loadArrayEleicao();
             server.CarregaPessoas();
@@ -660,11 +665,11 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            
             Date data= new Date();
             ListaCandidatos A= new ListaCandidatos("Snow","alunos");
-            A.setList("Rhaegar Targarien");
-            A.setList("Jaime Lannister");
+          //  A.setList("Rhaegar Targarien");
+          //  A.setList("Jaime Lannister");
             ListaCandidatos B= new ListaCandidatos("Snow","alunos");
-            B.setList("Daenherys Targarien");
-            B.setList("Tyrion Lannister");
+          //  B.setList("Daenherys Targarien");
+          //  B.setList("Tyrion Lannister");
             Eleicao eleicao=new Eleicao("nucleo","eleicao nucleo DEM","20-11-1995","15:35", "18:00");
             eleicao.mesas.add(mesa_dem);
             eleicao.listas.add(A);
@@ -689,12 +694,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             
         }catch(RemoteException re){
             System.out.println(re.getMessage());
-        
-     
         }
     } 
-    
-   
     
 }
 
