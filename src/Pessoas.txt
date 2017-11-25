@@ -1,7 +1,6 @@
 Tipo ; Nome ; Cartao ; Password ; Dpto ; Card_valid ; Telefone ; Morada
 docente;joao santos;342421432;213189sf;dei;22-12-2001;967141145;coimbra;0
-docente;carlos santos;378865432;as31ffsf;dec;05-03-2010;914242145;coimbra;1
-Eleicao;DEI;08:20 03-20-2017
+docente;carlos santos;378865432;as31ffsf;dec;05-03-2010;914242145;coimbra;0
 docente;ricardo santos;378521432;aj6rjsf;dec;05-03-2010;914242145;porto;0
 docente;carlos jesus;234521432;ar7rfsf;dec;05-03-2010;914242145;coimbra;0
 docente;francisco santos;378521765;as3k7r8sf;dec;05-03-2010;914242145;porto;0
@@ -13,10 +12,7 @@ aluno;luis miguel;798986413;23e6n6urm;deec;07-04-2011;916414196;porto;0
 aluno;artur afonso;147243353;23eue5mrm;deec;07-04-2011;916414196;coimbra;0
 aluno;alexandre afonso;147241413;2g4fkmrm;deec;07-04-2011;916414196;coimbra;0
 aluno;eduardo miguel;147986413;23t24mrm;deec;07-04-2011;916414196;porto;0
-aluno;julio afonso;147243213;23gt3gmrm;deec;07-04-2011;916414196;coimbra;3
-Eleicao;DEI;03:39 02-39-2017
-Eleicao;DEI;03:39 02-39-2017
-Eleicao;DEI;03:39 02-39-2017
+aluno;julio afonso;147243213;23gt3gmrm;deec;07-04-2011;916414196;coimbra;0
 aluno;eduardo miguel;146541413;23rsmrm;deec;07-04-2011;916414196;porto;0
 aluno;gustavo magalhaes;146871413;2eheskmrm;deq;12-11-2015;966414196;porto;0
 aluno;andre miguel;141257813;29671kmrm;deq;12-11-2015;966414196;coimbra;0

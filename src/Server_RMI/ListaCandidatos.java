@@ -37,12 +37,12 @@ public class ListaCandidatos implements Serializable{
     public void setLista(ArrayList<String> lista){
         this.Lista=lista;
     }
-   public void setList(ArrayList<String> lista){
-       this.Lista.addAll((lista));
-   }
+    public void setList(ArrayList<String> lista){
+        this.Lista.addAll((lista));
+    }
   
     public String toString(){
-     return this.tipo+this.nome+ this.Lista.toString();
+        return  this.Lista.toString();
     }
     
     public void printListaCandidatos(){

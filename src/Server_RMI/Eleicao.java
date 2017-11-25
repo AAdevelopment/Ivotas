@@ -154,11 +154,11 @@ public class Eleicao implements Runnable,Serializable {
                     }
                 }
             }
-            try {
+            /*try {
                 Thread.sleep(5);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Eleicao.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            }*/
         }
     }
         

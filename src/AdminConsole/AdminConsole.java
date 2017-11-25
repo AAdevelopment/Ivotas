@@ -165,7 +165,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         String eleicao="";
                         eleicao=JOptionPane.showInputDialog("Digite o nome da eleicao:");
                         String tipo="";
-                        tipo=JOptionPane.showInputDialog("Digite o tipo da Lista:");
+                        tipo=JOptionPane.showInputDialog("Digite o tipo da Eleicao:");
                         String nomeLista="";
                         nomeLista=JOptionPane.showInputDialog("Digite o nome da Lista:");
                         h.CriarLista(eleicao,criarLista(),nomeLista,tipo);
