@@ -73,7 +73,22 @@ public class Eleicao implements Runnable,Serializable {
         t = new Thread(this,titulo);
         t.start();
     }
-    public Eleicao(String tipo,String titulo,String data,String horaini,String horafim)throws ParseException{
+    public Eleicao(String tipo,String titulo,String descricao, String data,String horaini,String horafim, ArrayList<String> deptos)throws ParseException{
+        this.tipo = tipo;
+        this.titulo=titulo;
+        this.descricao=descricao;
+        dt = new SimpleDateFormat("dd-MM-yyyy"); 
+        this.data =dt.parse(data);
+        this.data_texto = data;
+        dptos=new ArrayList();
+        t = new Thread(this,titulo);
+        this.listas=new ArrayList();
+        this.mesas = new ArrayList();
+        this.dptos=deptos;
+        this.horafim=horafim;
+        this.horaini=horaini;
+    }
+    public Eleicao(String tipo,String titulo,String descricao, String data,String horaini,String horafim)throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
         dt = new SimpleDateFormat("dd-MM-yyyy"); 
@@ -83,6 +98,7 @@ public class Eleicao implements Runnable,Serializable {
         t = new Thread(this,titulo);
         this.listas=new ArrayList();
         this.mesas = new ArrayList();
+        this.dptos=new ArrayList();
         this.horafim=horafim;
         this.horaini=horaini;
     }
@@ -176,7 +192,7 @@ public class Eleicao implements Runnable,Serializable {
     @Override
     public String toString(){
 
-        return "tipo|"+this.tipo+";"+"titulo|"+this.titulo+";"+"data|"+this.data+
+        return "tipo|"+this.tipo+";"+"titulo|"+this.titulo+";"+"titulo|"+this.descricao+";"+"data|"+this.data+
         ";"+"inicio|"+this.horaini+";"+"fim|"+this.horafim;
 
 
