@@ -178,10 +178,6 @@ public class Eleicao implements Runnable,Serializable {
 
         return "tipo|"+this.tipo+";"+"titulo|"+this.titulo+";"+"data|"+this.data+
         ";"+"inicio|"+this.horaini+";"+"fim|"+this.horafim;
-
-
     }
     
-   
-
 }

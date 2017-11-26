@@ -1,0 +1,6 @@
+titulo|tipo|descricao|data|departamentos
+eleicao nucleo DEM|nucleo|null|20-00-1995|
+Snow|alunos|0
+Rhaegar Targarien|Jaime Lannister|
+Stark|alunos|0
+Daenherys Targarien|Tyrion Lannister|

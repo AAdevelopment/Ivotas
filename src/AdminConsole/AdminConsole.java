@@ -134,7 +134,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
             
            // System.getProperties().put("java.security.policy", "C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Ivotas\\src\\AdminConsole\\policy.all");
            // System.setSecurityManager(new RMISecurityManager());
-            Comunication_server h = (Comunication_server) LocateRegistry.getRegistry(6501).lookup("connection_RMI");
+            Comunication_server h = (Comunication_server) LocateRegistry.getRegistry(6500).lookup("connection_RMI");
 
             
             AdminConsole c = new AdminConsole();
@@ -162,13 +162,11 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         h.criarEleicao(saida);
                         break; 
                     case 3:
-                        String eleicao="";
-                        eleicao=JOptionPane.showInputDialog("Digite o nome da eleicao:");
                         String tipo="";
-                        tipo=JOptionPane.showInputDialog("Digite o tipo da Eleicao:");
+                        tipo=JOptionPane.showInputDialog("Digite o tipo da lista:");
                         String nomeLista="";
                         nomeLista=JOptionPane.showInputDialog("Digite o nome da Lista:");
-                        h.CriarLista(eleicao,criarLista(),nomeLista,tipo);
+                        h.CriarLista(criarLista(),nomeLista,tipo);
                         break;
                         
                     case 4:
