@@ -154,7 +154,8 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         System.out.println(reply=h.Test_connection());
                         break;
                     case 2:
-                        String s[]={"Defina o tipo de eleicao","nome da eleicao","Data ex:dd-MM-yyyy","Horainicial ex:hh:mm:ss","HoraFim ex:hh:mm:ss"};
+                        
+                        String s[]={"Defina o tipo de eleicao","nome da eleicao","Descreva a eleicao","Data ex:dd-MM-yyyy","Horainicial ex:hh:mm:ss","HoraFim ex:hh:mm:ss"};
                         String saida[]= new String [s.length];
                         for(int i=0;i<s.length;i++){
                             saida[i]=JOptionPane.showInputDialog(s[i]);
