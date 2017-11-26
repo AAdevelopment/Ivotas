@@ -22,7 +22,7 @@ public interface Comunication_server extends Remote {
     public String Test_connection() throws RemoteException;
     public void subscribe(String name, Comunication_client c) throws RemoteException;
     public void criarEleicao(String v[])throws RemoteException;
-    public void vote(String lista, Eleicao eleicao, Pessoa pessoa, Mesa_voto mesa, Date data)throws RemoteException;
+    public boolean vote(String lista, Eleicao eleicao, Pessoa pessoa, Mesa_voto mesa, Date data)throws RemoteException;
     public void CadastrarPessoa(String o[])throws RemoteException;
     public  Pessoa autenticate(String campo, String dados) throws RemoteException;
     public  Resposta unlock_terminal(Pessoa pessoa,String CC, String Password)throws RemoteException;

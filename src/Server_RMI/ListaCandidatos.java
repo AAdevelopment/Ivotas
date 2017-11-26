@@ -20,7 +20,7 @@ import java.util.Arrays;
  * @author gustavo
  */
 public class ListaCandidatos implements Serializable{
-    public ArrayList<String> Lista;
+    public ArrayList<String> candidatos;
     public String nome;
     public String tipo;
     public ArrayList<Voto> votos;
@@ -30,25 +30,25 @@ public class ListaCandidatos implements Serializable{
       //  super();
         this.nome = nome;
         this.tipo =tipo;
-        this.Lista = new ArrayList();
+        this.candidatos = new ArrayList();
         this.votos=new ArrayList();
         
     }
     public void setLista(ArrayList<String> lista){
-        this.Lista=lista;
+        this.candidatos=lista;
     }
     public void setList(ArrayList<String> lista){
-        this.Lista.addAll((lista));
+        this.candidatos.addAll((lista));
     }
   
     public String toString(){
-     return this.tipo+this.nome+ this.Lista.toString();
+     return this.tipo+this.nome+ this.candidatos.toString();
     }
     
     public void printListaCandidatos(){
         System.out.println(this.nome+" | "+this.tipo+" | "+ this.votos.size());
-        for(int i=0; i<this.Lista.size();i++){
-            System.out.print(this.Lista.get(i)+" ; ");
+        for(int i=0; i<this.candidatos.size();i++){
+            System.out.print(this.candidatos.get(i)+" ; ");
         }
         System.out.println();
         for(int i=0;i<this.votos.size();i++){

@@ -5,13 +5,6 @@
  */
 package Server_RMI;
 
-import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -23,7 +16,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,7 +31,7 @@ public class Eleicao implements Runnable,Serializable {
     String titulo;
     String descricao;
     ArrayList<String> dptos;
-    ArrayList<ListaCandidatos> listas;
+    ArrayList<ListaCandidatos> listas_candidatas;
     transient Thread t;
     Date data;
     String data_texto;
@@ -69,7 +61,7 @@ public class Eleicao implements Runnable,Serializable {
         
         dt = new SimpleDateFormat("dd-MM-yyyy"); 
         this.data=dt.parse(data);
-        this.listas=new ArrayList();
+        this.listas_candidatas=new ArrayList();
         t = new Thread(this,titulo);
         t.start();
     }
@@ -82,7 +74,7 @@ public class Eleicao implements Runnable,Serializable {
         this.data_texto = data;
         dptos=new ArrayList();
         t = new Thread(this,titulo);
-        this.listas=new ArrayList();
+        this.listas_candidatas=new ArrayList();
         this.mesas = new ArrayList();
         this.dptos=deptos;
         this.horafim=horafim;
@@ -96,7 +88,7 @@ public class Eleicao implements Runnable,Serializable {
         this.data_texto = data;
         dptos=new ArrayList();
         t = new Thread(this,titulo);
-        this.listas=new ArrayList();
+        this.listas_candidatas=new ArrayList();
         this.mesas = new ArrayList();
         this.dptos=new ArrayList();
         this.horafim=horafim;
@@ -111,7 +103,7 @@ public class Eleicao implements Runnable,Serializable {
         this.tipo = tipo;
     }
     public void setLista(ListaCandidatos lista){
-        this.listas.add(lista);
+        this.listas_candidatas.add(lista);
     }
     public String getTitulo() {
         return titulo;

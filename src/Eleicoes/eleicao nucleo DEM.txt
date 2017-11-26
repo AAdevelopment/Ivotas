@@ -1,6 +1,0 @@
-titulo|tipo|descricao|data|departamentos
-eleicao nucleo DEM|nucleo|null|20-00-1989|15:35|18:00|
-Snow|alunos|0
-Rhaegar Targarien|Jaime Lannister|
-Stark|alunos|0
-Daenherys Targarien|Tyrion Lannister|

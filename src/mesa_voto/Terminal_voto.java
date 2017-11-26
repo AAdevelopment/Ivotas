@@ -53,7 +53,8 @@ class Terminal_voto extends Thread {
             Logger.getLogger(Terminal_voto.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-         vote();
+        vote();
+        clientSocket.close();
     }
     
 
@@ -64,7 +65,7 @@ class Terminal_voto extends Thread {
         outToClient.println(resp);
         outToClient.flush();
          //type|validate;identificador|valor
-        resp="Expected: type|validate;identificador|valor";
+        resp="Expected: type|validate;tipo_identificador|valor";
         outToClient.println(resp);
         outToClient.flush();
       
@@ -73,7 +74,7 @@ class Terminal_voto extends Thread {
          // procurar a pessoa na base de dados
         System.out.println(Arrays.toString(message));
         if((user=Rmi_server.autenticate(message[2],message[3]))!=null){
-            resp="type|validate;" + message[3] + "|OK";
+            resp="type|validate;" + user.getName() + "|OK";
             outToClient.println(resp);
             outToClient.println("Efectue login para poder votar");
             outToClient.flush();
@@ -179,7 +180,7 @@ class Terminal_voto extends Thread {
             ListaCandidatos lista=listas.get(i);
             outToClient.print("list_name|"+lista.nome+";");
             outToClient.flush();
-            ArrayList<String> aux=lista.Lista;
+            ArrayList<String> aux=lista.candidatos;
             for(int j=0 ; j < aux.size() ; j++){
                 output="item_" + j +'|' + aux.get(j) + ';';
                 outToClient.print(output);
@@ -201,10 +202,8 @@ class Terminal_voto extends Thread {
             String[] message=le_consola();
             if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){
                 System.out.println("ENTROU NO VOTO");
-                Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, new Date());
-                outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
-                outToClient.flush();
-                return true;
+                return Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, new Date());
+               
             }
             else{
                
@@ -242,6 +241,15 @@ class Terminal_voto extends Thread {
             if(logon && user!=null ){
                 Eleicao eleicao=select_elections();  //escolhe  eleicao pretendida 
                 votou=select_lista(eleicao, user);   //vota na lista pretendida
+                if(votou){
+                    outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
+                    outToClient.flush();
+                }
+                else{
+                    outToClient.println("type|login; status|logged:off; msg: An error has occorred. Repeat the process.");
+                    outToClient.flush();
+                }
+
             }
             
         }
