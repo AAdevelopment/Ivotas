@@ -162,11 +162,11 @@ public class Eleicao implements Runnable,Serializable {
                     }
                 }
             }
-            try {
+            /*try {
                 Thread.sleep(5);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Eleicao.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            }*/
         }
     }
         
@@ -186,10 +186,6 @@ public class Eleicao implements Runnable,Serializable {
 
         return "tipo|"+this.tipo+";"+"titulo|"+this.titulo+";"+"titulo|"+this.descricao+";"+"data|"+this.data+
         ";"+"inicio|"+this.horaini+";"+"fim|"+this.horafim;
-
-
     }
     
-   
-
 }

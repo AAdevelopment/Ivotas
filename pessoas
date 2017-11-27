@@ -1,4 +1,3 @@
-docente;gustavo;1234556;abc123;dei;Sun Jan 01 00:12:00 WET 2017;351 9966;coimbra
-docente;gustavo;123435;abc123;dei;Sun Jan 01 00:12:00 WET 2017;3518866445;porto
-docente;paulo;1234345;abc123;dei;Sun Jan 01 00:12:00 WET 2017;3513345;coimbra
-docente;osvaldo;123456;abc123;DEI;Wed Feb 20 00:00:00 WET 2019;124554;Coimbra
+Tipo ; Nome ; Cartao ; Password ; Dpto ; Card_valid ; Telefone ; Morada
+docente;paulo;433214;abc123;DEI;30-12-2018;+351 99943434;Coimbra;0
+aluno;gustavo;4355592;abcguga;DEI;30-12-2019;+5547997146462;Coimbra;0

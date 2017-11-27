@@ -10,6 +10,7 @@ import Server_RMI.Comunication_server;
 import Server_RMI.Eleicao;
 import Server_RMI.ListaCandidatos;
 import Server_RMI.Faculdade;
+import Server_RMI.Pessoa;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.Naming;
@@ -19,6 +20,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import mesa_voto.Mesa_voto;
 
@@ -31,6 +34,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     public AdminConsole() throws RemoteException {
         super();
     }
+    
     // INTERFACE SERVER-SIDE METHODS
     
     @Override
@@ -49,6 +53,14 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     public void replyElection(Eleicao e){
         System.out.println(e.toString());
     }
+    
+     public void replyNrVoters(String state)throws RemoteException{
+         System.out.println(state);
+     }
+     
+      public void replyPeople(Pessoa p)throws RemoteException{
+          System.out.println(p.toString());
+      }
     
     //CLIENT- SIDE METHODS
     public void Add_VoteTable(String titulo) throws RemoteException{
@@ -126,6 +138,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         return array;
     }
     
+   
     public static void main(String args[]) throws RemoteException, NotBoundException, IOException{
         Integer opcao=0;
         
@@ -162,13 +175,11 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         h.criarEleicao(saida);
                         break; 
                     case 3:
-                        String eleicao="";
-                        eleicao=JOptionPane.showInputDialog("Digite o nome da eleicao:");
                         String tipo="";
-                        tipo=JOptionPane.showInputDialog("Digite o tipo da Lista:");
+                        tipo=JOptionPane.showInputDialog("Digite o tipo da lista:");
                         String nomeLista="";
                         nomeLista=JOptionPane.showInputDialog("Digite o nome da Lista:");
-                        h.CriarLista(eleicao,criarLista(),nomeLista,tipo);
+                        h.CriarLista(criarLista(),nomeLista,tipo);
                         break;
                         
                     case 4:
@@ -207,4 +218,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         }
       
     }
-}
+    
+    }
+
+    

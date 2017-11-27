@@ -29,6 +29,7 @@ public class Mesa_voto implements Serializable{
     
     public String departamento;
     public int ID;
+    public Integer Nr_Voters;
     private static final long serialVersionUID = 1L;
     
     public Mesa_voto(int ID, String departamento){
@@ -52,7 +53,6 @@ public class Mesa_voto implements Serializable{
             String serverIP="192.168.43.53";*/
             
             Mesa_voto Mesa= new Mesa_voto(1,"DEI");
-            
            
          //TCP server
            //Mesa.departamento="DEI";

@@ -42,7 +42,7 @@ public class ListaCandidatos implements Serializable{
     }
   
     public String toString(){
-     return this.tipo+this.nome+ this.candidatos.toString();
+     return this.tipo+"|"+this.nome+"|"+ this.candidatos.toString();
     }
     
     public void printListaCandidatos(){
