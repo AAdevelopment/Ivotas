@@ -10,6 +10,7 @@ import Server_RMI.Comunication_server;
 import Server_RMI.Eleicao;
 import Server_RMI.ListaCandidatos;
 import Server_RMI.Faculdade;
+import Server_RMI.Pessoa;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.Naming;
@@ -56,6 +57,10 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
      public void replyNrVoters(String state)throws RemoteException{
          System.out.println(state);
      }
+     
+      public void replyPeople(Pessoa p)throws RemoteException{
+          System.out.println(p.toString());
+      }
     
     //CLIENT- SIDE METHODS
     public void Add_VoteTable(String titulo) throws RemoteException{
