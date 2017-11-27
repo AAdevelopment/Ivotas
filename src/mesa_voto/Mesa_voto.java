@@ -54,8 +54,6 @@ public class Mesa_voto implements Serializable{
             
             Mesa_voto Mesa= new Mesa_voto(1,"DEI");
            
-         //TCP server
-           //Mesa.departamento="DEI";
            int serverPort = 6003;
            System.out.println("A Escuta no Porto "+ serverPort);
            ServerSocket listenSocket = new ServerSocket(serverPort);

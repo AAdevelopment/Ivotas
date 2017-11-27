@@ -26,5 +26,3 @@ funcionario;luis ricardo;367821765;as3nek766sf;dec;05-03-2010;914242145;porto;0
 funcionario;cosmo joao;147987983;2gk7k7um;deec;07-04-2011;916414196;coimbra;0
 funcionario;luis artur;385986413;23eh3g6urm;deec;07-04-2011;916414196;porto;0
 funcionario;artur gustavo;143968353;23k89krm;deec;07-04-2011;916414196;coimbra;0
-Docente;John Snow;35832;NightsWatch;Castel Black;18-03-2942;928372873;On top of the Wall;0
-Docente;John Snow;35832;NightsWatch;Castel Black;18-03-2942;928372873;On top of the Wall;0
