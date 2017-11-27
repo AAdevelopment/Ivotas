@@ -296,15 +296,11 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         
     }
     
-    public Integer Count_voters(Eleicao e,Boolean vote){
-      //  for()
-        e.mesas.get(0);
-        if (vote==true)
-            return this.qtd_voters++;
-        
-        return 0; 
+    public synchronized void Count_voters(Eleicao e,Mesa_voto mesa) throws RemoteException{ 
+        String state= e.titulo+"|"+mesa.toSring()+"|"+mesa.Nr_Voters++;
+        c.replyNrVoters(state);
     }
-
+    
     
      
      /************************************************************************************************************************

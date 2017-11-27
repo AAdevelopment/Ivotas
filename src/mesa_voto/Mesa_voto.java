@@ -29,6 +29,7 @@ public class Mesa_voto implements Serializable{
     
     public String departamento;
     public int ID;
+    public Integer Nr_Voters;
     private static final long serialVersionUID = 1L;
     
     public Mesa_voto(int ID, String departamento){

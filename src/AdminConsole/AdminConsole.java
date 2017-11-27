@@ -19,6 +19,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import mesa_voto.Mesa_voto;
 
@@ -50,6 +52,10 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     public void replyElection(Eleicao e){
         System.out.println(e.toString());
     }
+    
+     public void replyNrVoters(String state)throws RemoteException{
+         System.out.println(state);
+     }
     
     //CLIENT- SIDE METHODS
     public void Add_VoteTable(String titulo) throws RemoteException{
@@ -127,6 +133,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         return array;
     }
     
+   
     public static void main(String args[]) throws RemoteException, NotBoundException, IOException{
         Integer opcao=0;
         
@@ -206,4 +213,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         }
       
     }
-}
+    
+    }
+
+    

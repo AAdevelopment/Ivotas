@@ -241,9 +241,11 @@ class Terminal_voto extends Thread {
             if(logon && user!=null ){
                 Eleicao eleicao=select_elections();  //escolhe  eleicao pretendida 
                 votou=select_lista(eleicao, user);   //vota na lista pretendida
+              
                 if(votou){
                     outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
                     outToClient.flush();
+                    Rmi_server.Count_voters(eleicao,mesa);
                 }
                 else{
                     outToClient.println("type|login; status|logged:off; msg: An error has occorred. Repeat the process.");

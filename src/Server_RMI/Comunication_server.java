@@ -34,5 +34,5 @@ public interface Comunication_server extends Remote {
     public void Add_ELectionlocal(String local,Pessoa p)throws RemoteException;
     public Eleicao getEleicao(String titulo) throws RemoteException;
     public void addMesaVoto(Mesa_voto mesa)throws RemoteException;
-    public Integer Count_voters(Eleicao e,Boolean vote)throws RemoteException;
+    public void Count_voters(Eleicao e,Mesa_voto mesa)throws RemoteException;
 }
