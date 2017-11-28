@@ -341,7 +341,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             int j=0;
             out.write("titulo|tipo|descricao|data|departamentos");
             out.newLine();
-            out.write(eleicao.titulo+"|"+eleicao.tipo+"|"+eleicao.descricao+"|"+format.format(eleicao.data_inicio.getTime())+"|"+format.format(eleicao.data_fim.getTime())+"|");
+            out.write(eleicao.ID+"|"+eleicao.titulo+"|"+eleicao.tipo+"|"+eleicao.descricao+"|"+format.format(eleicao.data_inicio.getTime())+"|"+format.format(eleicao.data_fim.getTime())+"|");
             if(eleicao.dptos.size()!=0){
                 for(i=0; i<eleicao.dptos.size()-1;i++){
                     out.write(eleicao.dptos.get(i)+",");
@@ -387,6 +387,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 FileReader read = new FileReader(path);
                 BufferedReader in = new BufferedReader(read);
                 
+                int ID;
                 String tipo, titulo, descricao;
                 String s="";
                 int votos=0;
@@ -397,8 +398,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 s=in.readLine();    //le eleicao
                 array=s.split("\\|");
                 //System.out.println(Arrays.toString(array));
-                if(array.length==6){
-                    deps=array[5].split(",");   // guarda os departamentos
+                if(array.length==7){
+                    deps=array[6].split(",");   // guarda os departamentos
                 
                 //System.out.println(Arrays.toString(deps));
                     dptos=new ArrayList<>(Arrays.asList(deps));
@@ -406,13 +407,14 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 else{
                     dptos=new ArrayList<>();
                 }
-                tipo=array[1];
-                titulo=array[0];
-                descricao=array[2];
-                data_inicio.setTime(format.parse(array[3]));
-                data_fim.setTime(format.parse(array[4]));
+                ID=Integer.parseInt(array[0]);
+                tipo=array[2];
+                titulo=array[1];
+                descricao=array[3];
+                data_inicio.setTime(format.parse(array[4]));
+                data_fim.setTime(format.parse(array[5]));
                 
-                eleicao=new Eleicao(tipo,titulo,descricao,data_inicio, data_fim, dptos);
+                eleicao=new Eleicao(ID,tipo,titulo,descricao,data_inicio, data_fim, dptos);
 
                 while((s=in.readLine())!=null){
                     array=s.split("\\|");
@@ -741,7 +743,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             inicio.setTime(formatter.parse("15:35:46 20/11/1995"));
             Calendar fim= Calendar.getInstance();
             fim.setTime(formatter.parse("16:35:50 20/11/1995"));
-            Eleicao eleicao=new Eleicao("nucleo","Eleicao15","eleicao nucleo DEM", inicio, fim, faculdades);
+            Eleicao eleicao=new Eleicao(100,"nucleo","Eleicao15","eleicao nucleo DEM", inicio, fim, faculdades);
             A.setLista(lista1);
             B.setLista(lista2);
             eleicao.mesas.add(mesa_dem);

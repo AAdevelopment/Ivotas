@@ -12,12 +12,10 @@ package Server_RMI;
  */
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +27,8 @@ import mesa_voto.Mesa_voto;
  */
 
 public class Eleicao implements Runnable,Serializable {
+    private static int Eleicoes=0;
+    int ID;
     String tipo;
     String titulo;
     String descricao;
@@ -54,8 +54,8 @@ public class Eleicao implements Runnable,Serializable {
     public Calendar getDataInicio() {
         return data_inicio;
     }
-    
-    public Eleicao(String tipo,String titulo,String descricao, Calendar inicio, Calendar fim, ArrayList<String> deptos) throws ParseException{
+    //construtor para carregar as eleicoes de ficheiro
+    public Eleicao(int ID,String tipo,String titulo,String descricao, Calendar inicio, Calendar fim, ArrayList<String> deptos) throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
         this.dptos=deptos;
@@ -69,6 +69,8 @@ public class Eleicao implements Runnable,Serializable {
     }
    
     public Eleicao(String tipo,String titulo,String descricao, Calendar inicio, Calendar fim)throws ParseException{
+        Eleicoes++;
+        this.ID=Eleicoes;
         this.tipo = tipo;
         this.titulo=titulo;
         this.descricao=descricao;
@@ -150,7 +152,7 @@ public class Eleicao implements Runnable,Serializable {
     public String toString(){
         SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
-        return "tipo|"+this.tipo+";"+"titulo|"+this.titulo+";"+"descricao|"+this.descricao+";"+"data_inicio|"+format.format(this.data_inicio.getTime())+
+        return "ID|"+this.ID+";"+"tipo|" + this.tipo+";"+"titulo|"+this.titulo+";"+"descricao|"+this.descricao+";"+"data_inicio|"+format.format(this.data_inicio.getTime())+
         ";"+"data_fim|"+format.format(this.data_fim.getTime());
     }
     

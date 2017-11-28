@@ -1,2 +1,2 @@
 titulo|tipo|descricao|data|departamentos
-eleicao_geral_dei|geral|descricao da eleicao eleico_dei_geral|16:56:45 28/11/2017|23:34:12 25/12/2017|
+0|eleicao_geral_dei|geral|descricao da eleicao eleico_dei_geral|16:56:45 28/11/2017|23:34:12 25/12/2017|
