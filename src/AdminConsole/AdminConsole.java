@@ -167,7 +167,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         break;
                     case 2:
                         
-                        String s[]={"Defina o tipo de eleicao","nome da eleicao","Descreva a eleicao","Data ex:dd-MM-yyyy","Horainicial ex:hh:mm:ss","HoraFim ex:hh:mm:ss"};
+                        String s[]={"Defina o tipo de eleicao","nome da eleicao","Descreva a eleicao","Data_inicio (HH:mm:ss dd/MM/yyyy)","Data_fim (HH:mm:ss dd/MM/yyyy)"};
                         String saida[]= new String [s.length];
                         for(int i=0;i<s.length;i++){
                             saida[i]=JOptionPane.showInputDialog(s[i]);
@@ -193,7 +193,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                     case 6:
                         String nome1;
                         nome1=JOptionPane.showInputDialog("Digite o nome da eleicao que dejesa alterar:");
-                        String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a data?","deseja alterar a hora inicial","Hora final" };
+                        String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a descricao?","Deseja alterar a data de inicio?","Deseja alterar a data de fim?"};
                         String v[] = new String[vet.length];
                         for (int i = 0; i <vet.length; i++) {
                             v[i]=JOptionPane.showInputDialog(vet[i]);

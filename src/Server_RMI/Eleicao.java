@@ -16,7 +16,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mesa_voto.Mesa_voto;
@@ -33,66 +35,50 @@ public class Eleicao implements Runnable,Serializable {
     ArrayList<String> dptos;
     ArrayList<ListaCandidatos> listas_candidatas;
     transient Thread t;
-    Date data;
-    String data_texto;
-    String horafim;
-    String horaini;
+    Calendar data_inicio;
+    Calendar data_fim;
     ArrayList<Mesa_voto> mesas;
-    SimpleDateFormat dt;
 
-    public String getData_texto() {
-        return data_texto;
+    public void setData_inicio(Calendar data_inicio) {
+        this.data_inicio = data_inicio;
     }
 
-    public String getHorafim() {
-        return horafim;
-    }
-
-    public String getHoraini() {
-        return horaini;
+    public void setData_fim(Calendar data_fim) {
+        this.data_fim = data_fim;
     }
     
+    public Calendar getDataFim() {
+        return data_fim;
+    }
+
+    public Calendar getDataInicio() {
+        return data_inicio;
+    }
     
-    public Eleicao(String tipo,String titulo,String descricao, String data, ArrayList<String> deptos) throws ParseException{
+    public Eleicao(String tipo,String titulo,String descricao, Calendar inicio, Calendar fim, ArrayList<String> deptos) throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
         this.dptos=deptos;
+        this.mesas=new ArrayList();
         this.descricao=descricao;
-        
-        dt = new SimpleDateFormat("dd-MM-yyyy"); 
-        this.data=dt.parse(data);
+        this.data_inicio=inicio;
+        this.data_fim=fim;
         this.listas_candidatas=new ArrayList();
         t = new Thread(this,titulo);
         t.start();
     }
-    public Eleicao(String tipo,String titulo,String descricao, String data,String horaini,String horafim, ArrayList<String> deptos)throws ParseException{
+   
+    public Eleicao(String tipo,String titulo,String descricao, Calendar inicio, Calendar fim)throws ParseException{
         this.tipo = tipo;
         this.titulo=titulo;
         this.descricao=descricao;
-        dt = new SimpleDateFormat("dd-MM-yyyy"); 
-        this.data =dt.parse(data);
-        this.data_texto = data;
-        dptos=new ArrayList();
-        t = new Thread(this,titulo);
-        this.listas_candidatas=new ArrayList();
-        this.mesas = new ArrayList();
-        this.dptos=deptos;
-        this.horafim=horafim;
-        this.horaini=horaini;
-    }
-    public Eleicao(String tipo,String titulo,String descricao, String data,String horaini,String horafim)throws ParseException{
-        this.tipo = tipo;
-        this.titulo=titulo;
-        dt = new SimpleDateFormat("dd-MM-yyyy"); 
-        this.data =dt.parse(data);
-        this.data_texto = data;
         dptos=new ArrayList();
         t = new Thread(this,titulo);
         this.listas_candidatas=new ArrayList();
         this.mesas = new ArrayList();
         this.dptos=new ArrayList();
-        this.horafim=horafim;
-        this.horaini=horaini;
+        this.data_fim=fim;
+        this.data_inicio=inicio;
     }
     
     public String getTipo() {
@@ -120,45 +106,24 @@ public class Eleicao implements Runnable,Serializable {
     public void setDptos(ArrayList<String> dptos) {
         this.dptos = dptos;
     }
-
-    public void setData(String data) throws ParseException {
-        this.data = dt.parse(data);
-    }
-
-    public void setHorafim(String horafim) {
-        this.horafim = horafim;
-    }
-
-    public void setHoraini(String horaini) {
-        this.horaini = horaini;
-    }
-    public void setMesas(Mesa_voto m){
-        this.mesas.add(m);
-    }
     
-    public void setData_texto(String data){
-        this.data_texto=data;
-    }
     @Override
     public void run(){
-        
-        DateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+        Calendar today=new GregorianCalendar();
         boolean verifica=true;
        
         while(verifica==true){
-            if(dt.format(new Date()).equals(this.data_texto)&&sdf.format(new Date()).equals(horaini)){
+            if(today.getTimeInMillis()==this.data_inicio.getTimeInMillis()){
                 verifica=false;
                 while (true) {
-                    System.out.println(sdf.format(new Date()));
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Eleicao.class.getName()).log(Level.SEVERE, null, ex);            
                     }
-                    if (sdf.format(new Date()).equals(horafim)) {
+                    if (today.getTimeInMillis()==this.data_fim.getTimeInMillis()) {
                         System.out.println("fim da eleicao "+this.titulo+" !");
                         break;
-                        
                     }
                 }
             }
@@ -183,9 +148,10 @@ public class Eleicao implements Runnable,Serializable {
     }
     @Override
     public String toString(){
+        SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
-        return "tipo|"+this.tipo+";"+"titulo|"+this.titulo+";"+"titulo|"+this.descricao+";"+"data|"+this.data+
-        ";"+"inicio|"+this.horaini+";"+"fim|"+this.horafim;
+        return "tipo|"+this.tipo+";"+"titulo|"+this.titulo+";"+"descricao|"+this.descricao+";"+"data_inicio|"+format.format(this.data_inicio.getTime())+
+        ";"+"data_fim|"+format.format(this.data_fim.getTime());
     }
     
 }
