@@ -1,0 +1,2 @@
+titulo|tipo|descricao|data|departamentos
+eleicao_geral_dei|geral|null|16:56:45 28/11/2017|23:34:12 25/12/2017|

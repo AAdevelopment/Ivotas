@@ -11,7 +11,6 @@ import Server_RMI.Eleicao;
 import Server_RMI.ListaCandidatos;
 import Server_RMI.Faculdade;
 import Server_RMI.Pessoa;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;

@@ -19,6 +19,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -192,7 +193,8 @@ class Terminal_voto extends Thread {
      
     }
    public boolean select_lista(Eleicao eleicao, Pessoa pessoa) throws IOException{
-        
+        Calendar today= Calendar.getInstance();
+        today.setTime(today.getTime());
         try{
             show_listas(eleicao);
             String resp="Expected: type|item_list;option|list_name";
@@ -201,8 +203,7 @@ class Terminal_voto extends Thread {
           //  input esperado "type|item_list;option|nome"
             String[] message=le_consola();
             if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){
-                System.out.println("ENTROU NO VOTO");
-                return Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, new Date());
+                return Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, today);
                
             }
             else{
@@ -212,7 +213,7 @@ class Terminal_voto extends Thread {
                     outToClient.flush();
                     message=le_consola();
                     if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){
-                        Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, new Date());
+                        Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, today);
                         outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
                         outToClient.flush();
                         return true;

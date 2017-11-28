@@ -159,7 +159,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     */
      
     @Override
-    public synchronized boolean vote(String lista, Eleicao eleicao, Pessoa pessoa, Mesa_voto mesa, Date data)throws RemoteException{
+    public synchronized boolean vote(String lista, Eleicao eleicao, Pessoa pessoa, Mesa_voto mesa, Calendar data)throws RemoteException{
         boolean voted=false;
         Voto vote=new Voto (data, eleicao,mesa);
         for(int i=0; i<this.bufferPessoas.size();i++){
@@ -428,7 +428,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                         s=in.readLine();
                         array=s.split(";");
                         Mesa_voto mesa=procuraMesa(array[1]);
-                        Date date = new SimpleDateFormat("hh:mm dd-mm-yyyy").parse(array[2]);
+                        SimpleDateFormat dt=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+                        Calendar date= Calendar.getInstance();
+                        date.setTime(dt.parse(array[2]));
                         Voto voto=new Voto(date,eleicao,mesa);
                         aux.votos.add(voto);
                     }
@@ -581,7 +583,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                       b=s.split(";");
                       Eleicao eleicao=procuraEleicao(b[0]);
                       Mesa_voto mesa=procuraMesa(b[1]);
-                      Date data = new SimpleDateFormat("hh:mm dd-mm-yyyy").parse(b[2]);
+                      Calendar data = Calendar.getInstance(); 
+                      data.setTime(new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").parse(b[2]));
                       Voto voto=new Voto(data,eleicao,mesa);
                       p.votos.add(voto);
                   }
@@ -744,8 +747,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             eleicao.mesas.add(mesa_dem);
             eleicao.listas_candidatas.add(A);
             eleicao.listas_candidatas.add(B);
-            Date data= new Date ();
-            Voto vote= new Voto (data,eleicao,mesa_dem);
+            Calendar today= Calendar.getInstance();
+            today.setTime(today.getTime());
+            Voto vote= new Voto (today,eleicao,mesa_dem);
             eleicao.listas_candidatas.get(0).votos.add(vote);
            
             server.bufferEleicao.add(eleicao);
