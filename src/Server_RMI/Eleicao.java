@@ -27,7 +27,6 @@ import mesa_voto.Mesa_voto;
  */
 
 public class Eleicao implements Runnable,Serializable {
-    private static int Eleicoes=0;
     int ID;
     String tipo;
     String titulo;
@@ -56,6 +55,7 @@ public class Eleicao implements Runnable,Serializable {
     }
     //construtor para carregar as eleicoes de ficheiro
     public Eleicao(int ID,String tipo,String titulo,String descricao, Calendar inicio, Calendar fim, ArrayList<String> deptos) throws ParseException{
+        this.ID=ID;
         this.tipo = tipo;
         this.titulo=titulo;
         this.dptos=deptos;
@@ -69,8 +69,6 @@ public class Eleicao implements Runnable,Serializable {
     }
    
     public Eleicao(String tipo,String titulo,String descricao, Calendar inicio, Calendar fim)throws ParseException{
-        Eleicoes++;
-        this.ID=Eleicoes;
         this.tipo = tipo;
         this.titulo=titulo;
         this.descricao=descricao;

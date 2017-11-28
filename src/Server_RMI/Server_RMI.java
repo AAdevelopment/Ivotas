@@ -221,6 +221,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 data_inicio.setTime(format.parse(saida[3]));
                 data_fim.setTime(format.parse(saida[4]));
                 el = new Eleicao(saida[0],saida[1],saida[2],data_inicio,data_fim);
+                el.ID=this.bufferEleicao.size()+1;
                 el.StartEleicao();
                 this.bufferEleicao.add(el);
                 this.saveEleicao(el);
@@ -393,7 +394,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 int votos=0;
                 String array[];
                 String deps[];
-                
                 in.readLine();  //ignora a primeira linha
                 s=in.readLine();    //le eleicao
                 array=s.split("\\|");
