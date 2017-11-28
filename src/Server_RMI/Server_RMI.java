@@ -584,7 +584,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                       Eleicao eleicao=procuraEleicao(b[0]);
                       Mesa_voto mesa=procuraMesa(b[1]);
                       Calendar data = Calendar.getInstance(); 
-                      data.setTime(new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").parse(b[2]));
+                      data.setTime(new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").parse(b[2]));
                       Voto voto=new Voto(data,eleicao,mesa);
                       p.votos.add(voto);
                   }
