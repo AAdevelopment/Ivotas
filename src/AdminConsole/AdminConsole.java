@@ -55,7 +55,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     }
     
      public void replyNrVoters(String state)throws RemoteException{
-         System.out.println(state);
+         System.out.println("Voters:"+state);
      }
      
       public void replyPeople(Pessoa p)throws RemoteException{
