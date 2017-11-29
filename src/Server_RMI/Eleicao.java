@@ -36,7 +36,7 @@ public class Eleicao implements Runnable,Serializable {
     transient Thread t;
     Calendar data_inicio;
     Calendar data_fim;
-    ArrayList<Mesa_voto> mesas;
+    public ArrayList<Mesa_voto> mesas;
 
     public void setData_inicio(Calendar data_inicio) {
         this.data_inicio = data_inicio;
@@ -145,6 +145,9 @@ public class Eleicao implements Runnable,Serializable {
     }
     public String  getDescricao(){
         return this.descricao;
+    }
+    public String toStringMesas(){
+       return this.mesas.toString();
     }
     @Override
     public String toString(){

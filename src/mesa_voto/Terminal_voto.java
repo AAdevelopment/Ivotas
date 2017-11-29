@@ -241,13 +241,17 @@ class Terminal_voto extends Thread implements Serializable {
                 logon=login(user);              //autentica o cliente na mesa de voto (desbloqueia a mesa)
             }
             if(logon && user!=null ){
-                Eleicao eleicao=select_elections();  //escolhe  eleicao pretendida 
+                Eleicao eleicao=select_elections();  //escolhe  eleicao pretendida
                 votou=select_lista(eleicao, user);   //vota na lista pretendida
               
                 if(votou){
                     outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
                     outToClient.flush();
-                    Rmi_server.Count_voters(eleicao,mesa);
+                    for (int i = 0; i <eleicao.mesas.size() ; i++) {
+                        if(eleicao.mesas.get(i).departamento.equals(mesa.departamento))
+                             mesa.Nr_Voters++;
+                    }
+                    this.Rmi_server.Count_voters(eleicao, mesa);
                 }
                 else{
                     outToClient.println("type|login; status|logged:off; msg: An error has occorred. Repeat the process.");

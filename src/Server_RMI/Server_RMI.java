@@ -212,20 +212,31 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     }
     
    @Override
-    public synchronized  void criarEleicao(String saida[]) throws RemoteException{ 
+    public synchronized  void criarEleicao(String saida[],ArrayList<Mesa_voto> mesa) throws RemoteException{ 
         SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
         Calendar data_inicio= Calendar.getInstance();
         Calendar data_fim= Calendar.getInstance();
         Eleicao  el;
+        
         try{    
                 data_inicio.setTime(format.parse(saida[3]));
                 data_fim.setTime(format.parse(saida[4]));
                 el = new Eleicao(saida[0],saida[1],saida[2],data_inicio,data_fim);
+                el.mesas.addAll(mesa);
+                
+                for (int i = 0; i < this.bufferMesas.size(); i++) {
+                    this.bufferMesas.add(mesa.get(i));
+                }
+                
                 el.ID=this.bufferEleicao.size()+1;
                 el.StartEleicao();
                 this.bufferEleicao.add(el);
                 this.saveEleicao(el);
                 System.out.println(el.toString());
+                for (int i = 0; i < el.mesas.size(); i++) {
+                    System.out.println(el.mesas.get(i).departamento);
+                }
+               
                 c.replyElection(el);
               } catch (ParseException ex) {
                   Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
@@ -312,11 +323,16 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         } 
     }
-    
-    public synchronized void Count_voters(Eleicao e,Mesa_voto mesa) throws RemoteException{ 
-        String state= e.titulo+"|"+mesa.toSring()+"|"+mesa.Nr_Voters++;
+      
+   public synchronized void Count_voters(Eleicao e,Mesa_voto mesa) throws RemoteException{ 
+        String state="Eleicao: "+e.titulo+"|"+"Tipo: "+e.tipo+"|"+"Mesa: "+mesa.ID+"|"+mesa.departamento+"|"+"Numero de eleitores: "+mesa.Nr_Voters+"\n";
         c.replyNrVoters(state);
     }
+    
+    //public synchronized void Count_voters(Mesa_voto mesa) throws RemoteException{ 
+    //    String state= mesa.toSring()+"|"+mesa.Nr_Voters++;
+    //    c.replyNrVoters(state);
+   // }
     
     
      
@@ -726,8 +742,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             r.rebind("connection_RMI",server);
             server.LoadList();
             server.LoadFaculdade_Dpto();
-            Mesa_voto mesa=new Mesa_voto(123,"DEI");
-            Mesa_voto mesa_dem=new Mesa_voto(567,"DEM");
+            Mesa_voto mesa=new Mesa_voto("DEI");
+            Mesa_voto mesa_dem=new Mesa_voto("DEM");
             server.addMesaVoto(mesa);
             server.addMesaVoto(mesa_dem);
             server.loadArrayEleicao();

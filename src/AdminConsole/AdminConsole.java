@@ -60,28 +60,26 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
       }
     
     //CLIENT- SIDE METHODS
-    public void Add_VoteTable(String titulo) throws RemoteException{
-      Integer id;
+    public static ArrayList<Mesa_voto> Add_VoteTable() throws RemoteException{
+      ArrayList<Mesa_voto> table = new  ArrayList();
       String dep;
       ArrayList <String> dpto= new ArrayList();
       Mesa_voto mesa=null;
       boolean verifica=true;
-      id=Integer.parseInt(JOptionPane.showInputDialog("Digite o ID da mesa:"));
       while(verifica==true){
           dep=JOptionPane.showInputDialog("Digite o departamento da mesa:");
           if(dep==null){
               break;
           }
           else{
-              mesa = new Mesa_voto(id,dep);
+              mesa = new Mesa_voto(dep);
+              table.add(mesa);
               ////wainting....  
             }
       }
-      
-        System.out.println(mesa.toSring());
        
       //JOptionPane.showInputDialog("Digite o Titulo da eleicao:"); 
-     
+      return table;
         
     }
     
@@ -135,7 +133,8 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         return array;
     }
     
-   
+    
+    
     public static void main(String args[]) throws RemoteException, NotBoundException, IOException{
         Integer opcao=0;
         
@@ -169,7 +168,8 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         for(int i=0;i<s.length;i++){
                             saida[i]=JOptionPane.showInputDialog(s[i]);
                         }
-                        h.criarEleicao(saida);
+                        
+                        h.criarEleicao(saida,Add_VoteTable());
                         break; 
                     case 3:
                         String tipo="";
@@ -199,8 +199,6 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         break;
                     case 7:
                         String rep="";
-                        rep=JOptionPane.showInputDialog("digite o titulo da eleicao:");
-                        c.Add_VoteTable(rep);
                         break;
                     case 9:
                         verifica=false;

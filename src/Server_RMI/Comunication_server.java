@@ -21,7 +21,7 @@ public interface Comunication_server extends Remote {
     
     public String Test_connection() throws RemoteException;
     public void subscribe(String name, Comunication_client c) throws RemoteException;
-    public void criarEleicao(String v[])throws RemoteException;
+    public void criarEleicao(String v[],ArrayList<Mesa_voto> mesa)throws RemoteException;
     public boolean vote(String lista, Eleicao eleicao, Pessoa pessoa, Mesa_voto mesa, Calendar data)throws RemoteException;
     public void CadastrarPessoa(String o[])throws RemoteException;
     public Pessoa autenticate(String campo, String dados) throws RemoteException;
