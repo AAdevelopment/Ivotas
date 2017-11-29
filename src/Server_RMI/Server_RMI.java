@@ -26,6 +26,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -158,7 +159,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     */
      
     @Override
-    public synchronized boolean vote(String lista, Eleicao eleicao, Pessoa pessoa, Mesa_voto mesa, Date data)throws RemoteException{
+    public synchronized boolean vote(String lista, Eleicao eleicao, Pessoa pessoa, Mesa_voto mesa, Calendar data)throws RemoteException{
         boolean voted=false;
         Voto vote=new Voto (data, eleicao,mesa);
         for(int i=0; i<this.bufferPessoas.size();i++){
@@ -212,15 +213,19 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
    @Override
     public synchronized  void criarEleicao(String saida[]) throws RemoteException{ 
-          
+        SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        Calendar data_inicio= Calendar.getInstance();
+        Calendar data_fim= Calendar.getInstance();
         Eleicao  el;
         try{    
-               
-                el = new Eleicao(saida[0],saida[1],saida[2],saida[3],saida[4], saida[5]);
+                data_inicio.setTime(format.parse(saida[3]));
+                data_fim.setTime(format.parse(saida[4]));
+                el = new Eleicao(saida[0],saida[1],saida[2],data_inicio,data_fim);
+                el.ID=this.bufferEleicao.size()+1;
                 el.StartEleicao();
                 this.bufferEleicao.add(el);
                 this.saveEleicao(el);
-                System.out.println(el);
+                System.out.println(el.toString());
                 c.replyElection(el);
               } catch (ParseException ex) {
                   Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
@@ -232,6 +237,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         
     @Override
      public synchronized  void alterar_eleicao(String nome,String v[]){  
+        SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        Calendar day= Calendar.getInstance();
         for(int i=0;i<this.bufferEleicao.size();i++){
             if(this.bufferEleicao.get(i).titulo.equalsIgnoreCase(nome)){
                 try {
@@ -240,11 +247,15 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                     if(v[1]!=null)
                         this.bufferEleicao.get(i).setTitulo(v[1]);
                     if(v[2]!=null)
-                        this.bufferEleicao.get(i).setData(v[2]);
-                    if(v[3]!=null)
-                        this.bufferEleicao.get(i).setHoraini(v[3]);
-                    if(v[4]!=null)
-                        this.bufferEleicao.get(i).setHorafim(v[4]);
+                        this.bufferEleicao.get(i).setDescricao(v[2]);
+                    if(v[3]!=null){
+                        day.setTime(format.parse(v[3]));
+                        this.bufferEleicao.get(i).setData_inicio(day);
+                    }
+                    if(v[4]!=null){
+                        day.setTime(format.parse(v[4]));
+                        this.bufferEleicao.get(i).setData_fim(day);
+                    }
                     
                     FileReader read;
                     File arquivo = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
@@ -291,8 +302,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     @Override
      public synchronized  void CadastrarPessoa(String o[]) throws RemoteException{
   
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        formatter.setLenient(false);
         try {
             
             Pessoa p = new Pessoa(o[0],o[1],Long.parseLong(o[2]),o[3],o[4],o[5],o[6],o[7]);
@@ -322,18 +331,18 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         this.bufferMesas.add(mesa);
     }
     public void saveEleicao (Eleicao eleicao){
-        
+        SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+
         try {
             //String path="/home/gustavo/NetBeansProjects/Ivotas/"+eleicao.titulo;
             String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes\\"+eleicao.titulo+".txt";
             FileWriter file = new FileWriter(path);
             BufferedWriter out = new BufferedWriter(file);
-            DateFormat formatter = new SimpleDateFormat("dd-mm-yyyy");
             int i=0;
             int j=0;
             out.write("titulo|tipo|descricao|data|departamentos");
             out.newLine();
-            out.write(eleicao.titulo+"|"+eleicao.tipo+"|"+eleicao.descricao+"|"+formatter.format(eleicao.data)+"|"+eleicao.horaini+"|"+eleicao.horafim+"|");
+            out.write(eleicao.ID+"|"+eleicao.titulo+"|"+eleicao.tipo+"|"+eleicao.descricao+"|"+format.format(eleicao.data_inicio.getTime())+"|"+format.format(eleicao.data_fim.getTime())+"|");
             if(eleicao.dptos.size()!=0){
                 for(i=0; i<eleicao.dptos.size()-1;i++){
                     out.write(eleicao.dptos.get(i)+",");
@@ -369,18 +378,22 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public Eleicao loadEleicao(String eleicao_titulo){
         ArrayList<String> dptos=null;
         Eleicao eleicao=null;
+        SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        Calendar data_inicio= Calendar.getInstance();
+        Calendar data_fim= Calendar.getInstance();
+        
         try {   
                 String path="/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+eleicao_titulo+".txt";
                 //String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes\\"+eleicao_titulo+".txt";
                 FileReader read = new FileReader(path);
                 BufferedReader in = new BufferedReader(read);
                 
-                String tipo, titulo, data, descricao, hora_inicio, hora_fim;
+                int ID;
+                String tipo, titulo, descricao;
                 String s="";
                 int votos=0;
                 String array[];
                 String deps[];
-                
                 in.readLine();  //ignora a primeira linha
                 s=in.readLine();    //le eleicao
                 array=s.split("\\|");
@@ -394,14 +407,14 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 else{
                     dptos=new ArrayList<>();
                 }
-                tipo=array[1];
-                titulo=array[0];
-                data=array[3];
-                descricao=array[2];
-                hora_inicio=array[4];
-                hora_fim=array[5];
+                ID=Integer.parseInt(array[0]);
+                tipo=array[2];
+                titulo=array[1];
+                descricao=array[3];
+                data_inicio.setTime(format.parse(array[4]));
+                data_fim.setTime(format.parse(array[5]));
                 
-                eleicao=new Eleicao(tipo,titulo,descricao,data,hora_inicio, hora_fim, dptos);
+                eleicao=new Eleicao(ID,tipo,titulo,descricao,data_inicio, data_fim, dptos);
 
                 while((s=in.readLine())!=null){
                     array=s.split("\\|");
@@ -417,7 +430,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                         s=in.readLine();
                         array=s.split(";");
                         Mesa_voto mesa=procuraMesa(array[1]);
-                        Date date = new SimpleDateFormat("hh:mm dd-mm-yyyy").parse(array[2]);
+                        SimpleDateFormat dt=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+                        Calendar date= Calendar.getInstance();
+                        date.setTime(dt.parse(array[2]));
                         Voto voto=new Voto(date,eleicao,mesa);
                         aux.votos.add(voto);
                     }
@@ -571,7 +586,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                       b=s.split(";");
                       Eleicao eleicao=procuraEleicao(b[0]);
                       Mesa_voto mesa=procuraMesa(b[1]);
-                      Date data = new SimpleDateFormat("hh:mm dd-mm-yyyy").parse(b[2]);
+                      Calendar data = Calendar.getInstance(); 
+                      data.setTime(new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").parse(b[2]));
                       Voto voto=new Voto(data,eleicao,mesa);
                       p.votos.add(voto);
                   }
@@ -648,18 +664,18 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             System.out.println();
         }
     }
-    public boolean isToStart(Eleicao eleicao){
+   /* public boolean isToStart(Eleicao eleicao){
         Date today= new Date();
         SimpleDateFormat dt = new SimpleDateFormat("hh:mm");
         if(eleicao.data.before(today) || eleicao.data.after(today))
             return false;
         else{
-            /***********************************************
+            ***********************************************
              * FALTA VERIFICAR A DATA DA ELEICAO
-             ***********************************************/
+             ***********************************************
             return true;
         }
-    }
+    }*/
     
     @Override
     public void run(){
@@ -723,14 +739,20 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             ArrayList<String> lista1= new ArrayList(Arrays.asList("Rhaegar Targarien","Jaime Lannister")); 
             ListaCandidatos B= new ListaCandidatos("Stark","alunos");
             ArrayList<String> lista2= new ArrayList(Arrays.asList("Daenherys Targarien","Tyrion Lannister"));
-            Eleicao eleicao=new Eleicao("nucleo","Eleicao14","eleicao nucleo DEM","20-11-1995","15:35", "18:00", faculdades);
+            SimpleDateFormat formatter= new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+            Calendar inicio= Calendar.getInstance();
+            inicio.setTime(formatter.parse("15:35:46 20/11/1995"));
+            Calendar fim= Calendar.getInstance();
+            fim.setTime(formatter.parse("16:35:50 20/11/1995"));
+            Eleicao eleicao=new Eleicao(100,"nucleo","Eleicao15","eleicao nucleo DEM", inicio, fim, faculdades);
             A.setLista(lista1);
             B.setLista(lista2);
             eleicao.mesas.add(mesa_dem);
             eleicao.listas_candidatas.add(A);
             eleicao.listas_candidatas.add(B);
-            Date data= new Date ();
-            Voto vote= new Voto (data,eleicao,mesa_dem);
+            Calendar today= Calendar.getInstance();
+            today.setTime(today.getTime());
+            Voto vote= new Voto (today,eleicao,mesa_dem);
             eleicao.listas_candidatas.get(0).votos.add(vote);
            
             server.bufferEleicao.add(eleicao);

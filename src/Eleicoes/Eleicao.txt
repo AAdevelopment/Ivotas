@@ -1,8 +1,8 @@
 titulo|tipo|descricao|data|departamentos
-Eleicao|nucleo|descricao da eleicao de 05-10-1998|05-00-1958|10:12|20:00|
+0|Eleicao|nucleo|descricao da eleicao de 05-03-1958|10:12:14 05/03/1958|20:00:00 05/03/1958|
 A|tipo1|1
 andre miguel|gustavo magalhaes|julio afonso|eduardo miguel|
-Eleicao;DEI;05:08 27-08-2017
+Eleicao;DEI;05:08:00 27/08/2017
 B|tipo2|1
 alexande afonso|luis miguel|artur afonso|cosmo afonso|
-Eleicao;DEI;03:13 26-13-2017
+Eleicao;DEI;03:13:00 26/01/2018

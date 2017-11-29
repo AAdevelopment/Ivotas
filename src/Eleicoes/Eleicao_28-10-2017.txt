@@ -1,8 +1,9 @@
 titulo|tipo|descricao|data|departamentos
-Eleicao_28-10-2017|geral|descricao da eleicao 28-10-2017|28-00-1976|09:53|23:32|
+3|Eleicao_28-10-2017|geral|descricao da eleicao 28-10-2017|09:53:00 28/10/1976|23:32:58 28/10/1976|
 A|tipo1|0
 andre miguel|gustavo magalhaes|julio afonso|eduardo miguel|
-B|tipo2|0
+B|tipo2|1
 francisco santos|joao santos|carlos jesus|cosmo santos|
+Eleicao_28-10-2017;DEI;15:48:59 28/11/2017
 C|tipo3|0
 artur gustavo|luis artur|cosmo joao|artur luis|
