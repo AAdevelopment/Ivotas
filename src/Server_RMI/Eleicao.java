@@ -31,13 +31,13 @@ public class Eleicao implements Runnable,Serializable {
     String tipo;
     String titulo;
     String descricao;
-    ArrayList<String> dptos;
     ArrayList<ListaCandidatos> listas_candidatas;
     transient Thread t;
     Calendar data_inicio;
     Calendar data_fim;
+    ArrayList<String> dptos;
     ArrayList<Mesa_voto> mesas;
-
+    ArrayList<Voto> nulos;
     public void setData_inicio(Calendar data_inicio) {
         this.data_inicio = data_inicio;
     }
@@ -54,21 +54,24 @@ public class Eleicao implements Runnable,Serializable {
         return data_inicio;
     }
     //construtor para carregar as eleicoes de ficheiro
-    public Eleicao(int ID,String tipo,String titulo,String descricao, Calendar inicio, Calendar fim, ArrayList<String> deptos) throws ParseException{
+    public Eleicao(int ID,String tipo,String titulo,String descricao, Calendar inicio, Calendar fim, ArrayList<String> deptos, ArrayList<Mesa_voto> mesas) throws ParseException{
         this.ID=ID;
         this.tipo = tipo;
         this.titulo=titulo;
+        this.mesas=mesas;
         this.dptos=deptos;
         this.mesas=new ArrayList();
         this.descricao=descricao;
         this.data_inicio=inicio;
         this.data_fim=fim;
         this.listas_candidatas=new ArrayList();
+        this.nulos=new ArrayList();
         t = new Thread(this,titulo);
         t.start();
     }
    
     public Eleicao(String tipo,String titulo,String descricao, Calendar inicio, Calendar fim)throws ParseException{
+        this.ID++;
         this.tipo = tipo;
         this.titulo=titulo;
         this.descricao=descricao;
@@ -79,6 +82,8 @@ public class Eleicao implements Runnable,Serializable {
         this.dptos=new ArrayList();
         this.data_fim=fim;
         this.data_inicio=inicio;
+        this.nulos=new ArrayList();
+
     }
     
     public String getTipo() {

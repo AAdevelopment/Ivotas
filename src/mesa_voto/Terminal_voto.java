@@ -20,7 +20,6 @@ import java.rmi.NotBoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -66,7 +65,7 @@ class Terminal_voto extends Thread {
         outToClient.println(resp);
         outToClient.flush();
          //type|validate;identificador|valor
-        resp="Expected: type|validate;tipo_identificador|valor";
+        resp="Expected: type|validate;identificador|tipo;identificador|valor";
         outToClient.println(resp);
         outToClient.flush();
       
@@ -74,15 +73,15 @@ class Terminal_voto extends Thread {
         String[] message=le_consola();
          // procurar a pessoa na base de dados
         System.out.println(Arrays.toString(message));
-        if((user=Rmi_server.autenticate(message[2],message[3]))!=null){
+        if((user=Rmi_server.autenticate(message[3],message[5]))!=null){
             resp="type|validate;" + user.getName() + "|OK";
             outToClient.println(resp);
-            outToClient.println("Efectue login para poder votar");
+            outToClient.println("Agora, efectue login para poder votar");
             outToClient.flush();
             return user;
         }
         else{
-            resp="type|validate;" + message[3] + "|NOT FOUND";
+            resp="type|validate;" + message[5] + "|NOT FOUND";
             outToClient.println(resp);
             outToClient.println();
             outToClient.flush();
@@ -91,7 +90,7 @@ class Terminal_voto extends Thread {
     }
     public boolean login(Pessoa Pessoa) throws IOException{
         String resp;
-        resp="Expected: \"type|login;username|valor;password|valor\"";
+        resp="Expected: type|login;username|valor;password|valor";
         outToClient.println(resp);
         outToClient.flush();
         String[] message=le_consola();
@@ -137,7 +136,7 @@ class Terminal_voto extends Thread {
         outToClient.println();
         return data;
     }
-    public Eleicao select_elections() throws IOException{
+    public Eleicao select_elections(Pessoa user) throws IOException{
         String resp;
         ArrayList<Eleicao> Elections;
         Elections=Rmi_server.get_Eleicoes();
@@ -153,20 +152,35 @@ class Terminal_voto extends Thread {
 
         //input esperado "type|item_list;option|nome"
         String[] message=le_consola();
-        if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){
-            Eleicao eleicao=Rmi_server.getEleicao(message[3]);
-            return eleicao;
-        }
-        
+        Eleicao eleicao=null;
         do{
+            if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){
+                eleicao=Rmi_server.getEleicao(message[3]);
+                if(eleicao== null){
+                    outToClient.println("A lista escolhida nao existe. Escreveu correctamente o titulo da lista?");
+                    outToClient.flush();
+                    return null;
+                }
+                else if(!user.getDpto().equalsIgnoreCase(mesa.departamento) && eleicao.getTipo().equalsIgnoreCase("nucleo")){
+                    outToClient.println("Nao pode votar nesta eleicao sendo de outro departamento");
+                    outToClient.flush();
+                    return  null;
+                }
+                else if(!user.getTipoPessoa().equalsIgnoreCase("aluno") && eleicao.getTipo().equalsIgnoreCase("nucleo")){
+                    outToClient.println("Nao pode votar na lista selecionada nao sendo aluno");
+                    outToClient.flush();
+                    return  null;
+                }
+                else{
+                    return eleicao;
+                }
+            }
             outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\" escolhendo um nome da lista de eleicoes apresentada");
             outToClient.flush();
             message=le_consola();
-        } while(!"item_list".equals(message[1]) && "option".equalsIgnoreCase(message[2]));
-        Eleicao eleicao=Rmi_server.getEleicao(message[3]);
-        outToClient.println();
-        return eleicao;
+        } while(!"item_list".equals(message[1]) && !"option".equalsIgnoreCase(message[2]));
         
+        return null; 
     }
     
     public void show_listas(Eleicao eleicao) throws IOException{
@@ -212,17 +226,14 @@ class Terminal_voto extends Thread {
                     outToClient.println("[Error] Digite a sua opcao na forma: \"type|item_list;option|nome\"");
                     outToClient.flush();
                     message=le_consola();
-                    if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){
-                        Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, today);
-                        outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
-                        outToClient.flush();
-                        return true;
+                    if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){                     
+                        return Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, today);
                     }
                 }
             }
         }catch(IOException E){
              E.printStackTrace();
-             outToClient.println("Ocorreu um erro no processamento do voto. Repita o processo!");
+             outToClient.println("Ocorreu um erro no processamento do voto.");
              outToClient.flush();
         }
         return false;
@@ -240,16 +251,18 @@ class Terminal_voto extends Thread {
                 logon=login(user);              //autentica o cliente na mesa de voto (desbloqueia a mesa)
             }
             if(logon && user!=null ){
-                Eleicao eleicao=select_elections();  //escolhe  eleicao pretendida 
-                votou=select_lista(eleicao, user);   //vota na lista pretendida
+                Eleicao eleicao=select_elections(user);  //escolhe  eleicao pretendida 
+                if(eleicao!=null)
+                    votou=select_lista(eleicao, user);   //vota na lista pretendida
               
                 if(votou){
                     outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
                     outToClient.flush();
                     Rmi_server.Count_voters(eleicao,mesa);
+                    clientSocket.close();
                 }
                 else{
-                    outToClient.println("type|login; status|logged:off; msg: An error has occorred. Repeat the process.");
+                    outToClient.println("type|error; status|logged:on; msg: An error has occorred. Repeat the process.");
                     outToClient.flush();
                 }
 
