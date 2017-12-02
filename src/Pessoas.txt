@@ -8,8 +8,7 @@ docente;carlos jesus;234521432;ar7rfsf;dec;05-03-2010;914242145;coimbra;0
 docente;francisco santos;378521765;as3k7r8sf;dec;05-03-2010;914242145;porto;0
 docente;cosmo santos;765521432;aj6rjsf;dec;05-03-2010;914242145;porto;1
 Eleicao_28-10-2017;DEI;15:48:59 28/11/2017
-docente;artur jesus;234587432;a56bsf;dec;05-03-2010;914242145;coimbra;1
-Eleicao;DEI;05:08:00 27/08/2017
+docente;artur jesus;234587432;a56bsf;dec;05-03-2010;914242145;coimbra;0
 docente;luis santos;343521765;as3ne6nu8sf;dec;05-03-2010;914242145;porto;0
 aluno;cosmo afonso;147241983;2g4e5uum;deec;07-04-2011;916414196;coimbra;0
 aluno;luis miguel;798986413;23e6n6urm;deec;07-04-2011;916414196;porto;0
@@ -28,3 +27,4 @@ funcionario;luis ricardo;367821765;as3nek766sf;dec;05-03-2010;914242145;porto;0
 funcionario;cosmo joao;147987983;2gk7k7um;deec;07-04-2011;916414196;coimbra;0
 funcionario;luis artur;385986413;23eh3g6urm;deec;07-04-2011;916414196;porto;0
 funcionario;artur gustavo;143968353;23k89krm;deec;07-04-2011;916414196;coimbra;0
+

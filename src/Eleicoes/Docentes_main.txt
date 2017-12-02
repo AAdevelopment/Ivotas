@@ -1,0 +1,5 @@
+titulo|tipo|descricao|data|departamentos
+7|Docentes_main|docentes|DOce|12:00:00 12/02/2018|13:00:00 13/12/2018|
+A|tipo1|1
+andre miguel|gustavo magalhaes|julio afonso|eduardo miguel|
+Docentes_main;DEI;05:08:00 27/08/2017

@@ -51,14 +51,20 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         System.out.println(e.toString());
     }
     
-     public void replyNrVoters(String state)throws RemoteException{
-         System.out.println("Voters:"+state);
-     }
+    public void replyNrVoters(String state)throws RemoteException{
+        System.out.println("Voters:"+state);
+    }
      
-      public void replyPeople(Pessoa p)throws RemoteException{
-          System.out.println(p.toString());
-      }
-    
+    public void replyPeople(Pessoa p)throws RemoteException{
+        System.out.println(p.toString());
+    }
+      
+    public void print_lists(ArrayList<ListaCandidatos> lista)throws RemoteException{
+        System.out.println("Listas de candidatos disponiveis:");
+        for (int i = 0; i < lista.size(); i++) {
+            System.out.println(lista.get(i));
+        }
+    }
     //CLIENT- SIDE METHODS
     public static ArrayList<Mesa_voto> Add_VoteTable() throws RemoteException{
       ArrayList<Mesa_voto> table = new  ArrayList();
@@ -67,7 +73,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
       Mesa_voto mesa=null;
       boolean verifica=true;
       while(verifica==true){
-          dep=JOptionPane.showInputDialog("Digite o departamento da mesa:");
+          dep=JOptionPane.showInputDialog("Digite o departamento da mesa, clique em cancel para sair ");
           if(dep==null){
               break;
           }
@@ -81,6 +87,17 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
       //JOptionPane.showInputDialog("Digite o Titulo da eleicao:"); 
       return table;
         
+    }
+    
+    public static String [] Add_Election_list(){
+       String array[]= new String[2];
+       String message[]={"digite o tipo de eleicao","Digite o nome da lista"};
+       for (int i = 0; i <array.length; i++) {
+        array[i]=JOptionPane.showInputDialog(message[i]);
+                   
+       }
+    
+       return array;
     }
     
     
@@ -156,7 +173,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
             
             do{
                 opcao=Integer.parseInt(JOptionPane.showInputDialog("1-verificar conexao"+"\n"+"2-criar eleicao"+"\n"+"3-criar lista de candidato\n"+"4-Registrar Pessoa"
-                      +"\n5-Criar faculdade/dpto\n"+"6-Alterar eleicao"+"\n"+"7-adicionar mesa de voto a eleicao\n"+"9- sair do menu"));
+                      +"\n5-Criar faculdade/dpto\n"+"6-Alterar eleicao"+"\n"+"9- sair do menu"));
                 switch(opcao){
                     case 1:
                         System.out.println(reply=h.Test_connection());
@@ -169,7 +186,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                             saida[i]=JOptionPane.showInputDialog(s[i]);
                         }
                         
-                        h.criarEleicao(saida,Add_VoteTable());
+                        h.criarEleicao(saida,Add_VoteTable(),Add_Election_list());
                         break; 
                     case 3:
                         String tipo="";
@@ -196,9 +213,6 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                             v[i]=JOptionPane.showInputDialog(vet[i]);
                         }
                         h.alterar_eleicao(nome1,v);
-                        break;
-                    case 7:
-                        String rep="";
                         break;
                     case 9:
                         verifica=false;

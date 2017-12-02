@@ -33,13 +33,13 @@ public class Mesa_voto implements Serializable{
     private static final long serialVersionUID = 1L;
    
     
-    public Mesa_voto( String departamento){
+    public Mesa_voto(String departamento){
         this.ID++;
         this.departamento=departamento;
     }
  
     public String toSring(){
-        return this.ID+";"+this.departamento;
+        return "ID|"+this.ID+";"+"Nome|"+this.departamento;
     }
         
    
