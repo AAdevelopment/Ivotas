@@ -42,6 +42,10 @@ public class Eleicao implements Runnable,Serializable {
         this.data_inicio = data_inicio;
     }
 
+    public ArrayList<ListaCandidatos> getListas_candidatas() {
+        return listas_candidatas;
+    }
+
     public void setData_fim(Calendar data_fim) {
         this.data_fim = data_fim;
     }

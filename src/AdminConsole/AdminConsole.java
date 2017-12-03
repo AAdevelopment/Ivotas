@@ -12,6 +12,7 @@ import Server_RMI.ListaCandidatos;
 import Server_RMI.Faculdade;
 import Server_RMI.Pessoa;
 import java.io.IOException;
+import java.io.Serializable;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
@@ -26,12 +27,12 @@ import mesa_voto.Mesa_voto;
  *
  * @author gustavo
  */
-public class AdminConsole extends UnicastRemoteObject implements Comunication_client  {
+public class AdminConsole extends UnicastRemoteObject implements Comunication_client,Serializable  {
     
     public AdminConsole() throws RemoteException {
         super();
     }
-    
+  
     // INTERFACE SERVER-SIDE METHODS
     
     @Override
@@ -49,6 +50,11 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     @Override
     public void replyElection(Eleicao e){
         System.out.println(e.toString());
+        ArrayList<ListaCandidatos>list=e.getListas_candidatas();
+        for (int i = 0; i <list.size(); i++) {
+            System.out.println(list.get(i));
+        }
+        
     }
     
     public void replyNrVoters(String state)throws RemoteException{
@@ -59,12 +65,43 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         System.out.println(p.toString());
     }
       
-    public void print_lists(ArrayList<ListaCandidatos> lista)throws RemoteException{
+    public Eleicao Add_lists_toElection(ArrayList<ListaCandidatos> lista,Eleicao el)throws RemoteException{
+        
         System.out.println("Listas de candidatos disponiveis:");
         for (int i = 0; i < lista.size(); i++) {
             System.out.println(lista.get(i));
         }
+        
+         
+        String nome=JOptionPane.showInputDialog("digite o nome da lista desejada");;
+        for (int i = 0; i <lista.size(); i++) {
+            if(lista.get(i).nome.equalsIgnoreCase(nome)){
+                if(lista.get(i).tipo.equalsIgnoreCase(el.getTipo())){
+                    el.getListas_candidatas().add(lista.get(i));
+                }
+                else{
+                    System.out.println("Erro tipo da eleicao diferente do tipo da lista  !!!");
+                }
+            }
+            else{
+                System.out.println("nome:"+lista.get(i).nome);
+                System.out.println("Erro nome  nao condizentes com a lista !!!");
+            }
+        }
+        
+        return el;
+         /*public ArrayList<ListaCandidatos> get_Listas(Eleicao eleicao){
+        for(int i=0; i<this.bufferEleicao.size();i++){
+            if(this.bufferEleicao.get(i).titulo.equalsIgnoreCase(eleicao.titulo))
+                return this.bufferEleicao.get(i).listas_candidatas;
+        }
+        
+        return null;*/
     }
+        
+   
+ 
+
     //CLIENT- SIDE METHODS
     public static ArrayList<Mesa_voto> Add_VoteTable() throws RemoteException{
       ArrayList<Mesa_voto> table = new  ArrayList();
@@ -88,20 +125,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
       return table;
         
     }
-    
-    public static String [] Add_Election_list(){
-       String array[]= new String[2];
-       String message[]={"digite o tipo de eleicao","Digite o nome da lista"};
-       for (int i = 0; i <array.length; i++) {
-        array[i]=JOptionPane.showInputDialog(message[i]);
-                   
-       }
-    
-       return array;
-    }
-    
-    
-    
+      
     public static String [] CadastroPessoa(){
         String s[]={"Cadastrar tipo pessoa","Cadastrar nome:","Cadastrar Cartao do cidadao:","Cadastrar Password","Cadastrar DPto","Cadastrar Card_valid dd-mm-yyyy",
             "Cadastrar telefone","Cadastrar Moradia"};
@@ -186,7 +210,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                             saida[i]=JOptionPane.showInputDialog(s[i]);
                         }
                         
-                        h.criarEleicao(saida,Add_VoteTable(),Add_Election_list());
+                        h.criarEleicao(saida,Add_VoteTable());
                         break; 
                     case 3:
                         String tipo="";
@@ -216,10 +240,11 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         break;
                     case 9:
                         verifica=false;
+                       
                         break;
                 }    
             }while(verifica == true);
-            
+             System.exit(0);
         }catch(RemoteException re){
             System.out.println(re.getMessage()); 
         } catch (NotBoundException ex) {

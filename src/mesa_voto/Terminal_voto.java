@@ -250,10 +250,10 @@ class Terminal_voto extends Thread implements Serializable {
                     for (int i = 0; i <eleicao.mesas.size() ; i++) {
                         if(eleicao.mesas.get(i).departamento.equals(mesa.departamento)){
                             mesa.Nr_Voters++;
-                           
+                            this.Rmi_server.Count_voters(eleicao, mesa);
                         }
                     }
-                    this.Rmi_server.Count_voters(eleicao, mesa);
+                    
                    
                 }
                 else{
