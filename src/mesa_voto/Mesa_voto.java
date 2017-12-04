@@ -37,6 +37,10 @@ public class Mesa_voto implements Serializable{
         this.ID++;
         this.departamento=departamento;
     }
+
+    public int getID() {
+        return ID;
+    }
  
     public String toSring(){
         return "ID|"+this.ID+";"+"Nome|"+this.departamento;

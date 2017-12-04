@@ -21,6 +21,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Set;
 import javax.swing.JOptionPane;
 import mesa_voto.Mesa_voto;
@@ -82,7 +84,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
             else{
                 for (int i = 0; i <lista.size(); i++) {
                     if(lista.get(i).nome.equalsIgnoreCase(nome)){
-                        if(lista.get(i).tipo.equalsIgnoreCase(el.getTipo())){
+                        if(lista.get(i).tipo.equals(el.getTipo())){
                             list.add(lista.get(i));
                         }
                         else{
@@ -98,62 +100,9 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         }
         return list;
     }
-    
-  /*  public ArrayList<Mesa_voto> Add_table_to_election(ArrayList<Mesa_voto> mesas)throws RemoteException{
-        ArrayList<Mesa_voto> table = new  ArrayList( mesas.size());
-        String dep;
-        Mesa_voto mesa=null;
-        boolean verifica=true;
-        boolean Already_exist=false;
-        System.out.println("Listas de mesas Ja Criadas:");
-        for (int i = 0; i < mesas.size(); i++) {
-            System.out.println(mesas.get(i).toSring());
-        }
-      
-        while(verifica==true){
-            dep=JOptionPane.showInputDialog("Digite o departamento da mesa, clique em cancel para sair ");
-            if(dep==null){
-                break;
-            }
-            else{
-                int total_array=table.size();
-                int interacoes = 0;
-                System.out.println("1- "+"total_array: "+total_array+" - "+"interacoes: "+interacoes);
-                if(table.isEmpty()){
-                    mesa = new Mesa_voto(dep);
-                    table.add(mesa);
-                    interacoes++;
-                }
-                else{
-                    for (int i = 0; i <table.size(); i++) {
-                        if(table.get(i).departamento.equalsIgnoreCase(dep)){
-                            Already_exist=true;
-                            break;
-                    
-                        } 
-                        else if(!table.get(i).departamento.equalsIgnoreCase(dep)){
-                            interacoes++;
-                            System.out.println("total_array: "+total_array+" - "+"interacoes: "+interacoes);
-                            if(total_array==interacoes){
-                                mesa = new Mesa_voto(dep);
-                                table.add(mesa);
-                            }
-                        }
-                    }
-                    if(Already_exist==true){
-                        System.out.println("Mesa ja existente "+dep);
-                        
-                    }
-                   
-                   
-                }  
-            }
-        }
-       
-      return table;
-    }*/
+ 
     public Set<String> Add_table_to_election(Set<Mesa_voto> mesas)throws RemoteException{
-        Set <String> tables = new HashSet<String>();
+        Set <String> tables = new LinkedHashSet<String>();
         String dep;
         boolean verifica=true;
         Mesa_voto mesa;
