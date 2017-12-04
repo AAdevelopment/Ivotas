@@ -252,48 +252,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }    
     }
     
-   /* public synchronized  void criarEleicao(String saida[],ArrayList<Mesa_voto> mesa) throws RemoteException{ 
-        SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-        Calendar data_inicio= Calendar.getInstance();
-        Calendar data_fim= Calendar.getInstance();
-        Eleicao  el;
-        
-        try{    
-                data_inicio.setTime(format.parse(saida[3]));
-                data_fim.setTime(format.parse(saida[4]));
-                el = new Eleicao(saida[0],saida[1],saida[2],data_inicio,data_fim);
-                for (int i = 0; i <mesa.size(); i++) {
-                    mesa.get(i).ID=this.bufferMesas.size()+1;
-                }
-                
-                el.mesas.addAll(mesa);
-                
-                for (int i = 0; i < el.mesas.size(); i++) {
-                    this.bufferMesas.add(mesa.get(i));
-                }
-                
-                saveMesa(el.mesas);
-                el.ID=this.bufferEleicao.size()+1;
-                el.StartEleicao();
-                System.out.println(el.toString());
-                for (int i = 0; i < el.mesas.size(); i++) {
-                    System.out.println(el.mesas.get(i).departamento);
-                }
-                el=c.Add_lists_toElection(this.buffercandidatos, el);
-                c.replyElection(el);
-                ArrayList<ListaCandidatos>list=el.getListas_candidatas();
-                for (int i = 0; i <list.size(); i++) {
-                    System.out.println(list.get(i));
-                }
-                this.bufferEleicao.add(el);
-                this.saveEleicao(el);
-              } catch (ParseException ex) {
-                  Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-              } catch (IOException ex) {
-               Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-        }    
-    }*/
-    
     public void saveMesa(Set<Mesa_voto>mesa){
         FileWriter file = null;
         SortedSet<Mesa_voto>sorter= new TreeSet<Mesa_voto>(Comparator.comparing(Mesa_voto::getID));
@@ -776,20 +734,29 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             System.out.println();
         }
     }
-   /* public boolean isToStart(Eleicao eleicao){
+    public boolean isToStart(Eleicao eleicao){
         Date today= new Date();
         SimpleDateFormat dt = new SimpleDateFormat("hh:mm");
-        if(eleicao.data.before(today) || eleicao.data.after(today))
+        if(eleicao.data_inicio.before(today) || eleicao.data_fim.after(today))
             return false;
         else{
-            ***********************************************
-             * FALTA VERIFICAR A DATA DA ELEICAO
-             ***********************************************
             return true;
         }
-    }*/
-    
+    }
     @Override
+    public void run() {
+        for (int i = 0; i < this.bufferEleicao.size(); i++) {
+            if(isToStart(this.bufferEleicao.get(i))==true)
+                this.bufferEleicao.get(i).StartEleicao();
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+      
+    }
+    /*@Override
     public void run(){
         try {
              String teste="Mensagem";
@@ -823,7 +790,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public void StartUDPConnection(){
         t = new Thread(this,"Thread1");
         t.start();
-    }
+    }*/
+    
+    
     public static void main(String args[])throws RemoteException, MalformedURLException, SocketException, IOException, FileNotFoundException,ParseException {
         
          try{
@@ -889,6 +858,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             System.out.println(re.getMessage());
         }
     } 
- 
+
 }
 

@@ -146,6 +146,7 @@ public class Eleicao implements Runnable,Serializable {
         t.start();
     }
     
+    
     public void setDescricao(String descricao){
         this.descricao = descricao;
     }
