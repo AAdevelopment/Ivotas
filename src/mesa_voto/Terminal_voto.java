@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package mesa_voto;
 
 import Server_RMI.Comunication_server;
@@ -14,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -28,7 +25,7 @@ import java.util.logging.Logger;
  * @author Admin
  */
 //= Thread para tratar de cada canal de comunicação com um cliente
-class Terminal_voto extends Thread {
+class Terminal_voto extends Thread implements Serializable {
     PrintWriter outToClient;
     private static final long serialVersionUID = 1L;
     BufferedReader inFromClient = null;
@@ -258,7 +255,12 @@ class Terminal_voto extends Thread {
                 if(votou){
                     outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
                     outToClient.flush();
-                    Rmi_server.Count_voters(eleicao,mesa);
+                    /*?????????????????????????????????????????????????????????????????????
+                    for (int i = 0; i <eleicao.mesas.size() ; i++) {
+                        if(eleicao.mesas.get(i).departamento.equalsIngoreCase(mesa.departamento))
+                             mesa.Nr_Voters++;
+                    }????????????????????????????????????????????????????????????????????????*/
+                    this.Rmi_server.Count_voters(eleicao, mesa);
                     clientSocket.close();
                 }
                 else{

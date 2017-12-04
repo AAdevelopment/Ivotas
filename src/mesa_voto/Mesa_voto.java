@@ -28,12 +28,13 @@ import java.util.logging.Logger;
 public class Mesa_voto implements Serializable{
     
     public String departamento;
-    public int ID;
-    public Integer Nr_Voters;
+    public int ID=0;
+    public Integer Nr_Voters=0;
     private static final long serialVersionUID = 1L;
+   
     
-    public Mesa_voto(int ID, String departamento){
-        this.ID=ID;
+    public Mesa_voto( String departamento){
+        this.ID++;
         this.departamento=departamento;
     }
  
@@ -43,7 +44,7 @@ public class Mesa_voto implements Serializable{
         
    
     public static void main(String args[]) throws NotBoundException{
-        int numero=0;
+        int ID_TerminalVote=0;
 
          try{
             
@@ -51,8 +52,8 @@ public class Mesa_voto implements Serializable{
             System.setSecurityManager(new RMISecurityManager());
 
             String serverIP="192.168.43.53";*/
-            
-            Mesa_voto Mesa= new Mesa_voto(1,"DEI");
+           
+           Mesa_voto Mesa= new Mesa_voto("DEI");
            
            int serverPort = 6003;
            System.out.println("A Escuta no Porto "+ serverPort);
@@ -61,8 +62,8 @@ public class Mesa_voto implements Serializable{
            while(true) {
                Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
                System.out.println("CLIENT_SOCKET (created at accept()) = "+ clientSocket);
-               Mesa.ID=numero ++;
-               Terminal_voto term=new Terminal_voto(clientSocket, numero, Mesa);
+               ID_TerminalVote ++;
+               Terminal_voto term=new Terminal_voto(clientSocket, ID_TerminalVote, Mesa);
            }
        }catch(IOException e){
            System.out.println("Listen:" + e.getMessage());

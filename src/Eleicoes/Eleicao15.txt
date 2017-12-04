@@ -8,4 +8,3 @@ Eleicao15;DEM;22:59:22 29/11/2017
 Stark|alunos|0
 Daenherys Targarien|Tyrion Lannister|
 *****
-

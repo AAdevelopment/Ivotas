@@ -151,6 +151,9 @@ public class Eleicao implements Runnable,Serializable {
     public String  getDescricao(){
         return this.descricao;
     }
+    public String toStringMesas(){
+       return this.mesas.toString();
+    }
     @Override
     public String toString(){
         SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
