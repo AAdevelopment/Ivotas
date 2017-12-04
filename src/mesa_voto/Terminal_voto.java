@@ -247,8 +247,8 @@ class Terminal_voto extends Thread implements Serializable {
                 if(votou){
                     outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
                     outToClient.flush();
-                    for (int i = 0; i <eleicao.mesas.size() ; i++) {
-                        if(eleicao.mesas.get(i).departamento.equals(mesa.departamento)){
+                    for (Mesa_voto m:eleicao.mesas) {
+                        if(m.departamento.equals(mesa.departamento)){
                             mesa.Nr_Voters++;
                             this.Rmi_server.Count_voters(eleicao, mesa);
                         }

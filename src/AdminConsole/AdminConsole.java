@@ -20,6 +20,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import mesa_voto.Mesa_voto;
 
@@ -65,43 +67,115 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         System.out.println(p.toString());
     }
       
-    public Eleicao Add_lists_toElection(ArrayList<ListaCandidatos> lista,Eleicao el)throws RemoteException{
-        
+    public ArrayList<ListaCandidatos> Add_lists_toElection(ArrayList<ListaCandidatos> lista,Eleicao el)throws RemoteException{
+        ArrayList <ListaCandidatos> list = new ArrayList();
         System.out.println("Listas de candidatos disponiveis:");
         for (int i = 0; i < lista.size(); i++) {
             System.out.println(lista.get(i));
         }
-        
-         
-        String nome=JOptionPane.showInputDialog("digite o nome da lista desejada");;
-        for (int i = 0; i <lista.size(); i++) {
-            if(lista.get(i).nome.equalsIgnoreCase(nome)){
-                if(lista.get(i).tipo.equalsIgnoreCase(el.getTipo())){
-                    el.getListas_candidatas().add(lista.get(i));
-                }
-                else{
-                    System.out.println("Erro tipo da eleicao diferente do tipo da lista  !!!");
-                }
+        boolean verifica=true;
+        while(verifica==true){ 
+            String nome=JOptionPane.showInputDialog("digite o nome da lista desejada, clique em cancelar para sair");
+            if(nome==null){
+              break;
             }
             else{
-                System.out.println("nome:"+lista.get(i).nome);
-                System.out.println("Erro nome  nao condizentes com a lista !!!");
+                for (int i = 0; i <lista.size(); i++) {
+                    if(lista.get(i).nome.equalsIgnoreCase(nome)){
+                        if(lista.get(i).tipo.equalsIgnoreCase(el.getTipo())){
+                            list.add(lista.get(i));
+                        }
+                        else{
+                            System.out.println("Erro tipo da eleicao diferente do tipo da lista  !!!");
+                        }
+                    }
+                    else{
+                        System.out.println("nome:"+lista.get(i).nome);
+                        System.out.println("Erro nome  nao condizentes com a lista !!!");
+                    }
+                }
             }
         }
-        
-        return el;
-         /*public ArrayList<ListaCandidatos> get_Listas(Eleicao eleicao){
-        for(int i=0; i<this.bufferEleicao.size();i++){
-            if(this.bufferEleicao.get(i).titulo.equalsIgnoreCase(eleicao.titulo))
-                return this.bufferEleicao.get(i).listas_candidatas;
-        }
-        
-        return null;*/
+        return list;
     }
+    
+  /*  public ArrayList<Mesa_voto> Add_table_to_election(ArrayList<Mesa_voto> mesas)throws RemoteException{
+        ArrayList<Mesa_voto> table = new  ArrayList( mesas.size());
+        String dep;
+        Mesa_voto mesa=null;
+        boolean verifica=true;
+        boolean Already_exist=false;
+        System.out.println("Listas de mesas Ja Criadas:");
+        for (int i = 0; i < mesas.size(); i++) {
+            System.out.println(mesas.get(i).toSring());
+        }
+      
+        while(verifica==true){
+            dep=JOptionPane.showInputDialog("Digite o departamento da mesa, clique em cancel para sair ");
+            if(dep==null){
+                break;
+            }
+            else{
+                int total_array=table.size();
+                int interacoes = 0;
+                System.out.println("1- "+"total_array: "+total_array+" - "+"interacoes: "+interacoes);
+                if(table.isEmpty()){
+                    mesa = new Mesa_voto(dep);
+                    table.add(mesa);
+                    interacoes++;
+                }
+                else{
+                    for (int i = 0; i <table.size(); i++) {
+                        if(table.get(i).departamento.equalsIgnoreCase(dep)){
+                            Already_exist=true;
+                            break;
+                    
+                        } 
+                        else if(!table.get(i).departamento.equalsIgnoreCase(dep)){
+                            interacoes++;
+                            System.out.println("total_array: "+total_array+" - "+"interacoes: "+interacoes);
+                            if(total_array==interacoes){
+                                mesa = new Mesa_voto(dep);
+                                table.add(mesa);
+                            }
+                        }
+                    }
+                    if(Already_exist==true){
+                        System.out.println("Mesa ja existente "+dep);
+                        
+                    }
+                   
+                   
+                }  
+            }
+        }
+       
+      return table;
+    }*/
+    public Set<String> Add_table_to_election(Set<Mesa_voto> mesas)throws RemoteException{
+        Set <String> tables = new HashSet<String>();
+        String dep;
+        boolean verifica=true;
+        Mesa_voto mesa;
+        System.out.println("Listas de mesas Ja Criadas:");
+        for (Mesa_voto m:mesas) {
+            System.out.println(m.toSring());
+        }
+        while(verifica==true){
+            dep=JOptionPane.showInputDialog("Digite o departamento da mesa, clique em cancel para sair ");
+            if(dep==null){
+                break;
+            }
+            else{
+                tables.add(dep);
+            }
+        }
+        for(String m:tables)
+            System.out.println(m);
         
-   
- 
-
+        return tables;
+    }
+    
     //CLIENT- SIDE METHODS
     public static ArrayList<Mesa_voto> Add_VoteTable() throws RemoteException{
       ArrayList<Mesa_voto> table = new  ArrayList();
@@ -210,7 +284,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                             saida[i]=JOptionPane.showInputDialog(s[i]);
                         }
                         
-                        h.criarEleicao(saida,Add_VoteTable());
+                        h.criarEleicao(saida);
                         break; 
                     case 3:
                         String tipo="";

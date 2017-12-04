@@ -17,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mesa_voto.Mesa_voto;
@@ -36,7 +38,7 @@ public class Eleicao implements Runnable,Serializable {
     transient Thread t;
     Calendar data_inicio;
     Calendar data_fim;
-    public ArrayList<Mesa_voto> mesas;
+    public Set<Mesa_voto> mesas;
 
     public void setData_inicio(Calendar data_inicio) {
         this.data_inicio = data_inicio;
@@ -63,7 +65,7 @@ public class Eleicao implements Runnable,Serializable {
         this.tipo = tipo;
         this.titulo=titulo;
         this.dptos=deptos;
-        this.mesas=new ArrayList();
+        this.mesas=new HashSet<Mesa_voto>();
         this.descricao=descricao;
         this.data_inicio=inicio;
         this.data_fim=fim;
@@ -79,7 +81,7 @@ public class Eleicao implements Runnable,Serializable {
         dptos=new ArrayList();
         t = new Thread(this,titulo);
         this.listas_candidatas=new ArrayList();
-        this.mesas = new ArrayList();
+        this.mesas=new HashSet<Mesa_voto>();
         this.dptos=new ArrayList();
         this.data_fim=fim;
         this.data_inicio=inicio;
