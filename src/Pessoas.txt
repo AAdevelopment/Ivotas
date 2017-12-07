@@ -1,15 +1,11 @@
 Tipo ; Nome ; Cartao ; Password ; Dpto ; Card_valid ; Telefone ; Morada
-docente;joao santos;342421432;213189sf;dei;22-12-2001;967141145;coimbra;1
-Eleicao14;DEI;10:57:00 25/09/2021
-docente;carlos santos;378865432;as31ffsf;dec;05-03-2010;914242145;coimbra;1
-Eleicao;DEI;03:07:00 26/07/2017
+docente;joao santos;342421432;213189sf;dei;22-12-2001;967141145;coimbra;0
+docente;carlos santos;378865432;as31ffsf;dec;05-03-2010;914242145;coimbra;0
 docente;ricardo santos;378521432;aj6rjsf;dec;05-03-2010;914242145;porto;0
 docente;carlos jesus;234521432;ar7rfsf;dec;05-03-2010;914242145;coimbra;0
 docente;francisco santos;378521765;as3k7r8sf;dec;05-03-2010;914242145;porto;0
-docente;cosmo santos;765521432;aj6rjsf;dec;05-03-2010;914242145;porto;1
-Eleicao_28-10-2017;DEI;15:48:59 28/11/2017
-docente;artur jesus;234587432;a56bsf;dec;05-03-2010;914242145;coimbra;1
-Eleicao;DEI;05:08:00 27/08/2017
+docente;cosmo santos;765521432;aj6rjsf;dec;05-03-2010;914242145;porto;0
+docente;artur jesus;234587432;a56bsf;dec;05-03-2010;914242145;coimbra;0
 docente;luis santos;343521765;as3ne6nu8sf;dec;05-03-2010;914242145;porto;0
 aluno;cosmo afonso;147241983;2g4e5uum;deec;07-04-2011;916414196;coimbra;0
 aluno;luis miguel;798986413;23e6n6urm;deec;07-04-2011;916414196;porto;0
@@ -19,13 +15,9 @@ aluno;eduardo miguel;147986413;23t24mrm;deec;07-04-2011;916414196;porto;0
 aluno;julio afonso;147243213;23gt3gmrm;deec;07-04-2011;916414196;coimbra;0
 aluno;eduardo miguel;146541413;23rsmrm;deec;07-04-2011;916414196;porto;0
 aluno;gustavo magalhaes;146871413;2eheskmrm;deq;12-11-2015;966414196;porto;0
-aluno;andre miguel;141257813;29671kmrm;deq;12-11-2015;966414196;coimbra;1
-Eleicao;DEI;03:13:00 26/01/2018
-funcionario;cosmo eduardo;765521432;a5656jsf;dec;05-03-2010;914242145;porto;1
-Eleicao_28-10-2017;DEI;15:48:59 28/11/2017
-funcionario;artur luis;234535432;a56j76ju6j;dec;05-03-2010;914242145;coimbra;2
-Eleicao_28-10-2017;DEI;23:09:37 29/11/2017
-Eleicao_28-10-2017;DEI;23:10:42 29/11/2017
+aluno;andre miguel;141257813;29671kmrm;deq;12-11-2015;966414196;coimbra;0
+funcionario;cosmo eduardo;765521432;a5656jsf;dec;05-03-2010;914242145;porto;0
+funcionario;artur luis;234535432;a56j76ju6j;dec;05-03-2010;914242145;coimbra;0
 funcionario;luis ricardo;367821765;as3nek766sf;dec;05-03-2010;914242145;porto;0
 funcionario;cosmo joao;147987983;2gk7k7um;deec;07-04-2011;916414196;coimbra;0
 funcionario;luis artur;385986413;23eh3g6urm;deec;07-04-2011;916414196;porto;0

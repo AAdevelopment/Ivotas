@@ -208,7 +208,7 @@ class Terminal_voto extends Thread implements Serializable {
         today.setTime(today.getTime());
         try{
             show_listas(eleicao);
-            String resp="Expected: type|item_list;option|list_name";
+            String resp="Expected: type|item_list;option|list_name  (list_name={blank,null,list})";
             outToClient.println(resp);
             outToClient.flush();
           //  input esperado "type|item_list;option|nome"
@@ -255,13 +255,14 @@ class Terminal_voto extends Thread implements Serializable {
                 if(votou){
                     outToClient.println("type|login; status|logged:off; msg: Vote sucessfull");
                     outToClient.flush();
-                    /*?????????????????????????????????????????????????????????????????????
-                    for (int i = 0; i <eleicao.mesas.size() ; i++) {
-                        if(eleicao.mesas.get(i).departamento.equalsIngoreCase(mesa.departamento))
-                             mesa.Nr_Voters++;
-                    }????????????????????????????????????????????????????????????????????????*/
-                    this.Rmi_server.Count_voters(eleicao, mesa);
-                    clientSocket.close();
+                    for (Mesa_voto m:eleicao.mesas) {
+                        if(m.departamento.equals(mesa.departamento)){
+                            mesa.Nr_Voters++;
+                            this.Rmi_server.Count_voters(eleicao, mesa);
+                        }
+                    }
+                    
+                   
                 }
                 else{
                     outToClient.println("type|error; status|logged:on; msg: An error has occorred. Repeat the process.");

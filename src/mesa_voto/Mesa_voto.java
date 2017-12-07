@@ -31,15 +31,18 @@ public class Mesa_voto implements Serializable{
     public int ID=0;
     public Integer Nr_Voters=0;
     private static final long serialVersionUID = 1L;
-   
+    public ArrayList<Pessoa> membros;
     
-    public Mesa_voto( String departamento){
-        this.ID++;
+    public Mesa_voto(String departamento){
         this.departamento=departamento;
+    }
+
+    public int getID() {
+        return ID;
     }
  
     public String toSring(){
-        return this.ID+";"+this.departamento;
+        return "ID|"+this.ID+";"+"Nome|"+this.departamento;
     }
         
    
@@ -63,7 +66,7 @@ public class Mesa_voto implements Serializable{
                Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
                System.out.println("CLIENT_SOCKET (created at accept()) = "+ clientSocket);
                ID_TerminalVote ++;
-               Terminal_voto term=new Terminal_voto(clientSocket, ID_TerminalVote, Mesa);
+               new Terminal_voto(clientSocket, ID_TerminalVote, Mesa);
            }
        }catch(IOException e){
            System.out.println("Listen:" + e.getMessage());
