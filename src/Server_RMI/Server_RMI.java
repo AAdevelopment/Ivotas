@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
@@ -44,7 +45,7 @@ import mesa_voto.Mesa_voto;
 public class Server_RMI  extends UnicastRemoteObject implements Comunication_server,Runnable,Serializable {
     static Comunication_client c;
     private static final long serialVersionUID = 1L;
-    static Thread t;
+    Thread t;
     static DatagramSocket  aSocket;
     static Server_RMI server;
     Integer qtd_voters;
@@ -79,7 +80,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 ListaCandidatos l = new ListaCandidatos(nome,tipo);
         
                 try {
-                    FileWriter file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/listas",true);
+                    FileWriter file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/src/listas.txt",true);
                     //FileWriter file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\listas.txt",true);
                     BufferedWriter out = new BufferedWriter(file);
                     l.setList(array);
@@ -99,7 +100,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public void LoadList() throws FileNotFoundException, IOException{
           String s;
           ListaCandidatos lista;
-          FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/listas");
+          FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/src/listas.txt");
           //FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\listas.txt");
           BufferedReader in = new BufferedReader(read);
           while((s=in.readLine())!=null){
@@ -120,7 +121,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         FileWriter file = null;
         try {
             Faculdade f = new Faculdade(nome);
-            file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/Faculdade_dpto",true);
+            file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/src/Faculdade_dpto.txt",true);
             //file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Faculdade_dpto.txt",true);
             BufferedWriter out = new BufferedWriter(file);
             f.criarDPTO(array);
@@ -140,7 +141,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public void LoadFaculdade_Dpto()throws FileNotFoundException, IOException{
          String s;
           Faculdade f ;
-          FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/Faculdade_dpto");
+          FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/src/Faculdade_dpto.txt");
           //FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Faculdade_dpto.txt");
           BufferedReader in = new BufferedReader(read);
           while((s=in.readLine())!=null){
@@ -200,6 +201,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         Mesa_voto mesa;
         Eleicao  el;
         Set<Mesa_voto>mesas_passagem = new HashSet<Mesa_voto>();
+        
         try{    
             data_inicio.setTime(format.parse(saida[3]));
             data_fim.setTime(format.parse(saida[4]));
@@ -209,6 +211,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 mesa = new Mesa_voto(m);
                 mesa.ID=this.bufferMesas.size()+1;
                 el.mesas.add(mesa);
+                el.mesas.iterator().next().ID=el.mesas.size()+1;
                 int qtd=0;
                 if(this.bufferMesas.isEmpty()){
                     this.bufferMesas.add(mesa);
@@ -233,7 +236,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             }
             saveMesa(mesas_passagem);
             el.ID=this.bufferEleicao.size()+1;
-            el.StartEleicao();
+            System.out.println("\n\nNova eleicao Criada!");
             System.out.println(el.toString());  
             el.listas_candidatas.addAll(c.Add_lists_toElection(this.buffercandidatos, el));
             c.replyElection(el);
@@ -241,10 +244,13 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             for (int i = 0; i <list.size(); i++) {
                 System.out.println(list.get(i));
             }
-            
+            System.out.println("mesa(s) da eleicao");
+            for(Mesa_voto m:el.mesas)
+                System.out.println(m.toSring());
             this.bufferEleicao.add(el);
             this.saveEleicao(el);
-            
+            server.printBufferEleicao(server.bufferEleicao);
+            server.StartThreadEleicao();
             } catch (ParseException ex) {
                 Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
@@ -315,19 +321,19 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                     }
                     
                     FileReader read;
-                    File arquivo = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
+                    File arquivo = new File("/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+nome+".txt");
                     //File arquivo = new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\"+nome);
                     if(arquivo.exists()){
                         try {
-                            read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
+                            read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+nome+".txt");
                             //read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\"+nome);
                             BufferedReader in = new BufferedReader(read);
                             String linha="";
                             String arquivo_todo;
                             linha=in.readLine();
-                            arquivo.renameTo(new File("/home/gustavo/NetBeansProjects/Ivotas/"+this.bufferEleicao.get(i).getTitulo()));
+                            arquivo.renameTo(new File("/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+this.bufferEleicao.get(i).getTitulo()));
                             //arquivo.renameTo(new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\"+this.bufferEleicao.get(i).getTitulo()));
-                            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+this.bufferEleicao.get(i).getTitulo());
+                            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+this.bufferEleicao.get(i).getTitulo());
                             //FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\"+this.bufferEleicao.get(i).getTitulo());
                             out.write(this.bufferEleicao.get(i).toString()+"\n");
                             while((arquivo_todo=in.readLine())!=null){
@@ -374,17 +380,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         String state="Eleicao: "+e.titulo+"|"+"Tipo: "+e.tipo+"|"+"Mesa: "+mesa.ID+"|"+mesa.departamento+"|"+"Numero de eleitores: "+mesa.Nr_Voters+"\n";
         c.replyNrVoters(state);
     }
-    
-    //public synchronized void Count_voters(Mesa_voto mesa) throws RemoteException{ 
-    //    String state= mesa.toSring()+"|"+mesa.Nr_Voters++;
-    //    c.replyNrVoters(state);
-   // }
-    
-    
-     
+        
      /************************************************************************************************************************
      *
-     *Author: Andre Santos
+     *Author: Andre Santos nabo
      *
      **/
      
@@ -396,8 +395,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
         try {
-            //String path="/home/gustavo/NetBeansProjects/Ivotas/"+eleicao.titulo;
-            String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes\\"+eleicao.titulo+".txt";
+            String path="/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+eleicao.titulo+".txt";
+            //String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes\\"+eleicao.titulo+".txt";
             FileWriter file = new FileWriter(path);
             BufferedWriter out = new BufferedWriter(file);
             int i=0;
@@ -686,8 +685,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         
             FileWriter file= null;
             try {
-                //file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/pessoas");
-                file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Pessoas.txt");
+                file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/src/pessoas.txt");
+                //file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Pessoas.txt");
                 BufferedWriter out = new BufferedWriter(file);
                 SimpleDateFormat dt = new SimpleDateFormat("dd-mm-yyyy");
                 String s="";
@@ -735,26 +734,31 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
     }
     public boolean isToStart(Eleicao eleicao){
-        Date today= new Date();
-        SimpleDateFormat dt = new SimpleDateFormat("hh:mm");
-        if(eleicao.data_inicio.before(today) || eleicao.data_fim.after(today))
+        Calendar today =Calendar.getInstance();
+        System.out.println("Today: "+today.getTime().toGMTString());
+        if(eleicao.data_inicio.before(today) || today.after(eleicao.data_fim)){
+            System.out.println("1- "+eleicao.data_inicio.getTime().toGMTString()+" - "+eleicao.data_fim.getTime().toGMTString());
             return false;
+        }
         else{
+            System.out.println("2- "+eleicao.data_inicio.getTime().toGMTString()+" - "+eleicao.data_fim.getTime().toGMTString());
             return true;
         }
+       
     }
     @Override
     public void run() {
-        for (int i = 0; i < this.bufferEleicao.size(); i++) {
-            if(isToStart(this.bufferEleicao.get(i))==true)
-                this.bufferEleicao.get(i).StartEleicao();
-            try {
-                Thread.sleep(5);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+        while(true){
+            for (int i = 0; i < this.bufferEleicao.size(); i++) {
+                if(isToStart(this.bufferEleicao.get(i))==true){
+                    try {
+                        this.bufferEleicao.get(i).StartEleicao();
+                    } catch (IOException ex) {
+                        Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } 
             }
         }
-      
     }
     /*@Override
     public void run(){
@@ -786,11 +790,13 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
     }
     
-    
-    public void StartUDPConnection(){
+    */
+    public void StartThreadEleicao(){
+      
         t = new Thread(this,"Thread1");
         t.start();
-    }*/
+        System.out.println("Thread is running !");
+    }
     
     
     public static void main(String args[])throws RemoteException, MalformedURLException, SocketException, IOException, FileNotFoundException,ParseException {
@@ -805,59 +811,32 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            
             Registry r = LocateRegistry.createRegistry(Integer.parseInt(args[0]));
             r.rebind("connection_RMI",server);
+            System.out.println("Listas de candidados:");
             server.LoadList();
+            System.out.println("\n\nFaculdades/DPTO:");
             server.LoadFaculdade_Dpto();
+            System.out.println("\n\nMesas de voto:");
             Set<Mesa_voto> mesas =new LinkedHashSet();
             mesas=server.loadMesas();
             for (Mesa_voto m:mesas) {
                  System.out.println(m.toSring());
             }
-            Mesa_voto mesa=new Mesa_voto("DOG");
-            Mesa_voto mesa_dem=new Mesa_voto("DEEC");
-            server.addMesaVoto(mesa);
-            server.addMesaVoto(mesa_dem);
-            server.loadArrayEleicao();
-            server.CarregaPessoas();    // as pessoas tem de ser carregadas depois das eleicoes
-
-            
-            ArrayList<String> faculdades= new ArrayList(Arrays.asList("DEI", "DEEC", "DEM"));
-            ListaCandidatos A= new ListaCandidatos("Snow","alunos");
-            ArrayList<String> lista1= new ArrayList(Arrays.asList("Rhaegar Targarien","Jaime Lannister")); 
-            ListaCandidatos B= new ListaCandidatos("Stark","alunos");
-            ArrayList<String> lista2= new ArrayList(Arrays.asList("Daenherys Targarien","Tyrion Lannister"));
-            SimpleDateFormat formatter= new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-            Calendar inicio= Calendar.getInstance();
-            inicio.setTime(formatter.parse("15:35:46 20/11/1995"));
-            Calendar fim= Calendar.getInstance();
-            fim.setTime(formatter.parse("16:35:50 20/11/1995"));
-            Eleicao eleicao=new Eleicao(100,"nucleo","Eleicao15","eleicao nucleo DEM", inicio, fim, faculdades);
-            A.setLista(lista1);
-            B.setLista(lista2);
-            eleicao.mesas.add(mesa_dem);
-            eleicao.listas_candidatas.add(A);
-            eleicao.listas_candidatas.add(B);
-            Calendar today= Calendar.getInstance();
-            today.setTime(today.getTime());
-            Voto vote= new Voto (today,eleicao,mesa_dem);
-            eleicao.listas_candidatas.get(0).votos.add(vote);
-           
-            server.bufferEleicao.add(eleicao);
-            server.buffercandidatos.add(A);
-            server.buffercandidatos.add(B);
-            server.printBufferEleicao(server.bufferEleicao);
-            server.printBufferPessoas(server.bufferPessoas);
-            
-//            aSocket = new DatagramSocket(Integer.parseInt(args[1]));
+           // server.loadArrayEleicao();
+            System.out.println("\nPessoas:");
+           // server.CarregaPessoas();    // as pessoas tem de ser carregadas depois das eleicoes
+            System.out.println("\n");
+            System.out.println("\nEleicoes:");
+            //server.printBufferEleicao(server.bufferEleicao);
+            //server.printBufferPessoas(server.bufferPessoas);
+//          aSocket = new DatagramSocket(Integer.parseInt(args[1]));
            // System.out.println("Socket Datagram à escuta no porto "+args[1]);
            
-            server.savePessoas();
-            server.saveArrayEleicao();
-                  
-            
+            //server.savePessoas();
+            //server.saveArrayEleicao();
+                        
         }catch(RemoteException re){
             System.out.println(re.getMessage());
         }
     } 
-
 }
 

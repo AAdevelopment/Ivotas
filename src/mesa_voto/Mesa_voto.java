@@ -34,7 +34,7 @@ public class Mesa_voto implements Serializable{
    
     
     public Mesa_voto(String departamento){
-        this.ID++;
+        //this.ID++;
         this.departamento=departamento;
         
     }
@@ -48,10 +48,10 @@ public class Mesa_voto implements Serializable{
     }
     
 
-   public void StartTable(String dep_mesa) throws IOException{
+   public void StartTable(Mesa_voto mesa) throws IOException{
+        System.out.println("MESA: "+mesa.toSring()+"Iniciada !");
         int ID_TerminalVote=0;
         int serverPort = 6003;
-        Mesa_voto Mesa= new Mesa_voto(dep_mesa);  
         System.out.println("A Escuta no Porto "+ serverPort);
         ServerSocket listenSocket = new ServerSocket(serverPort);
         System.out.println("LISTEN SOCKET = "+listenSocket);
@@ -59,11 +59,13 @@ public class Mesa_voto implements Serializable{
             Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
             System.out.println("CLIENT_SOCKET (created at accept()) = "+ clientSocket);
             ID_TerminalVote ++;
-            Terminal_voto term=new Terminal_voto(clientSocket, ID_TerminalVote, Mesa);
+            Terminal_voto term=new Terminal_voto(clientSocket, ID_TerminalVote, mesa);
         }
    } 
    
 }
+
+
 //= Thread para tratar de cada canal de comunicação com um cliente
 
 //CASO DER MERDA, FICA Aí O BACKUP
