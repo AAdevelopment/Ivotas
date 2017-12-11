@@ -20,10 +20,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import mesa_voto.Mesa_voto;
 
@@ -84,7 +84,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
             else{
                 for (int i = 0; i <lista.size(); i++) {
                     if(lista.get(i).nome.equalsIgnoreCase(nome)){
-                        if(lista.get(i).tipo.equals(el.getTipo())){
+                        if(lista.get(i).tipo.equalsIgnoreCase(el.getTipo())){
                             list.add(lista.get(i));
                         }
                         else{
@@ -126,27 +126,21 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     }
     
     //CLIENT- SIDE METHODS
-    public static ArrayList<Mesa_voto> Add_VoteTable() throws RemoteException{
-      ArrayList<Mesa_voto> table = new  ArrayList();
+    public void nova_mesa_voto(Comunication_server h) throws RemoteException{
       String dep;
-      ArrayList <String> dpto= new ArrayList();
       Mesa_voto mesa=null;
       boolean verifica=true;
       while(verifica==true){
           dep=JOptionPane.showInputDialog("Digite o departamento da mesa, clique em cancel para sair ");
-          if(dep==null){
-              break;
+          if(dep!=null){
+              mesa=h.create_mesa(dep);
+              if(mesa!=null)
+                  mesa.toSring();
+              else
+                  System.out.println("A mesa nao foi criada com sucesso");
+              verifica=false;
           }
-          else{
-              mesa = new Mesa_voto(dep);
-              table.add(mesa);
-              ////wainting....  
-            }
-      }
-       
-      //JOptionPane.showInputDialog("Digite o Titulo da eleicao:"); 
-      return table;
-        
+      }     
     }
       
     public static String [] CadastroPessoa(){
@@ -197,6 +191,29 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         return array;
     }
     
+    public void configurarMesa(Comunication_server h){
+        String saida="";
+        String option[]=new String [4];
+        for(int i=0  ; i < 4 ; i++){
+            if(i==0)
+                saida="ID da mesa a configurar";
+            else if(i!=0)
+                saida="CC do elemento "+i;
+            option[i]=JOptionPane.showInputDialog(saida);
+            if(option[i].isEmpty()){
+                i--;
+            }
+            
+        }
+        try {
+            if(!h.configMesa(option)){
+                System.out.println("Nao foi possivel alterar os membros da mesa. Verifique a validade dos novos nomes");
+            }
+        } catch (RemoteException ex) {
+            Logger.getLogger(AdminConsole.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
     
     
     public static void main(String args[]) throws RemoteException, NotBoundException, IOException{
@@ -212,18 +229,17 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
             AdminConsole c = new AdminConsole();
             h.subscribe("new Cliente Conection", (Comunication_client) c);
            // System.out.println("Client sent subscription to server");
-            String reply="";
-            String a="";
+            String a="", nome="";
             boolean verifica=true;
            
             
-            
             do{
-                opcao=Integer.parseInt(JOptionPane.showInputDialog("1-verificar conexao"+"\n"+"2-criar eleicao"+"\n"+"3-criar lista de candidato\n"+"4-Registrar Pessoa"
-                      +"\n5-Criar faculdade/dpto\n"+"6-Alterar eleicao"+"\n"+"9- sair do menu"));
+                opcao=Integer.parseInt(JOptionPane.showInputDialog("1-Configurar membros mesa"+"\n"+"2-criar eleicao"+"\n"+"3-criar lista de candidato\n"+"4-Registrar Pessoa"
+                      +"\n5-Criar mesa de voto\n"+"\n6-Criar dpto\n"+"\n7-remover departamento\n"+"\n8-alterar nome departamento"
+                        +"\n9-Alterar eleicao"+"\n"+"10- sair do menu"));
                 switch(opcao){
                     case 1:
-                        System.out.println(reply=h.Test_connection());
+                        c.configurarMesa(h);
                         break;
                     case 2:
                         
@@ -247,11 +263,29 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         h.CadastrarPessoa(CadastroPessoa());
                         break;
                     case 5:
-                        String nome="";
+                        c.nova_mesa_voto(h);
+                        break;
+                    case 6:
                         nome=JOptionPane.showInputDialog("Digite o nome da faculdade:");
                         h.CriarFaculdade_Dpto(nome,criarFaculdadeDpto());
                         break;
-                    case 6:
+                    case 7:
+                        nome=JOptionPane.showInputDialog("Digite o nome da faculdade:");
+                        h.removeDepartamento(nome);
+                        break;
+                    case 8:
+                        String aux[] =new String[2];
+                        String msg="";
+                        for(int i=0; i<2; i++){
+                            if(i==0)
+                                msg="Digite o nome da faculdade:";
+                            else
+                                msg="Digite o novo nome da faculdade";
+                            aux[i]=JOptionPane.showInputDialog(msg);
+                        }
+                        h.alterarDepartamento(aux[0],aux[1]);
+                        break;
+                    case 9:
                         String nome1;
                         nome1=JOptionPane.showInputDialog("Digite o nome da eleicao que dejesa alterar:");
                         String vet[]={"Deseja alterar o tipo?","Deseja alterar o titulo?","Deseja alterar a descricao?","Deseja alterar a data de inicio?","Deseja alterar a data de fim?"};
@@ -261,10 +295,10 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         }
                         h.alterar_eleicao(nome1,v);
                         break;
-                    case 9:
+                    case 10:{
                         verifica=false;
-                       
                         break;
+                    }
                 }    
             }while(verifica == true);
              System.exit(0);

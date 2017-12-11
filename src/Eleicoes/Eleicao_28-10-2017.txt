@@ -1,9 +1,10 @@
-titulo|tipo|descricao|data|departamentos
-3|Eleicao_28-10-2017|geral|descricao da eleicao 28-10-2017|09:53:00 28/10/1976|23:32:58 28/10/1976|
+titulo|tipo|descricao|data_inicio|data_fim
+3|Eleicao_28-10-2017|geral|descricao da eleicao 28-10-2017|09:53:00 28/10/1976|23:32:58 28/10/1976
+MESAS*****
+
+DEPARTAMENTOS*****
+
+LISTAS*****
 A|tipo1|0
-andre miguel|gustavo magalhaes|julio afonso|eduardo miguel|
-B|tipo2|1
-francisco santos|joao santos|carlos jesus|cosmo santos|
-Eleicao_28-10-2017;DEI;15:48:59 28/11/2017
-C|tipo3|0
-artur gustavo|luis artur|cosmo joao|artur luis|
+VOTOS NULOS*****
+VOTOS BRANCOS*****

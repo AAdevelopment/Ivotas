@@ -45,7 +45,7 @@ public class Voto implements Serializable{
 
  public String toString(){
      SimpleDateFormat dt=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-     return this.eleicao.titulo+";"+this.mesa.departamento+";"+dt.format(data.getTime());
+     return this.eleicao.titulo+";"+this.mesa.ID+";"+dt.format(data.getTime());
  }
     
 }

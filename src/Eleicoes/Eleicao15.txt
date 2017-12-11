@@ -1,6 +1,10 @@
-titulo|tipo|descricao|data|departamentos
-100|Eleicao15|nucleo|eleicao nucleo DEM|15:35:46 20/11/1995|16:35:50 20/11/1995|DEI,DEEC,DEM
+titulo|tipo|descricao|data_inicio|data_fim
+100|Eleicao15|nucleo|eleicao nucleo DEM|15:35:46 20/11/1995|16:35:50 20/11/1995
+MESAS*****
+
+DEPARTAMENTOS*****
+
+LISTAS*****
 Snow|alunos|0
-Rhaegar Targarien|Jaime Lannister|
-Stark|alunos|0
-Daenherys Targarien|Tyrion Lannister|
+VOTOS NULOS*****
+VOTOS BRANCOS*****

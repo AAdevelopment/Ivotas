@@ -35,13 +35,16 @@ public class Eleicao implements Runnable,Serializable {
     String tipo;
     String titulo;
     String descricao;
-    ArrayList<String> dptos;
     ArrayList<ListaCandidatos> listas_candidatas;
     transient Thread t;
     Calendar data_inicio;
     Calendar data_fim;
     public Set<Mesa_voto> mesas;
+    ArrayList<String> dptos;
+    ArrayList<Voto> nulos;
+    ArrayList<Voto> brancos;
 
+    
     public void setData_inicio(Calendar data_inicio) {
         this.data_inicio = data_inicio;
     }
@@ -62,31 +65,36 @@ public class Eleicao implements Runnable,Serializable {
         return data_inicio;
     }
     //construtor para carregar as eleicoes de ficheiro
-    public Eleicao(int ID,String tipo,String titulo,String descricao, Calendar inicio, Calendar fim, ArrayList<String> deptos) throws ParseException{
+    public Eleicao(int ID,String tipo,String titulo,String descricao, Calendar inicio, Calendar fim, ArrayList<String> deptos, Set<Mesa_voto> mesas) throws ParseException{
         this.ID=ID;
         this.tipo = tipo;
         this.titulo=titulo;
+        this.mesas=mesas;
         this.dptos=deptos;
-        this.mesas=new LinkedHashSet<Mesa_voto>();
         this.descricao=descricao;
         this.data_inicio=inicio;
         this.data_fim=fim;
         this.listas_candidatas=new ArrayList();
-        t = new Thread(this,titulo);
-        t.start();
+        this.nulos=new ArrayList();
+        this.brancos=new ArrayList();
+        this.t = new Thread(this,titulo);
+        this.t.start();
     }
    
     public Eleicao(String tipo,String titulo,String descricao, Calendar inicio, Calendar fim)throws ParseException{
+        this.ID++;
         this.tipo = tipo;
         this.titulo=titulo;
         this.descricao=descricao;
-        dptos=new ArrayList();
-        t = new Thread(this,titulo);
+        this.dptos=new ArrayList();
+        this.t = new Thread(this,titulo);
         this.listas_candidatas=new ArrayList();
-        this.mesas=new HashSet<Mesa_voto>();
+        this.mesas=new HashSet<>();
         this.dptos=new ArrayList();
         this.data_fim=fim;
         this.data_inicio=inicio;
+        this.nulos=new ArrayList();
+        this.brancos=new ArrayList();
     }
     
     public String getTipo() {
@@ -142,7 +150,6 @@ public class Eleicao implements Runnable,Serializable {
     public void StartEleicao() throws IOException{
         t = new Thread(this,titulo);
         t.start();
-        System.out.println("Iniciou o start eleicao");
         for(Mesa_voto m:this.mesas){
             m.StartTable(m);
         }
