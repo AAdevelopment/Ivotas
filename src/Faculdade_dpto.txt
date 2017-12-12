@@ -1,0 +1,7 @@
+Engenharia Informática|null|null|null|
+Engenharia Informática|null|null|null|
+Engenharia Informática|DEI|DAS|DOR|
+Engenharia Informática|DEI|DAS|DER|
+Engenharia Informática|DARDE|TARDE|NARDE|
+||||
+Ciências e Tecnologias|DEI|DEEC|DEM|
