@@ -152,7 +152,7 @@ class Terminal_voto extends Thread implements Serializable {
         Eleicao eleicao=null;
         do{
             if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){
-                eleicao=Rmi_server.getEleicao(message[3]);
+                eleicao=Rmi_server.procuraEleicao(message[3]);
                 if(eleicao== null){
                     outToClient.println("A lista escolhida nao existe. Escreveu correctamente o titulo da lista?");
                     outToClient.flush();

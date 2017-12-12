@@ -73,33 +73,36 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     @Override
     public void CriarLista( ArrayList<String> array,String nome,String tipo){
       
-        if(procuraLista(nome)==null){
-            ListaCandidatos l = new ListaCandidatos(nome,tipo);
+        if(!array.isEmpty()){
+            if(procuraLista(nome)==null){
+                ListaCandidatos l = new ListaCandidatos(nome,tipo);
 
-            try {
-                //FileWriter file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/listas",true);
-                FileWriter file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\listas.txt",true);
-                BufferedWriter out = new BufferedWriter(file);
-                l.setList(array);
-                out.write(l.nome+"|"+l.tipo+"|");
-                for(int i=0;i<l.candidatos.size();i++)
-                    out.write(l.candidatos.get(i)+"|");
-                out.newLine();
-                out.close();
-                this.buffercandidatos.add(l);
-                c.reply_list_on_client(l);
-                System.out.println(l);
-            } catch (IOException ex) {
-                ex.getMessage();
+                try {
+                    //FileWriter file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/listas",true);
+                    FileWriter file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\listas.txt",true);
+                    BufferedWriter out = new BufferedWriter(file);
+                    l.setList(array);
+                    out.write(l.nome+"|"+l.tipo+"|");
+                    for(int i=0;i<l.candidatos.size();i++)
+                        out.write(l.candidatos.get(i)+"|");
+                    out.newLine();
+                    out.close();
+                    this.buffercandidatos.add(l);
+                    c.reply_list_on_client(l);
+                    System.out.println(l);
+                } catch (IOException ex) {
+                    ex.getMessage();
+                }
+            }
+            else{
+                try {
+                    c.reply_on_client("Lista nao criada. Ja existe uma lista com o nome indicado.");
+                } catch (RemoteException ex) {
+                    Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
-        else{
-            try {
-                c.reply_on_client("Lista nao criada. Ja existe uma lista com o nome indicado.");
-            } catch (RemoteException ex) {
-                Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        
     }
     public ListaCandidatos procuraLista(String nome){
         for(ListaCandidatos lista: this.buffercandidatos){
@@ -265,14 +268,40 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             return false;
         else{
             Eleicao eleicao;
-            if((eleicao=this.getEleicao(titulo_eleicao))==null)
+            if((eleicao=this.procuraEleicao(titulo_eleicao))==null)
                 return false;
             else{
                 eleicao.mesas.add(mesa);
+                this.saveEleicao(eleicao);
                 return true;
             }
         }
     }
+     public String procuraDpto(String nome){
+         for(Faculdade dp: this.bufferFaculdade){
+            for(int i=0; i<dp.dpto.size();i++){
+                if(dp.dpto.get(i).equalsIgnoreCase(nome))
+                    return dp.dpto.get(i);
+            }
+         }
+         return null;
+     }
+     public boolean Add_dpto_to_election(String eleicao, String nome){
+         Eleicao el;
+         String dpto=null;
+            if((el=this.procuraEleicao(eleicao))==null)
+                return false;
+            else{
+                if((dpto=this.procuraDpto(nome))!=null){
+                    el.getDptos().add(nome);
+                    this.saveEleicao(el);
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+     }
     
      public synchronized  Eleicao criarEleicao(String saida[]) throws RemoteException{
         SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
@@ -302,19 +331,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
 
     }
 
-    public boolean configMesa(String [] config){
-        Mesa_voto mesa=procuraMesa(Integer.parseInt(config[0]));
-        Pessoa [] list= new Pessoa[3];
-        if(mesa!=null){
-            for(int i=0; i<3;i++){
-                if((list[i]=procurarPessoaCC(Long.parseLong(config[i+1])))==null)
-                    return false;
-            }
-        }
-        mesa.membros.removeAll(mesa.membros);
-        mesa.membros.addAll(Arrays.asList(list));
-        return true;
-    }
     public Pessoa procurarPessoaCC(long CC){
         for(Pessoa pes: this.bufferPessoas){
             if(pes.cartao.compareTo(CC)==0)
@@ -669,13 +685,14 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     }
     
     
-    public boolean Add_list_to_Election(String el, String lista) throws RemoteException{
-        ListaCandidatos list;
-        Eleicao eleicao;
-        if((list=this.procuraLista(lista))==null || (eleicao=this.getEleicao(el))==null)
+    public boolean Add_list_to_Election(String el, String lista) {
+        ListaCandidatos list=null;
+        Eleicao eleicao=null;
+        if((list=this.procuraLista(lista))==null || (eleicao=this.procuraEleicao(el))==null)
             return false;
         else{
             eleicao.listas_candidatas.add(list);
+            this.saveEleicao(eleicao);
             return true;
         }
     }
@@ -782,9 +799,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         return this.bufferEleicao;
     }
      @Override
-    public Eleicao getEleicao(String titulo){
+    public Eleicao procuraEleicao(String titulo){
         for(int i=0; i<this.bufferEleicao.size();i++){
-            if(this.bufferEleicao.get(i).titulo.equals(titulo))
+            if(this.bufferEleicao.get(i).titulo.equalsIgnoreCase(titulo))
                 return this.bufferEleicao.get(i);
         }
         return null;                
@@ -825,13 +842,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             }
             in.close();
         }
-    }
-    public Eleicao procuraEleicao(String titulo){
-        for(int i=0;i<this.bufferEleicao.size();i++){
-            if(this.bufferEleicao.get(i).titulo.equalsIgnoreCase(titulo))
-                return this.bufferEleicao.get(i);
-        }
-        return null;
     }
     
     public Mesa_voto procuraMesa(int id){

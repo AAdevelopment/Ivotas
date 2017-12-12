@@ -1,0 +1,9 @@
+titulo|tipo|descricao|data_inicio|data_fim
+2|Eleicao_func_2017|funcionarios|eleicao dos funcionarios|12:12:22 12/01/2018|18:12:22 12/01/2018
+MESAS*****
+2,3,1,
+DEPARTAMENTOS*****
+
+LISTAS*****
+VOTOS NULOS*****
+VOTOS BRANCOS*****

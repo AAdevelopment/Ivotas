@@ -1,0 +1,3 @@
+listaA|alunos|artur afonso|luis miguel|
+ListaB|funcionarios|cosmo santos|artur luis|
+ListaC|docentes|carlos jesus|carlos santos|

@@ -31,13 +31,19 @@ public interface Comunication_server extends Remote {
     public ArrayList<ListaCandidatos> get_Listas(Eleicao eleicao)throws RemoteException;
     public void CriarFaculdade_Dpto(String nome,ArrayList<String> array)throws RemoteException;
     public void alterar_eleicao(String nome_eleicao,String v[])throws RemoteException;
-    public Eleicao getEleicao(String titulo) throws RemoteException;
+    public Eleicao procuraEleicao(String titulo) throws RemoteException;
     public Mesa_voto create_mesa(String departamento) throws RemoteException;
     public boolean alterarDepartamento(String oldname, String new_name) throws RemoteException;
     public boolean removeDepartamento(String departamento) throws RemoteException;
     public boolean removeMesaVoto(int id) throws RemoteException;
     public void Count_voters(Eleicao e,Mesa_voto mesa)throws RemoteException;
-    public boolean configMesa(String [] config)throws RemoteException;
     public Pessoa procurarPessoaCC(long CC) throws RemoteException;
     public Mesa_voto procuraMesa(int id) throws RemoteException;
+    public ListaCandidatos procuraLista(String nome) throws RemoteException;
+    public boolean Add_list_to_Election(String el, String lista) throws RemoteException;
+    public boolean Add_table_to_election(String titulo_eleicao, int id)throws RemoteException;
+    public boolean Add_dpto_to_election(String eleicao, String nome) throws RemoteException;
+
+
+
 }
