@@ -27,6 +27,4 @@ public interface Comunication_client extends Remote {
      public void replyElection(Eleicao e)throws RemoteException;
      public void replyNrVoters(String state)throws RemoteException;
      public void replyPeople(Pessoa p)throws RemoteException;
-     public ArrayList<ListaCandidatos> Add_lists_toElection(ArrayList<ListaCandidatos> lista,Eleicao e)throws RemoteException;
-     public Set<String> Add_table_to_election(Set<Mesa_voto> mesas)throws RemoteException;
 }

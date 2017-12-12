@@ -1,9 +1,0 @@
-titulo|tipo|descricao|data_inicio|data_fim
-4|eleicao_geral_dei|geral|descricao da eleicao eleico_dei_geral|16:56:45 28/11/2017|23:34:12 25/12/2017
-MESAS*****
-
-DEPARTAMENTOS*****
-
-LISTAS*****
-VOTOS NULOS*****
-VOTOS BRANCOS*****

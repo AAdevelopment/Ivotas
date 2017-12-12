@@ -1,6 +1,4 @@
-ID|1;Nome|DEEC
-ID|2;Nome|DEM
-ID|3;Nome|DEEC
-ID|4;Nome|DEC
-ID|5;Nome|DEI
-ID|6;Nome|DEG
+ID|1;Nome|DEI
+ID|2;Nome|DEEC
+ID|3;Nome|DAS
+ID|4;Nome|DIR
