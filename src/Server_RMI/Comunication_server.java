@@ -13,6 +13,7 @@ package Server_RMI;
 import java.rmi.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Set;
 import mesa_voto.Mesa_voto;
 
 
@@ -46,4 +47,6 @@ public interface Comunication_server extends Remote {
 
 
 
+    public Set<Mesa_voto> getBufferMesas()throws RemoteException;
+    public ArrayList<Faculdade> getBufferFaculdade()throws RemoteException;
 }

@@ -3,7 +3,7 @@ titulo|tipo|descricao|data_inicio|data_fim
 MESAS*****
 2,3,1,
 DEPARTAMENTOS*****
-
+DEI,
 LISTAS*****
 VOTOS NULOS*****
 VOTOS BRANCOS*****

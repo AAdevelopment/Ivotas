@@ -73,20 +73,30 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     
     //CLIENT- SIDE METHODS
     public void nova_mesa_voto(Comunication_server h) throws RemoteException{
-      String dep;
-      Mesa_voto mesa=null;
-      boolean verifica=true;
-      while(verifica==true){
-          dep=JOptionPane.showInputDialog("Digite o departamento da mesa, clique em cancel para sair ");
-          if(dep!=null){
-              mesa=h.create_mesa(dep);
-              if(mesa!=null)
-                  mesa.toSring();
-              else
-                  System.out.println("A mesa nao foi criada com sucesso");
-              verifica=false;
-          }
-      }     
+        Set<Mesa_voto>mesas=h.getBufferMesas();
+      
+        System.out.println("\n\nMesas ja Registradas");
+        if(mesas.size()==0)
+            System.out.println("Nenhuma");
+        else{
+            for (Mesa_voto m:mesas)
+                System.out.println(m.toSring());
+        }
+        
+        String dep;
+        Mesa_voto mesa=null;
+        boolean verifica=true;
+        while(verifica==true){
+            dep=JOptionPane.showInputDialog("Digite o departamento da mesa, clique em cancel para sair ");
+            if(dep!=null){
+                mesa=h.create_mesa(dep);
+                if(mesa!=null)
+                    mesa.toSring();
+                else
+                    System.out.println("A mesa nao foi criada com sucesso");
+                verifica=false;
+            }
+        }     
     }
       
     public static String [] CadastroPessoa(){
@@ -121,7 +131,15 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     }
     
     
-    public static ArrayList<String> criarFaculdadeDpto() throws IOException{
+    public static ArrayList<String> criarFaculdadeDpto(Comunication_server h) throws IOException{
+        ArrayList<Faculdade>facul=h.getBufferFaculdade();
+        System.out.println("\n\nFaculdades ja Registradas");
+        if(facul.size()==0)
+            System.out.println("Nenhuma");
+        else{
+            for(Faculdade f:facul)
+                System.out.println(f.toString());
+        }
         String saida="";
         ArrayList<String> array = new ArrayList();
         boolean verifica =true;
@@ -229,7 +247,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
                         break;
                     case 6:
                         nome=JOptionPane.showInputDialog("Digite o nome da faculdade:");
-                        h.CriarFaculdade_Dpto(nome,criarFaculdadeDpto());
+                        h.CriarFaculdade_Dpto(nome,criarFaculdadeDpto(h));
                         break;
                     case 7:
                         nome=JOptionPane.showInputDialog("Digite o nome da faculdade:");

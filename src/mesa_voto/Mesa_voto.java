@@ -35,6 +35,7 @@ public class Mesa_voto implements Serializable{
     
     public Mesa_voto(String departamento){
         this.departamento=departamento;
+        
     }
 
     public int getID() {
@@ -44,17 +45,38 @@ public class Mesa_voto implements Serializable{
     public String toSring(){
         return "ID|"+this.ID+";"+"Nome|"+this.departamento;
     }
-        
+    
+
+   public void StartTable(Mesa_voto mesa) throws IOException{
+        System.out.println("MESA: "+mesa.toSring()+"Iniciada !");
+        int ID_TerminalVote=0;
+        int serverPort = 6003;
+        System.out.println("A Escuta no Porto "+ serverPort);
+        ServerSocket listenSocket = new ServerSocket(serverPort);
+        System.out.println("LISTEN SOCKET = "+listenSocket);
+        while(true) {
+            Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
+            System.out.println("CLIENT_SOCKET (created at accept()) = "+ clientSocket);
+            ID_TerminalVote ++;
+            Terminal_voto term=new Terminal_voto(clientSocket, ID_TerminalVote, mesa);
+        }
+   } 
    
-    public static void main(String args[]) throws NotBoundException{
+}
+
+
+//= Thread para tratar de cada canal de comunicação com um cliente
+
+//CASO DER MERDA, FICA Aí O BACKUP
+   /* public static void main(String args[]) throws NotBoundException{
         int ID_TerminalVote=0;
 
          try{
             
-           /* System.getProperties().put("java.security.policy","C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Mesa_voto\\src\\mesa_voto\\policy.all");
+            System.getProperties().put("java.security.policy","C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto1\\Mesa_voto\\src\\mesa_voto\\policy.all");
             System.setSecurityManager(new RMISecurityManager());
 
-            String serverIP="192.168.43.53";*/
+            String serverIP="192.168.43.53";
            
            Mesa_voto Mesa= new Mesa_voto("DEI");
            
@@ -71,12 +93,7 @@ public class Mesa_voto implements Serializable{
        }catch(IOException e){
            System.out.println("Listen:" + e.getMessage());
        }
-    }
-   
-}
-//= Thread para tratar de cada canal de comunicação com um cliente
-
-       
+    }*/       
 
 
 

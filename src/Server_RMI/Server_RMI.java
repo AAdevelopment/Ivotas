@@ -205,13 +205,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
          return false;
     }
     
-    public Mesa_voto create_mesa(String departamento){
-        Mesa_voto mesa = new Mesa_voto(departamento);
-        mesa.ID=this.bufferMesas.size()+1;
-        this.bufferMesas.add(mesa);
-        this.saveMesa(this.bufferMesas);
-        return mesa;
-    }
     
     /*
     *
@@ -477,7 +470,42 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
      *Author: Andre Santos
      *
      **/
-     
+      public Mesa_voto create_mesa(String departamento){
+        boolean verifica = this.procuraMesaporDpto(departamento);
+        if(verifica==false){
+            Mesa_voto mesa = new Mesa_voto(departamento);
+            mesa.ID=this.bufferMesas.size()+1;
+            this.bufferMesas.add(mesa);
+            this.saveMesa(this.bufferMesas);
+            return mesa;
+        }
+        else{
+            return null;
+        }
+    }
+    
+    public Set<Mesa_voto> getBufferMesas() {
+        return bufferMesas;
+    }
+
+    public ArrayList<Faculdade> getBufferFaculdade() {
+        return bufferFaculdade;
+    }
+    
+    public boolean procuraMesaporDpto(String departamento){
+        boolean verify = false;
+        for(Mesa_voto m:this.bufferMesas){
+            if(m.departamento.equalsIgnoreCase(departamento)){
+                verify=true;
+                break;
+            }
+            else{
+                verify=false;
+                break;
+            }
+        }
+        return verify;
+    }
 
      public void saveEleicao (Eleicao eleicao){
         SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");

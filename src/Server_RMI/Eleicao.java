@@ -11,6 +11,7 @@ package Server_RMI;
  * @author gustavo
  */
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -125,12 +127,13 @@ public class Eleicao implements Runnable,Serializable {
     public void run(){
         Calendar today=new GregorianCalendar();
         boolean verifica=true;
-       
+        System.out.println("Thread da Eleicao: "+this.titulo+" iniciada");
         while(verifica==true){
             if(today.getTimeInMillis()==this.data_inicio.getTimeInMillis()){
                 verifica=false;
                 while (true) {
                     try {
+                        System.out.println(today.getTime().toGMTString());
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Eleicao.class.getName()).log(Level.SEVERE, null, ex);            
@@ -141,18 +144,17 @@ public class Eleicao implements Runnable,Serializable {
                     }
                 }
             }
-            /*try {
-                Thread.sleep(5);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Eleicao.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
         }
     }
         
-    public void StartEleicao(){
+    public void StartEleicao() throws IOException{
         t = new Thread(this,titulo);
         t.start();
+        for(Mesa_voto m:this.mesas){
+            m.StartTable(m);
+        }
     }
+    
     
     public void setDescricao(String descricao){
         this.descricao = descricao;
@@ -166,7 +168,6 @@ public class Eleicao implements Runnable,Serializable {
     @Override
     public String toString(){
         SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-
         return "ID|"+this.ID+";"+"tipo|" + this.tipo+";"+"titulo|"+this.titulo+";"+"descricao|"+this.descricao+";"+"data_inicio|"+format.format(this.data_inicio.getTime())+
         ";"+"data_fim|"+format.format(this.data_fim.getTime());
     }
