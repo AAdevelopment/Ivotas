@@ -68,62 +68,8 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
     public void replyPeople(Pessoa p)throws RemoteException{
         System.out.println(p.toString());
     }
-      
-    public ArrayList<ListaCandidatos> Add_lists_toElection(ArrayList<ListaCandidatos> lista,Eleicao el)throws RemoteException{
-        ArrayList <ListaCandidatos> list = new ArrayList();
-        System.out.println("Listas de candidatos disponiveis:");
-        for (int i = 0; i < lista.size(); i++) {
-            System.out.println(lista.get(i));
-        }
-        boolean verifica=true;
-        while(verifica==true){ 
-            String nome=JOptionPane.showInputDialog("digite o nome da lista desejada, clique em cancelar para sair");
-            if(nome==null){
-              break;
-            }
-            else{
-                for (int i = 0; i <lista.size(); i++) {
-                    if(lista.get(i).nome.equalsIgnoreCase(nome)){
-                        if(lista.get(i).tipo.equalsIgnoreCase(el.getTipo())){
-                            list.add(lista.get(i));
-                        }
-                        else{
-                            System.out.println("Erro tipo da eleicao diferente do tipo da lista  !!!");
-                        }
-                    }
-                    else{
-                        System.out.println("nome:"+lista.get(i).nome);
-                        System.out.println("Erro nome  nao condizentes com a lista !!!");
-                    }
-                }
-            }
-        }
-        return list;
-    }
  
-    public Set<String> Add_table_to_election(Set<Mesa_voto> mesas)throws RemoteException{
-        Set <String> tables = new LinkedHashSet<String>();
-        String dep;
-        boolean verifica=true;
-        Mesa_voto mesa;
-        System.out.println("Listas de mesas Ja Criadas:");
-        for (Mesa_voto m:mesas) {
-            System.out.println(m.toSring());
-        }
-        while(verifica==true){
-            dep=JOptionPane.showInputDialog("Digite o departamento da mesa, clique em cancel para sair ");
-            if(dep==null){
-                break;
-            }
-            else{
-                tables.add(dep);
-            }
-        }
-        for(String m:tables)
-            System.out.println(m);
-        
-        return tables;
-    }
+   
     
     //CLIENT- SIDE METHODS
     public void nova_mesa_voto(Comunication_server h) throws RemoteException{
@@ -154,19 +100,20 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         return o;
     }
     
-    public static ArrayList<String> criarLista(){
+    public static ArrayList<String> criarLista(Comunication_server h) throws RemoteException{
         String saida="";
         ArrayList<String> array = new ArrayList();
-         
+         Pessoa pessoa=null;
             boolean verifica =true;
             while(verifica==true){
-                saida=JOptionPane.showInputDialog("digite o nome do candidato, clique em cancel para sair:");
+                saida=JOptionPane.showInputDialog("digite o CC do candidato, clique em cancel para sair:");
                 if(saida==null){
                     verifica=false;   
                     break;
                 }
-                else{
-                     array.add(saida);
+               
+                else if((pessoa=h.procurarPessoaCC(Long.parseLong(saida)))!=null){
+                     array.add(pessoa.getName());
                   
                 }
             }
@@ -231,32 +178,46 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
            // System.out.println("Client sent subscription to server");
             String a="", nome="";
             boolean verifica=true;
-           
             
             do{
-                opcao=Integer.parseInt(JOptionPane.showInputDialog("1-Configurar membros mesa"+"\n"+"2-criar eleicao"+"\n"+"3-criar lista de candidato\n"+"4-Registrar Pessoa"
-                      +"\n5-Criar mesa de voto\n"+"\n6-Criar dpto\n"+"\n7-remover departamento\n"+"\n8-alterar nome departamento"
+                opcao=Integer.parseInt(JOptionPane.showInputDialog("1-Configurar membros mesa\n"+"2-criar eleicao\n"+"3-criar lista de candidato\n"+"4-Registrar Pessoa\n"
+                      +"5-Criar mesa de voto\n"+"6-Criar dpto\n"+"7-remover departamento\n"+"8-alterar nome departamento"
                         +"\n9-Alterar eleicao"+"\n"+"10- sair do menu"));
                 switch(opcao){
                     case 1:
                         c.configurarMesa(h);
                         break;
                     case 2:
-                        
+                        Eleicao eleicao=null;
+                        Mesa_voto mesa= null;
                         String s[]={"Defina o tipo de eleicao","nome da eleicao","Descreva a eleicao","Data_inicio (HH:mm:ss dd/MM/yyyy)","Data_fim (HH:mm:ss dd/MM/yyyy)"};
                         String saida[]= new String [s.length];
                         for(int i=0;i<s.length;i++){
                             saida[i]=JOptionPane.showInputDialog(s[i]);
                         }
                         
-                        h.criarEleicao(saida);
+                        eleicao=h.criarEleicao(saida);
+                        if(eleicao != null){
+                            saida[0]=JOptionPane.showInputDialog("Quantas mesas de voto pretende associar?");
+                            while(saida[0]==null || Integer.parseInt(saida[0])<=0)
+                                 saida[0]=JOptionPane.showInputDialog("Adicione pelo menos uma mesa de voto");
+                            for(int i=0; i< Integer.parseInt(saida[0]) ;i++){
+                                saida[1]=JOptionPane.showInputDialog("ID da mesa" + i+1+ ":");
+                                if((mesa=h.procuraMesa(Integer.parseInt(saida[1])))!=null){
+                                    eleicao.mesas.add(mesa);
+                                }
+                                else{
+                                    i--;
+                                }
+                            }
+                        }
                         break; 
                     case 3:
                         String tipo="";
                         tipo=JOptionPane.showInputDialog("Digite o tipo da lista:");
                         String nomeLista="";
                         nomeLista=JOptionPane.showInputDialog("Digite o nome da Lista:");
-                        h.CriarLista(criarLista(),nomeLista,tipo);
+                        h.CriarLista(criarLista(h),nomeLista,tipo);
                         break;
                         
                     case 4:

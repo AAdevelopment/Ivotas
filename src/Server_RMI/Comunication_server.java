@@ -21,7 +21,7 @@ public interface Comunication_server extends Remote {
     
     public String Test_connection() throws RemoteException;
     public void subscribe(String name, Comunication_client c) throws RemoteException;
-    public void criarEleicao(String v[])throws RemoteException;
+    public Eleicao criarEleicao(String v[])throws RemoteException;
     public boolean vote(String lista, Eleicao eleicao, Pessoa pessoa, Mesa_voto mesa, Calendar data)throws RemoteException;
     public void CadastrarPessoa(String o[])throws RemoteException;
     public Pessoa autenticate(String campo, String dados) throws RemoteException;
@@ -32,11 +32,12 @@ public interface Comunication_server extends Remote {
     public void CriarFaculdade_Dpto(String nome,ArrayList<String> array)throws RemoteException;
     public void alterar_eleicao(String nome_eleicao,String v[])throws RemoteException;
     public Eleicao getEleicao(String titulo) throws RemoteException;
-    public void addMesaVoto(Mesa_voto mesa)throws RemoteException;
     public Mesa_voto create_mesa(String departamento) throws RemoteException;
     public boolean alterarDepartamento(String oldname, String new_name) throws RemoteException;
     public boolean removeDepartamento(String departamento) throws RemoteException;
     public boolean removeMesaVoto(int id) throws RemoteException;
     public void Count_voters(Eleicao e,Mesa_voto mesa)throws RemoteException;
     public boolean configMesa(String [] config)throws RemoteException;
+    public Pessoa procurarPessoaCC(long CC) throws RemoteException;
+    public Mesa_voto procuraMesa(int id) throws RemoteException;
 }
