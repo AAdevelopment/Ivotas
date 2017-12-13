@@ -309,7 +309,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             el.ID=this.bufferEleicao.size()+1;
             el.StartEleicao();
             System.out.println(el.toString());  
-            c.replyElection(el);
+            //c.replyElection(el);
             
             this.bufferEleicao.add(el);
             this.saveEleicao(el);   
@@ -397,21 +397,22 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                         this.bufferEleicao.get(i).setData_fim(day);
                     }
                     
+                    System.out.print(this.bufferEleicao.get(i).toString());
                     FileReader read;
-                    //File arquivo = new File("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
-                    File arquivo = new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\"+nome);
+                    File arquivo = new File("/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+nome);
+                    //File arquivo = new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\"+nome);
                     if(arquivo.exists()){
                         try {
-                            //read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/"+nome);
-                            read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\"+nome);
+                            read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+nome);
+                           // read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\"+nome);
                             BufferedReader in = new BufferedReader(read);
                             String linha="";
                             String arquivo_todo;
                             linha=in.readLine();
-                            //arquivo.renameTo(new File("/home/gustavo/NetBeansProjects/Ivotas/"+this.bufferEleicao.get(i).getTitulo()));
-                            arquivo.renameTo(new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\"+this.bufferEleicao.get(i).getTitulo()));
-                            //FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/"+this.bufferEleicao.get(i).getTitulo());
-                            FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\"+this.bufferEleicao.get(i).getTitulo());
+                            arquivo.renameTo(new File("/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+this.bufferEleicao.get(i).getTitulo()));
+                            //arquivo.renameTo(new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\"+this.bufferEleicao.get(i).getTitulo()));
+                            FileWriter out = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+this.bufferEleicao.get(i).getTitulo());
+                            //FileWriter out = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\"+this.bufferEleicao.get(i).getTitulo());
                             out.write(this.bufferEleicao.get(i).toString()+"\n");
                             while((arquivo_todo=in.readLine())!=null){
                                 if(arquivo_todo.equals(linha)){
@@ -477,6 +478,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             mesa.ID=this.bufferMesas.size()+1;
             this.bufferMesas.add(mesa);
             this.saveMesa(this.bufferMesas);
+            System.out.println(mesa.toSring());
             return mesa;
         }
         else{
