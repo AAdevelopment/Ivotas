@@ -163,7 +163,11 @@ public class Eleicao implements Runnable,Serializable {
         return this.descricao;
     }
     public String toStringMesas(){
-       return this.mesas.toString();
+    	String saida="";
+    	for(Mesa_voto m:this.mesas)
+    		saida+=m.toSring()+"|";
+    	
+    	return saida;
     }
     @Override
     public String toString(){

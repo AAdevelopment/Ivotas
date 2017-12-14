@@ -78,8 +78,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                 ListaCandidatos l = new ListaCandidatos(nome,tipo);
 
                 try {
-                    //FileWriter file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/listas",true);
-                    FileWriter file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\listas.txt",true);
+                    FileWriter file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/src/listas.txt",true);
+                   // FileWriter file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\listas.txt",true);
                     BufferedWriter out = new BufferedWriter(file);
                     l.setList(array);
                     out.write(l.nome+"|"+l.tipo+"|");
@@ -88,7 +88,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                     out.newLine();
                     out.close();
                     this.buffercandidatos.add(l);
-                    c.reply_list_on_client(l);
+                    //c.reply_list_on_client(l);
                     System.out.println(l);
                 } catch (IOException ex) {
                     ex.getMessage();
@@ -114,8 +114,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public void LoadList() throws FileNotFoundException, IOException{
           String s;
           ListaCandidatos lista;
-          //FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/listas");
-          FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\listas.txt");
+          FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/src/listas.txt");
+          //FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\listas.txt");
           BufferedReader in = new BufferedReader(read);
           while((s=in.readLine())!=null){
               String a[];
@@ -135,7 +135,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         FileWriter file = null;
         try {
             Faculdade f = new Faculdade(nome);
-            //file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/Faculdade_dpto",true);
+            //file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/src/Faculdade_dpto.txt",true);
             file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Faculdade_dpto.txt",true);
             BufferedWriter out = new BufferedWriter(file);
             f.criarDPTO(array);
@@ -155,8 +155,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public void LoadFaculdade_Dpto()throws FileNotFoundException, IOException{
          String s;
           Faculdade f ;
-          //FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/Faculdade_dpto");
-          FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Faculdade_dpto.txt");
+          FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/src/Faculdade_dpto.txt");
+          //FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Faculdade_dpto.txt");
           BufferedReader in = new BufferedReader(read);
           while((s=in.readLine())!=null){
               String a[];
@@ -308,12 +308,12 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                         
             el.ID=this.bufferEleicao.size()+1;
             el.StartEleicao();
-            System.out.println(el.toString());  
+             
             //c.replyElection(el);
             
             this.bufferEleicao.add(el);
             this.saveEleicao(el);   
-            
+            System.out.println(el.toString()+"\nmesas: "+el.toStringMesas()); 
             
             } catch (ParseException ex) {
                 Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
@@ -344,8 +344,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                                                                                                     
         try {
             
-            //file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/src/mesas.txt",true);
-            file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\mesas.txt",true);
+            file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/src/mesas.txt",true);
+            //file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\mesas.txt",true);
             BufferedWriter out = new BufferedWriter(file);
             sorter.addAll(mesa);
             for(Mesa_voto m:sorter){
@@ -362,8 +362,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     public Set<Mesa_voto> loadMesas() throws FileNotFoundException, IOException{
           String s;
-          //FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/src/mesas.txt");
-          FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\mesas.txt");
+          FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/src/mesas.txt");
+          //FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\mesas.txt");
           BufferedReader in = new BufferedReader(read);
           while((s=in.readLine())!=null){
               String a[];
@@ -458,14 +458,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         String state="Eleicao: "+e.titulo+"|"+"Tipo: "+e.tipo+"|"+"Mesa: "+mesa.ID+"|"+mesa.departamento+"|"+"Numero de eleitores: "+mesa.Nr_Voters+"\n";
         c.replyNrVoters(state);
     }
-    
-    //public synchronized void Count_voters(Mesa_voto mesa) throws RemoteException{ 
-    //    String state= mesa.toSring()+"|"+mesa.Nr_Voters++;
-    //    c.replyNrVoters(state);
-   // }
-    
-    
-     
+        
      /************************************************************************************************************************
      *
      *Author: Andre Santos
@@ -488,6 +481,20 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     public Set<Mesa_voto> getBufferMesas() {
         return bufferMesas;
+    }
+    
+    public String getMesasList(){
+    	String output=("Mesas de votos:");
+    	for(Mesa_voto m:this.bufferMesas)
+    		output+=m.toSring()+"\n";
+    	return output;
+    }
+    
+    public String getCandidatosList(){
+    	String output=("Mesas de votos:");
+    	for(int i=0;i<this.buffercandidatos.size();i++)
+    		output+=this.buffercandidatos.get(i).toString()+"\n";
+    	return output;
     }
 
     public ArrayList<Faculdade> getBufferFaculdade() {
@@ -588,8 +595,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         Calendar data_fim= Calendar.getInstance();
         
         try {   
-               // String path="/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+eleicao_titulo+".txt";
-                String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes\\"+eleicao_titulo+".txt";
+                String path="/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+eleicao_titulo+".txt";
+                //String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes\\"+eleicao_titulo+".txt";
                 File file= new File(path);
                 boolean exists = file.exists();
                 if (!exists) {
@@ -734,8 +741,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
     }
      public void loadArrayEleicao(){
-        //String path="/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"; 
-        String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes\\";
+        String path="/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"; 
+        //String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes\\";
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
 
@@ -841,11 +848,11 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     
     
     public  void CarregaPessoas() throws FileNotFoundException, IOException, ParseException{
-        //boolean exists = (new File("/home/gustavo/NetBeansProjects/Ivotas/src/Pessoas.txt")).exists();
-        boolean exists = (new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Pessoas.txt")).exists();
+        boolean exists = (new File("/home/gustavo/NetBeansProjects/Ivotas/src/Pessoas.txt")).exists();
+        //boolean exists = (new File("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Pessoas.txt")).exists();
         if (exists) {
-            //FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/src/Pessoas.txt");
-            FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Pessoas.txt");
+            FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/src/Pessoas.txt");
+            //FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Pessoas.txt");
             BufferedReader in = new BufferedReader(read);
             String s="";
             String[] a= new String[9];
@@ -885,7 +892,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         
             FileWriter file= null;
             try {
-                //file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/pessoas");
+                //file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/src/pessoas.txt");
                 file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Pessoas.txt");
                 BufferedWriter out = new BufferedWriter(file);
                 SimpleDateFormat dt = new SimpleDateFormat("dd-mm-yyyy");

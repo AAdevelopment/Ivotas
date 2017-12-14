@@ -41,6 +41,8 @@ public interface Comunication_server extends Remote {
     public Pessoa procurarPessoaCC(long CC) throws RemoteException;
     public Mesa_voto procuraMesa(int id) throws RemoteException;
     public ListaCandidatos procuraLista(String nome) throws RemoteException;
+    public String getMesasList()throws RemoteException;
+    public String getCandidatosList()throws RemoteException;
     public boolean Add_list_to_Election(String el, String lista) throws RemoteException;
     public boolean Add_table_to_election(String titulo_eleicao, int id)throws RemoteException;
     public boolean Add_dpto_to_election(String eleicao, String nome) throws RemoteException;

@@ -69,8 +69,6 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
         System.out.println(p.toString());
     }
  
-   
-    
     //CLIENT- SIDE METHODS
     public void nova_mesa_voto(Comunication_server h) throws RemoteException{
         Set<Mesa_voto>mesas=h.getBufferMesas();
@@ -171,7 +169,7 @@ public class AdminConsole extends UnicastRemoteObject implements Comunication_cl
             
             AdminConsole c = new AdminConsole();
             h.subscribe("new Cliente Conection", (Comunication_client) c);
-           // System.out.println("Client sent subscription to server");
+
             Eleicao eleicao=null;
             String a="", nome="";
             boolean verifica=true;
