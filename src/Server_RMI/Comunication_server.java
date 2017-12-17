@@ -46,9 +46,6 @@ public interface Comunication_server extends Remote {
     public boolean Add_list_to_Election(String el, String lista) throws RemoteException;
     public boolean Add_table_to_election(String titulo_eleicao, int id)throws RemoteException;
     public boolean Add_dpto_to_election(String eleicao, String nome) throws RemoteException;
-
-
-
     public Set<Mesa_voto> getBufferMesas()throws RemoteException;
     public ArrayList<Faculdade> getBufferFaculdade()throws RemoteException;
 }

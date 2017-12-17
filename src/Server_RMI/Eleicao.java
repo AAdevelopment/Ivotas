@@ -171,9 +171,13 @@ public class Eleicao implements Runnable,Serializable {
     }
     @Override
     public String toString(){
-        SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+       /* SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
         return "ID|"+this.ID+";"+"tipo|" + this.tipo+";"+"titulo|"+this.titulo+";"+"descricao|"+this.descricao+";"+"data_inicio|"+format.format(this.data_inicio.getTime())+
-        ";"+"data_fim|"+format.format(this.data_fim.getTime());
+        ";"+"data_fim|"+format.format(this.data_fim.getTime());*/
+        
+        SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        return this.ID+"|" + this.tipo+"|"+this.titulo+"|"+this.descricao+"|"+format.format(this.data_inicio.getTime())+
+        "|"+format.format(this.data_fim.getTime());
     }
     
 }

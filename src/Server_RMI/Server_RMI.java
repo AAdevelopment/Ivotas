@@ -266,6 +266,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             else{
                 eleicao.mesas.add(mesa);
                 this.saveEleicao(eleicao);
+                for(Mesa_voto m:eleicao.mesas)
+                	System.out.println(m.toSring());
                 return true;
             }
         }
@@ -313,7 +315,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             
             this.bufferEleicao.add(el);
             this.saveEleicao(el);   
-            System.out.println(el.toString()+"\nmesas: "+el.toStringMesas()); 
+            System.out.println(el.toString()+"\nmesas: "); 
             
             } catch (ParseException ex) {
                 Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
@@ -491,7 +493,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     }
     
     public String getCandidatosList(){
-    	String output=("Mesas de votos:");
+    	String output=("Listas de candidatos:");
     	for(int i=0;i<this.buffercandidatos.size();i++)
     		output+=this.buffercandidatos.get(i).toString()+"\n";
     	return output;
@@ -730,6 +732,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         else{
             eleicao.listas_candidatas.add(list);
             this.saveEleicao(eleicao);
+            for(ListaCandidatos l:eleicao.listas_candidatas)
+            	System.out.println(l.toString());
             return true;
         }
     }
