@@ -208,13 +208,13 @@ class Terminal_voto extends Thread implements Serializable {
         today.setTime(today.getTime());
         try{
             show_listas(eleicao);
-            String resp="Expected: type|item_list;option|list_name  (list_name={blank,null,list})";
+            String resp="Expected: type|item_list;option|list_name  (list_name={blank,nulo,list})";
             outToClient.println(resp);
             outToClient.flush();
           //  input esperado "type|item_list;option|nome"
             String[] message=le_consola();
             if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){
-                return Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, today);
+                return Rmi_server.vote(message[3], eleicao.getTitulo(),pessoa, this.mesa, today);
                
             }
             else{
@@ -224,7 +224,7 @@ class Terminal_voto extends Thread implements Serializable {
                     outToClient.flush();
                     message=le_consola();
                     if("item_list".equalsIgnoreCase(message[1]) && "option".equalsIgnoreCase(message[2])){                     
-                        return Rmi_server.vote(message[3], eleicao,pessoa, this.mesa, today);
+                        return Rmi_server.vote(message[3], eleicao.getTitulo(),pessoa, this.mesa, today);
                     }
                 }
             }

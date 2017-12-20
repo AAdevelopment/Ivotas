@@ -1,9 +1,9 @@
 titulo|tipo|descricao|data_inicio|data_fim
 1|Eleicao_Doc_2017|docentes|eleicao de docentes|20:15:23 20/12/2017|23:25:12 20/12/2017
 MESAS*****
-1,2,
+2,1,
 DEPARTAMENTOS*****
-
+DEEC,
 LISTAS*****
 listaA|alunos|0
 artur afonso|luis miguel|

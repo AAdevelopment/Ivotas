@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -213,9 +214,11 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     */
      
      @Override
-    public synchronized boolean vote(String lista, Eleicao eleicao, Pessoa pessoa, Mesa_voto mesa, Calendar data)throws RemoteException{
+    public synchronized boolean vote(String lista, String elec, Pessoa pessoa, Mesa_voto mesa, Calendar data)throws RemoteException{
         boolean voted=false;
+        Eleicao eleicao= this.procuraEleicao(elec);
         Voto vote=new Voto (data, eleicao,mesa);
+
         if(!lista.equalsIgnoreCase("nulo") && !lista.equalsIgnoreCase("blank")){
             //coloca voto na lista selecionada
             for (int i=0; i<this.bufferEleicao.size();i++){
@@ -307,11 +310,10 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             el = new Eleicao(saida[0],saida[1],saida[2],data_inicio,data_fim);
                         
             el.ID=this.bufferEleicao.size()+1;
-            el.StartEleicao();
             System.out.println(el.toString());  
             c.replyElection(el);
             
-            this.bufferEleicao.add(el);
+            this.insereEleicaoOrdenada(el);
             this.saveEleicao(el);   
             
             
@@ -323,7 +325,16 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             return el;
 
     }
-
+    public void insereEleicaoOrdenada(Eleicao eleicao){
+        if(this.bufferEleicao.isEmpty())
+            this.bufferEleicao.add(eleicao);
+        for(int i=0; i < this.bufferEleicao.size(); i++) {
+            if(eleicao.data_inicio.compareTo(this.bufferEleicao.get(i).data_inicio) <= 0){
+                this.bufferEleicao.add(i, eleicao);
+            }
+        }
+            
+    }
     public Pessoa procurarPessoaCC(long CC){
         for(Pessoa pes: this.bufferPessoas){
             if(pes.cartao.compareTo(CC)==0)
@@ -360,7 +371,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         } 
     }
     
-    public Set<Mesa_voto> loadMesas() throws FileNotFoundException, IOException{
+    public void loadMesas() throws FileNotFoundException, IOException{
           String s;
           //FileReader read = new FileReader("/home/gustavo/NetBeansProjects/Ivotas/src/mesas.txt");
           FileReader read = new FileReader("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\mesas.txt");
@@ -372,8 +383,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
               m.ID=Integer.parseInt(a[1]);
               this.bufferMesas.add(m);
               
-           }
-        return this.bufferMesas;    
+           }    
     }    
     @Override
      public synchronized  void alterar_eleicao(String nome,String v[]){  
@@ -743,7 +753,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                     FileReader file= new FileReader( path+listOfFiles[i].getName());
                     BufferedReader in = new BufferedReader(file);
                     Eleicao eleicao=loadEleicao(listOfFiles[i].getName().replace(".txt", ""));
-                    this.bufferEleicao.add(eleicao);
+                    this.insereEleicaoOrdenada(eleicao);
+                    if(isToStart(eleicao))
+                        eleicao.t.start();
                 }
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
@@ -931,47 +943,23 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             System.out.println();
         }
     }
-   /* public boolean isToStart(Eleicao eleicao){
-        Date today= new Date();
-        SimpleDateFormat dt = new SimpleDateFormat("hh:mm");
-        if(eleicao.data.before(today) || eleicao.data.after(today))
-            return false;
-        else{
-            ***********************************************
-             * FALTA VERIFICAR A DATA DA ELEICAO
-             ***********************************************
+    public boolean isToStart(Eleicao eleicao){
+        Calendar today=new GregorianCalendar();        
+        if(today.compareTo(eleicao.data_inicio) >=0 && today.compareTo(eleicao.data_fim) < 0){
             return true;
         }
-    }*/
+       return false;   
+    }
     
     @Override
-    public void run(){
-        try {
-             String teste="Mensagem";
-             String Response;
-             while(true){
-                System.out.println("Teste");
-                byte[] bufferReceive = new byte[1000];
-                DatagramPacket request_receive = new DatagramPacket(bufferReceive,bufferReceive.length);
-                aSocket.receive(request_receive);
-                Response=new String(request_receive.getData(), 0, request_receive.getLength());	
-	        System.out.println("Server Recebeu: " + Response);
-                
-                byte[] bufferRequest =teste.getBytes();
-                
-                InetAddress aHost = InetAddress.getByName("6502");
-                int serverPort = 6504;
-                DatagramPacket request = new DatagramPacket(bufferRequest,bufferRequest.length,aHost,serverPort); 
-                aSocket.send(request);
-               
-              
-                Thread.sleep(2000);
-            }
-        } catch (InterruptedException | UnknownHostException ex) {
-            Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-           // Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void run(){ 
+       int i=0;
+       while(true){
+           if(isToStart(this.bufferEleicao.get(i))){
+               this.bufferEleicao.get(i).t.start();
+               i++;
+           }
+       }
     }
     
     
@@ -993,21 +981,11 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             r.rebind("connection_RMI",server);
             server.LoadList();
             server.LoadFaculdade_Dpto();
-            Set<Mesa_voto> mesas =new LinkedHashSet();
-            mesas=server.loadMesas();
-            for (Mesa_voto m:mesas) {
-                 System.out.println(m.toSring());
-            }
-           
-            
+            server.loadMesas();            
             server.loadArrayEleicao();
             server.CarregaPessoas();    // as pessoas tem de ser carregadas depois das eleicoes
 
             
-           
-            Calendar today= Calendar.getInstance();
-            today.setTime(today.getTime());
-             System.out.println(today.getTime().toString());
             server.printBufferEleicao(server.bufferEleicao);
             server.printBufferPessoas(server.bufferPessoas);
             

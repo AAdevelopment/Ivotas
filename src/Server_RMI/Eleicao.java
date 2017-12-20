@@ -78,7 +78,6 @@ public class Eleicao implements Runnable,Serializable {
         this.nulos=new ArrayList();
         this.brancos=new ArrayList();
         this.t = new Thread(this,titulo);
-        this.t.start();
     }
    
     public Eleicao(String tipo,String titulo,String descricao, Calendar inicio, Calendar fim)throws ParseException{
@@ -125,37 +124,28 @@ public class Eleicao implements Runnable,Serializable {
     
     @Override
     public void run(){
-        Calendar today=new GregorianCalendar();
-        boolean verifica=true;
-        System.out.println("Thread da Eleicao: "+this.titulo+" iniciada");
-        while(verifica==true){
-            if(today.getTimeInMillis()==this.data_inicio.getTimeInMillis()){
-                verifica=false;
-                while (true) {
-                    try {
-                        System.out.println(today.getTime().toGMTString());
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Eleicao.class.getName()).log(Level.SEVERE, null, ex);            
-                    }
-                    if (today.getTimeInMillis()==this.data_fim.getTimeInMillis()) {
-                        System.out.println("fim da eleicao "+this.titulo+" !");
-                        break;
-                    }
-                }
-            }
+        for(Mesa_voto mesa: this.mesas){
+            Thread thread= new Thread(mesa);
+            System.out.println("A INICIAR A ELEICAO");
+            this.toString();
+            thread.start();
         }
-    }
-        
-    public void StartEleicao() throws IOException{
-        t = new Thread(this,titulo);
-        t.start();
-        for(Mesa_voto m:this.mesas){
-            m.StartTable(m);
-        }
+        while(true){
+           if(isToStop()){
+               this.t.stop();
+               this.toString();
+               System.out.println("TERMINADA");
+           }
+       }
     }
     
-    
+    public boolean isToStop(){
+        Calendar today=new GregorianCalendar();        
+        if(today.compareTo(this.data_fim) >=0){
+            return true;
+        }
+       return false;  
+    }
     public void setDescricao(String descricao){
         this.descricao = descricao;
     }
