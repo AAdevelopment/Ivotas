@@ -224,6 +224,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                         if(this.bufferEleicao.get(i).listas_candidatas.get(j).nome.equalsIgnoreCase(lista)){
                             this.bufferEleicao.get(i).listas_candidatas.get(j).votos.add(vote);
                             voted=true;
+                            System.out.println("voto: "+voted);
                         }
                     }
                 }
@@ -445,12 +446,12 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     @Override
      public synchronized  void CadastrarPessoa(String o[]) throws RemoteException{
   
-        try {
-            
+        try {            
             Pessoa p = new Pessoa(o[0],o[1],Long.parseLong(o[2]),o[3],o[4],o[5],o[6],o[7]);
             this.bufferPessoas.add(p);
             this.savePessoas();
-            c.replyPeople(p);
+            //c.replyPeople(p);
+            System.out.println(p.toString());
         } catch (ParseException ex) {
             Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
         } 
@@ -522,8 +523,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
         try {
-            //String path="/home/gustavo/NetBeansProjects/Ivotas/"+eleicao.titulo;
-            String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes\\"+eleicao.titulo+".txt";
+            String path="/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"+eleicao.titulo+".txt";
+           // String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes\\"+eleicao.titulo+".txt";
             FileWriter file = new FileWriter(path);
             BufferedWriter out = new BufferedWriter(file);
             int i=0;
@@ -748,9 +749,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         String path="/home/gustavo/NetBeansProjects/Ivotas/src/Eleicoes/"; 
         //String path="C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Eleicoes\\";
         File folder = new File(path);
-        File[] listOfFiles = folder.listFiles();
-
-            
+        File[] listOfFiles = folder.listFiles();            
             try {
                 for (int i = 0; i < listOfFiles.length; i++) {
                     FileReader file= new FileReader( path+listOfFiles[i].getName());
@@ -807,7 +806,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             }
         }
         return null;
-
+        						
     }
     
     @Override
@@ -832,13 +831,31 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             resposta.valor=-1;
         }
         return resposta;
- }
+    }
+    
+    public  Resposta unlock_Web(Pessoa pessoa,String CC, String Password){
+        Resposta resposta=new Resposta(0,"");
+        if(pessoa.Password.equals(Password) ){
+            if(pessoa.cartao.toString().equals(CC)){
+            	resposta.mensagem="Terminal Operacional";
+                resposta.valor=1;
+            }else {
+                resposta.mensagem="Numero de CC invalido.";
+                resposta.valor=-1;
+            }
+        }else{
+            resposta.mensagem="Password incompativel.";
+            resposta.valor=-1;
+        }
+        return resposta;
+    }
 
     
     @Override
     public ArrayList<Eleicao> get_Eleicoes(){
         return this.bufferEleicao;
     }
+    
      @Override
     public Eleicao procuraEleicao(String titulo){
         for(int i=0; i<this.bufferEleicao.size();i++){
@@ -896,8 +913,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         
             FileWriter file= null;
             try {
-                //file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/src/pessoas.txt");
-                file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Pessoas.txt");
+                file = new FileWriter("/home/gustavo/NetBeansProjects/Ivotas/src/Pessoas.txt");
+                //file = new FileWriter("C:\\Users\\Admin\\Desktop\\3_ano_1_sem\\SD\\Projecto_meta2\\Ivotas\\src\\Pessoas.txt");
                 BufferedWriter out = new BufferedWriter(file);
                 SimpleDateFormat dt = new SimpleDateFormat("dd-mm-yyyy");
                 String s="";
@@ -1012,12 +1029,9 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                  System.out.println(m.toSring());
             }
            
-            
             server.loadArrayEleicao();
             server.CarregaPessoas();    // as pessoas tem de ser carregadas depois das eleicoes
 
-            
-           
             Calendar today= Calendar.getInstance();
             today.setTime(today.getTime());
              System.out.println(today.getTime().toString());
@@ -1028,8 +1042,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
            // System.out.println("Socket Datagram à escuta no porto "+args[1]);
            
             //server.savePessoas();
-            //server.saveArrayEleicao();
-                  
+            //server.saveArrayEleicao();                  
             
         }catch(RemoteException re){
             System.out.println(re.getMessage());

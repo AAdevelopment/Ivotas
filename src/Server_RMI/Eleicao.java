@@ -151,7 +151,7 @@ public class Eleicao implements Runnable,Serializable {
         t = new Thread(this,titulo);
         t.start();
         for(Mesa_voto m:this.mesas){
-            m.StartTable(m);
+          //  m.StartTable(m);
         }
     }
     

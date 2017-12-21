@@ -48,4 +48,5 @@ public interface Comunication_server extends Remote {
     public boolean Add_dpto_to_election(String eleicao, String nome) throws RemoteException;
     public Set<Mesa_voto> getBufferMesas()throws RemoteException;
     public ArrayList<Faculdade> getBufferFaculdade()throws RemoteException;
+    public  Resposta unlock_Web(Pessoa pessoa,String CC, String Password)throws RemoteException;
 }
