@@ -52,7 +52,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
      ArrayList <Pessoa> bufferPessoas= new ArrayList();
      ArrayList<Eleicao> bufferEleicao= new ArrayList();
      ArrayList<Faculdade> bufferFaculdade= new ArrayList();
-     Set <Mesa_voto> bufferMesas= new LinkedHashSet<>();
+	 Set <Mesa_voto> bufferMesas= new LinkedHashSet<>();
     
     public Server_RMI() throws RemoteException{
         super();
@@ -63,7 +63,11 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     public String Test_connection() throws RemoteException {
 		return "Server: Running!";
     }
-    @Override
+    public void setBufferFaculdade(ArrayList<Faculdade> bufferFaculdade) {
+		this.bufferFaculdade = bufferFaculdade;
+	}
+
+	@Override
     public void subscribe(String name, Comunication_client c) throws RemoteException {
         System.out.println("Subscribing "+name);
         this.c = c;
@@ -169,6 +173,8 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
               System.out.println(f.toString());
            }
     }
+    
+
     public boolean removeDepartamento(String nome){
         for (int i=0; i< this.bufferFaculdade.size();i++){
             for(int j=0;j<this.bufferFaculdade.get(i).dpto.size();j++){
