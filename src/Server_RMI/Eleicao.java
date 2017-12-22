@@ -123,25 +123,31 @@ public class Eleicao implements Runnable,Serializable {
     }
     
     @Override
-    public void run(){
+    public synchronized void run(){
+        System.out.println("A INICIAR A ELEICAO "+this.titulo);
+        System.out.flush();
         for(Mesa_voto mesa: this.mesas){
             Thread thread= new Thread(mesa);
-            System.out.println("A INICIAR A ELEICAO");
-            this.toString();
             thread.start();
+            try {
+                wait();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Eleicao.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         while(true){
            if(isToStop()){
-               this.t.stop();
-               this.toString();
-               System.out.println("TERMINADA");
+              System.out.println("TERMINADA ELEICAO "+this.titulo);
+              System.out.flush();
+              this.t.stop();
+              
            }
        }
     }
     
     public boolean isToStop(){
-        Calendar today=new GregorianCalendar();        
-        if(today.compareTo(this.data_fim) >=0){
+        Calendar today= Calendar.getInstance();        
+        if(today.compareTo(this.data_fim) ==0){
             return true;
         }
        return false;  

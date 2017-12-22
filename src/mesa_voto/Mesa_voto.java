@@ -26,10 +26,10 @@ import java.util.logging.Logger;
  * @author Admin
  */
 public class Mesa_voto implements Serializable, Runnable{
-    
     public String departamento;
     public int ID;
     public Integer Nr_Voters=0;
+    private static int serverPort=6140;
     private static final long serialVersionUID = 1L;
     
     public Mesa_voto(String departamento){
@@ -43,22 +43,25 @@ public class Mesa_voto implements Serializable, Runnable{
     public String toSring(){
         return "ID|"+this.ID+";"+"Nome|"+this.departamento;
     }
-    
+    public synchronized ServerSocket get_Port() throws IOException{
+        ServerSocket listenSocket;
+         System.out.println("MESA: "+this.toSring()+" iniciada...");
+         System.out.println("A Escuta no Porto "+ serverPort);
+         listenSocket = new ServerSocket(serverPort);
+         System.out.println("LISTEN SOCKET = "+listenSocket);
+         Mesa_voto.serverPort=Mesa_voto.serverPort+1;
+         notify();
+         return listenSocket;
+    }
 
     @Override
    public void run(){
         try {
-            System.out.println("MESA: "+this.toSring()+"Iniciada !");
-            int ID_TerminalVote=0;
-            int serverPort = 6003;
-            System.out.println("A Escuta no Porto "+ serverPort);
-            ServerSocket listenSocket = new ServerSocket(serverPort);
-            System.out.println("LISTEN SOCKET = "+listenSocket);
+            ServerSocket listenSocket=get_Port();
             while(true) {
                 Socket clientSocket = listenSocket.accept(); // BLOQUEANTE
                 System.out.println("CLIENT_SOCKET (created at accept()) = "+ clientSocket);
-                ID_TerminalVote ++;
-                Terminal_voto term=new Terminal_voto(clientSocket, ID_TerminalVote, this);
+                new Terminal_voto(clientSocket, this);
             }
         } catch (IOException ex) {
             Logger.getLogger(Mesa_voto.class.getName()).log(Level.SEVERE, null, ex);

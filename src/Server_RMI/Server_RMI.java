@@ -325,14 +325,19 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             return el;
 
     }
-    public void insereEleicaoOrdenada(Eleicao eleicao){
-        if(this.bufferEleicao.isEmpty())
+    public boolean insereEleicaoOrdenada(Eleicao eleicao){
+        if(this.bufferEleicao.isEmpty()){
             this.bufferEleicao.add(eleicao);
+            return true;
+        }
         for(int i=0; i < this.bufferEleicao.size(); i++) {
             if(eleicao.data_inicio.compareTo(this.bufferEleicao.get(i).data_inicio) <= 0){
                 this.bufferEleicao.add(i, eleicao);
+                return true;
             }
         }
+        this.bufferEleicao.add(eleicao);
+        return true;
             
     }
     public Pessoa procurarPessoaCC(long CC){
@@ -754,8 +759,6 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
                     BufferedReader in = new BufferedReader(file);
                     Eleicao eleicao=loadEleicao(listOfFiles[i].getName().replace(".txt", ""));
                     this.insereEleicaoOrdenada(eleicao);
-                    if(isToStart(eleicao))
-                        eleicao.t.start();
                 }
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Server_RMI.class.getName()).log(Level.SEVERE, null, ex);
@@ -944,7 +947,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
         }
     }
     public boolean isToStart(Eleicao eleicao){
-        Calendar today=new GregorianCalendar();        
+        Calendar today= Calendar.getInstance();   
         if(today.compareTo(eleicao.data_inicio) >=0 && today.compareTo(eleicao.data_fim) < 0){
             return true;
         }
@@ -954,6 +957,7 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
     @Override
     public void run(){ 
        int i=0;
+        System.out.println("Server thread started...");
        while(true){
            if(isToStart(this.bufferEleicao.get(i))){
                this.bufferEleicao.get(i).t.start();
@@ -984,10 +988,11 @@ public class Server_RMI  extends UnicastRemoteObject implements Comunication_ser
             server.loadMesas();            
             server.loadArrayEleicao();
             server.CarregaPessoas();    // as pessoas tem de ser carregadas depois das eleicoes
-
+            t= new Thread(server,"servidor");
+            t.start();
             
-            server.printBufferEleicao(server.bufferEleicao);
-            server.printBufferPessoas(server.bufferPessoas);
+            //server.printBufferEleicao(server.bufferEleicao);
+            //server.printBufferPessoas(server.bufferPessoas);
             
 //            aSocket = new DatagramSocket(Integer.parseInt(args[1]));
            // System.out.println("Socket Datagram à escuta no porto "+args[1]);

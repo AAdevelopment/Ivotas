@@ -1,5 +1,5 @@
 titulo|tipo|descricao|data_inicio|data_fim
-1|Eleicao_Doc_2017|docentes|eleicao de docentes|20:15:23 20/12/2017|23:25:12 20/12/2017
+1|Eleicao_Doc_2017|docentes|eleicao de docentes|00:00:00 22/12/2017|24:00:12 22/12/2017
 MESAS*****
 2,1,
 DEPARTAMENTOS*****

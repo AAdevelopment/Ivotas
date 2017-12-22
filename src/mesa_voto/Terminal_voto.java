@@ -34,7 +34,7 @@ class Terminal_voto extends Thread implements Serializable {
     Mesa_voto mesa;
     
     
-    public Terminal_voto (Socket aClientSocket, int ID, Mesa_voto mesa) throws IOException {
+    public Terminal_voto (Socket aClientSocket, Mesa_voto mesa) throws IOException {
         try{
             clientSocket = aClientSocket;
              // create streams for writing to and reading from the socket
